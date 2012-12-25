@@ -11,13 +11,10 @@ import com.UpYun;
  */
 public class FileBucketDemo {
 
-	// private static final String BUCKET_NAME = "文件类空间名";
-	// private static final String USER_NAME = "操作员名";
-	// private static final String USER_PWD = "操作员密码";
-
-	private static final String BUCKET_NAME = "java-file";
-	private static final String USER_NAME = "jiadong";
-	private static final String USER_PWD = "jiadong1";
+	// 运行前先设置好以下三个参数
+	private static final String BUCKET_NAME = "文件类空间名";
+	private static final String USER_NAME = "操作员名";
+	private static final String USER_PWD = "操作员密码";
 
 	/** 根目录 */
 	private static final String DIR_ROOT = "/";
@@ -60,32 +57,32 @@ public class FileBucketDemo {
 
 		// ****** 可选设置 end ******
 
-		// 1.获取空间占用大小
-		testGetBucketUsage();
-
-		// 2.获取某个目录的空间占用大小
-		testGetFolderUsage();
-
-		// 3.创建目录，有两种形式
+		// 1.创建目录，有两种形式
 		testMkDir();
+
+		// 2.上传文件，图片空间的文件上传请参考 PicBucketDemo.java
+		testWriteFile();
+
+		// 3.获取文件信息
+		testGetFileInfo();
 
 		// 4.读取目录
 		testReadDir();
 
-		// 5.删除目录
-		testRmDir();
+		// 5.获取空间占用大小
+		testGetBucketUsage();
 
-		// 6.上传文件，图片空间的文件上传请参考 PicBucketDemo.java
-		testWriteFile();
+		// 6.获取某个目录的空间占用大小
+		testGetFolderUsage();
 
-		// 7.获取文件信息
-		testGetFileInfo();
-
-		// 8.读取文件/下载文件
+		// 7.读取文件/下载文件
 		testReadFile();
 
-		// 9.删除文件
+		// 8.删除文件
 		testDeleteFile();
+
+		// 9.删除目录
+		testRmDir();
 	}
 
 	/**
@@ -96,6 +93,7 @@ public class FileBucketDemo {
 		long usage = upyun.getBucketUsage();
 
 		System.out.println("空间总使用量：" + usage + "B");
+		System.out.println();
 	}
 
 	/**
@@ -109,6 +107,7 @@ public class FileBucketDemo {
 		long usage = upyun.getFolderUsage(dirPath);
 
 		System.out.println("'" + dirPath + "'目录占用量： " + usage + "B");
+		System.out.println();
 	}
 
 	/**
@@ -155,6 +154,7 @@ public class FileBucketDemo {
 
 		boolean result4 = upyun.writeFile(filePath, file4, true);
 		System.out.println("4.上传 " + filePath + isSuccess(result4));
+		System.out.println();
 
 	}
 
@@ -167,6 +167,7 @@ public class FileBucketDemo {
 		String filePath = DIR_ROOT + FILE_NAME;
 
 		System.out.println(filePath + " 的文件信息：" + upyun.getFileInfo(filePath));
+		System.out.println();
 	}
 
 	/**
@@ -195,6 +196,7 @@ public class FileBucketDemo {
 		boolean result = upyun.readFile(filePath, file);
 		System.out.println(filePath + " 下载" + isSuccess(result) + "，保存到 "
 				+ file.getAbsolutePath());
+		System.out.println();
 	}
 
 	/**
@@ -209,6 +211,7 @@ public class FileBucketDemo {
 		boolean result = upyun.deleteFile(filePath);
 
 		System.out.println(filePath + " 删除" + isSuccess(result));
+		System.out.println();
 	}
 
 	/**
@@ -227,6 +230,7 @@ public class FileBucketDemo {
 
 		boolean result2 = upyun.mkDir(dir2, true);
 		System.out.println("自动创建多级目录：" + dir2 + isSuccess(result2));
+		System.out.println();
 	}
 
 	/**
@@ -252,6 +256,8 @@ public class FileBucketDemo {
 			System.out.println("'" + dirPath + "'目录总共有 " + items.size()
 					+ " 个文件。");
 		}
+
+		System.out.println();
 	}
 
 	/**
@@ -265,6 +271,7 @@ public class FileBucketDemo {
 		boolean result = upyun.rmDir(dirPath);
 
 		System.out.println("删除目录：" + dirPath + isSuccess(result));
+		System.out.println();
 	}
 
 	private static String isSuccess(boolean result) {

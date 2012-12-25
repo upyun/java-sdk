@@ -15,13 +15,10 @@ import com.UpYun.PARAMS;
  */
 public class PicBucketDemo {
 
-	// private static final String BUCKET_NAME = "图片类空间名";
-	// private static final String USER_NAME = "操作员名";
-	// private static final String USER_PWD = "操作员密码";
-
-	private static final String BUCKET_NAME = "java-pic";
-	private static final String USER_NAME = "jiadong";
-	private static final String USER_PWD = "jiadong1";
+	// 运行前先设置好以下三个参数
+	private static final String BUCKET_NAME = "图片类空间名";
+	private static final String USER_NAME = "操作员名";
+	private static final String USER_PWD = "操作员密码";
 
 	/** 绑定的域名 */
 	private static final String URL = "http://" + BUCKET_NAME
