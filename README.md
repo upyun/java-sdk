@@ -243,9 +243,6 @@ _**注：**建议大家根据服务器网络状况，手动设置合理的接入
     
     // 例1：获取整个空间的使用量情况
     long usage = upyun.getBucketUsage();
-    
-    // 例2：获取某个目录的使用量情况
-    long usage = upyun.getFolderUsage(dir);
 
 ##### 参数说明
 * `dir`：待查询的目录结构。比如`/dir1/`

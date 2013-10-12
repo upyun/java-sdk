@@ -238,7 +238,19 @@ public class UpYun {
 	 * @return 空间占用量，失败时返回 -1
 	 */
 	public long getBucketUsage() {
-		return getFolderUsage("/");
+		long usage = -1;
+
+		String result = HttpAction(METHOD_GET, formatPath("/") + "/?usage");
+
+		if (!isEmpty(result)) {
+
+			try {
+				usage = Long.parseLong(result.trim());
+			} catch (NumberFormatException e) {
+			}
+		}
+
+		return usage;
 	}
 
 	/**
@@ -248,6 +260,7 @@ public class UpYun {
 	 *            目标路径
 	 * @return 空间占用量，失败时返回 -1
 	 */
+	@Deprecated
 	public long getFolderUsage(String path) {
 
 		long usage = -1;
