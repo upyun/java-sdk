@@ -20,7 +20,7 @@ public class UpYunClient {
     private final String METHOD_DELETE = "DELETE";
 
 
-    private final static String RECURSION_MKDIR_HEAD = "mkdir";
+    private final static String RECURSION_MKDIR_HEAD = "createFolder";
     private final static String AUTHORIZATION = "Authorization";
     private final static String CONTENT_MD5_HEAD = "Content­MD5";
     private final static String DATE_HEAD = "Date";
@@ -66,8 +66,9 @@ public class UpYunClient {
     /**
      * 重置所有参数
      */
-    public void reset() {
+    public void resetParams() {
         params.clear();
+
     }
 
     /**
@@ -88,6 +89,124 @@ public class UpYunClient {
     }
 
     /**
+     * 缩图的设置
+     *
+     * @param type  缩略图的类型
+     * @param value 缩略类型对应的参数值，单位为像素,特别注意fix_width_or_height/fix_both：width x height(如 200x150)
+     * @return
+     */
+    public UpYunClient picThumbnail(ThumbnailType type, Integer... value) {
+        assert value != null && value.length > 0 && value.length <= 2;
+        String realValue = "" + value[0];
+        if (value.length > 1) {
+            realValue += "x" + value[1];
+        }
+        params.put("x-gmkerl-type", type.getValue());
+        params.put("x-gmkerl-value", realValue);
+        return this;
+    }
+
+    public UpYunClient picThumbnailName(String nameValue) {
+        assert !_.isEmpty(nameValue);
+        params.put("x-gmkerl-thumbnail", nameValue);
+        return this;
+    }
+
+    /**
+     * 图片压缩质量，范围1~100，默认 95。
+     *
+     * @param qualityValue
+     * @return
+     */
+    public UpYunClient picThumbnailQuality(int qualityValue) {
+        qualityValue = (qualityValue < 1) ? 1 : qualityValue;
+        qualityValue = (qualityValue > 100) ? 100 : qualityValue;
+
+        params.put("x-gmkerl-quality", "" + qualityValue);
+        return this;
+    }
+
+    /**
+     * 关闭锐化
+     *
+     * @return
+     */
+    public UpYunClient picThumbnailUnsharpen() {
+        params.put("x-gmkerl-quality", "false");
+        return this;
+    }
+
+    /**
+     * 打开锐化
+     *
+     * @return
+     */
+    public UpYunClient picThumbnailSharpen() {
+        params.put("x-gmkerl-quality", "true");
+        return this;
+    }
+
+    /**
+     * 自定义的缩略图版本名称，比如 small
+     *
+     * @return
+     */
+    public UpYunClient picThumbnailVersion(String versionValue) {
+        assert !_.isEmpty(versionValue);
+        params.put("x-gmkerl-thumbnail", versionValue);
+        return this;
+    }
+
+    /**
+     * 不保留原图的 EXIF 信息
+     * 若原图带有 EXIF 信息并做缩略处理时，
+     * 默认将删除 EXIF 信息
+     *
+     * @return
+     */
+    public UpYunClient unSaveExif() {
+        params.put("x-gmkerl-exif-switch", "false");
+        return this;
+    }
+
+    /**
+     * 保留原图的 EXIF 信息
+     * 若原图带有 EXIF 信息并做缩略处理时，
+     * 默认将删除 EXIF 信息
+     *
+     * @return
+     */
+    public UpYunClient saveExif() {
+        params.put("x-gmkerl-exif-switch", "true");
+        return this;
+
+    }
+
+    public UpYunClient picRotateAngle(PictureRotateAngle angle) {
+        params.put("x-gmkerl-rotate", angle.getValue());
+        return this;
+    }
+
+    /**
+     * 图片裁剪 的相关参数的设置
+     * <p/>
+     * (x,y)：左上角坐标；
+     * width：要裁剪的宽度；height：要裁剪的高度
+     * x >= 0 && y >=0 && width > 0 && height > 0 且必须是正整型
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @return
+     */
+    public UpYunClient picCutCutting(int x, int y, int width, int height) {
+        assert x >= 0 && y >= 0 && width > 0 && height > 0;
+        params.put("x-gmkerl-crop", x + "," + y + "," + width + "," + height + "");
+        return this;
+    }
+
+    /**
      * 设置连接超时时间，默认为30秒
      *
      * @param second 秒数，60即为一分钟超时
@@ -96,6 +215,7 @@ public class UpYunClient {
         timeout = second * 1000;
         return this;
     }
+
 
     /**
      * 选择电信接入点
@@ -440,7 +560,7 @@ public class UpYunClient {
      *
      * @param path
      */
-    public void mkdir(String path) {
+    public void createFolder(String path) {
         params.put("folder", "true");
 
         HttpURLConnection conn = null;
@@ -469,6 +589,62 @@ public class UpYunClient {
         }
     }
 
+    public PictureItem uploadPicture(String remotePath, File upload) {
+        assert upload != null;
+
+        remotePath = formatPath(remotePath);
+
+        InputStream is = null;
+        OutputStream os = null;
+        HttpURLConnection conn = null;
+
+        try {
+            // 读取待上传的文件
+            is = new FileInputStream(upload);
+
+
+            conn = createDefaultConn(createURL(remotePath), METHOD_PUT);
+
+            // 设置签名
+            conn.setRequestProperty(AUTHORIZATION, sign(conn, remotePath, is.available()));
+            conn.setRequestProperty(CONTENT_LENGTH_HEAD, "" + is.available());
+
+            // 是否自动创建父级目录
+            conn.setRequestProperty(RECURSION_MKDIR_HEAD, "true");
+
+            wrapperParams(conn);
+
+            // 创建链接
+            conn.connect();
+
+            os = conn.getOutputStream();
+            byte[] data = new byte[4096];
+            int temp = 0;
+
+            // 上传文件内容
+            while ((temp = is.read(data)) != -1) {
+                os.write(data, 0, temp);
+            }
+
+
+            verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
+
+
+            resetParams();
+
+            return new PictureItem(conn);
+
+        } catch (IOException e) {
+            if (debug)
+                e.printStackTrace();
+
+            throw new UpYunIOException(e);
+
+        } finally {
+            _.closeConnAndStream(os, is, conn);
+        }
+    }
+
 
     public void uploadFile(String remotePath, File upload) {
         assert upload != null;
@@ -493,6 +669,7 @@ public class UpYunClient {
             // 是否自动创建父级目录
             conn.setRequestProperty(RECURSION_MKDIR_HEAD, "true");
 
+            wrapperParams(conn);
 
             // 创建链接
             conn.connect();
@@ -507,6 +684,8 @@ public class UpYunClient {
             }
 
             verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
+
+            resetParams();
 
         } catch (IOException e) {
             if (debug)
@@ -612,6 +791,7 @@ public class UpYunClient {
         if (code == 401 && "Need Date Header".equals(responseMessage))
             throw new UpYunBaseException("Need Date Header");
 
+        /*权限错误(如非图片文件上传到图片空间)*/
         if (code == 403 && "Not Access".equals(responseMessage))
             throw new UpYunBaseException("Not Access");
 
@@ -689,6 +869,19 @@ public class UpYunClient {
         }
 
         return SEPARATOR + bucketName + path;
+    }
+
+    /**
+     * 向HttpURLConnect包装参数
+     * @param conn
+     */
+    private void wrapperParams(HttpURLConnection conn) {
+        if (null == params || params.isEmpty()) return;
+
+        for (Map.Entry<String, String> param : params.entrySet()) {
+            conn.setRequestProperty(param.getKey(), param.getValue());
+        }
+
     }
 
 

@@ -1,18 +1,18 @@
 package demo;
 
-import com.upyun.Crypto;
-import com.upyun.FileItem;
-import com.upyun.UpYunClient;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.upyun.Crypto;
+import com.upyun.FileItem;
+import com.upyun.UpYun;
+import org.junit.Test;
+
 /**
  * 文件类空间的demo
  */
-public class FileBucketTest {
+public class FileBucketDemo {
 
     // 运行前先设置好以下三个参数
     private static final String BUCKET_NAME = "afiletest";
@@ -30,7 +30,7 @@ public class FileBucketTest {
     /**
      * 目录名
      */
-    private static final String FOLDER_NAME = "tmp4";
+    private static final String FOLDER_NAME = "tmp1";
     /**
      * 上传到upyun的文件名
      */
@@ -41,18 +41,17 @@ public class FileBucketTest {
      */
     private static final String SAMPLE_TXT_FILE;
 
-    private static UpYunClient client;
+    private static UpYun upyun = null;
 
     static {
-        SAMPLE_TXT_FILE = FileBucketTest.class.getResource("/test.txt").getFile();
+        SAMPLE_TXT_FILE = FileBucketDemo.class.getResource("/test.txt").getFile();
     }
 
     @Test
     public void test() throws Exception {
 
         // 初始化空间
-        client = UpYunClient.create(BUCKET_NAME, USER_NAME, USER_PWD);
-
+        upyun = new UpYun(BUCKET_NAME, USER_NAME, USER_PWD);
 
         // ****** 可选设置 begin ******
 
@@ -63,7 +62,7 @@ public class FileBucketTest {
         // upyun.timeout(60);
 
         // 设置是否开启debug模式，默认不开启
-        client.enableDebug();
+        upyun.enableDebug();
 
         // ****** 可选设置 end ******
 
@@ -82,6 +81,9 @@ public class FileBucketTest {
         // 5.获取空间占用大小
         testGetBucketUsage();
 
+        // 6.获取某个目录的空间占用大小
+        testGetFolderUsage();
+
         // 7.读取文件/下载文件
         testReadFile();
 
@@ -97,16 +99,30 @@ public class FileBucketTest {
      */
     public static void testGetBucketUsage() {
 
-        long usage = client.getBucketUsage();
+        long usage = upyun.getBucketUsage();
 
         System.out.println("空间总使用量：" + usage + "B");
         System.out.println();
     }
 
     /**
+     * 获取某个目录的空间占用大小
+     */
+    public static void testGetFolderUsage() {
+
+        // 带查询的目录，如 "/" 或 "/tmp"
+        String dirPath = DIR_ROOT;
+
+        long usage = upyun.getFolderUsage(dirPath);
+
+        System.out.println("'" + dirPath + "'目录占用量： " + usage + "B");
+        System.out.println();
+    }
+
+    /**
      * 上传文件
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public static void testWriteFile() throws IOException {
 
@@ -121,17 +137,24 @@ public class FileBucketTest {
 		/*
          * 上传方法1：文本内容直接上传
 		 */
-        client.uploadFile(filePath, content);
-        /*
+        boolean result1 = upyun.writeFile(filePath, content);
+        System.out.println("1.上传 " + filePath + isSuccess(result1));
+        assert result1;
+
+		/*
          * 上传方法2：文本内容直接上传，可自动创建父级目录（最多10级）
 		 */
-        client.recursionMkDir().uploadFile(filePath2, content);
+        boolean result2 = upyun.writeFile(filePath2, content, true);
+        System.out.println("2.上传 " + filePath2 + isSuccess(result2));
+        assert result2;
 
 		/*
          * 上传方法3：采用数据流模式上传文件（节省内存），可自动创建父级目录（最多10级）
 		 */
         File file = new File(SAMPLE_TXT_FILE);
-        client.recursionMkDir().uploadFile(filePath, file);
+        boolean result3 = upyun.uploadFile(filePath, file, true);
+        System.out.println("3.上传 " + filePath + isSuccess(result3));
+        assert result3;
 
 		/*
          * 上传方法4：对待上传的文件设置 MD5 值，确保上传到 Upyun 的文件的完整性和正确性
@@ -139,7 +162,11 @@ public class FileBucketTest {
         File file4 = new File(SAMPLE_TXT_FILE);
         // 设置待上传文件的 Content-MD5 值
         // 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
-        client.contentMD5(Crypto.md5(file4)).uploadFile(filePath, file4);
+        upyun.contentMD5(Crypto.md5(file4));
+
+        boolean result4 = upyun.uploadFile(filePath, file4, true);
+        System.out.println("4.上传 " + filePath + isSuccess(result4));
+        System.out.println();
 
     }
 
@@ -151,15 +178,17 @@ public class FileBucketTest {
         // upyun空间下存在的文件的路径
         String filePath = DIR_ROOT + FILE_NAME;
 
-        FileItem item = client.getFileInfo(filePath);
-        assert item.getName().equals(FILE_NAME);
+        assert upyun.getFileInfo(filePath) != null;
 
+        System.out.println(filePath + " 的文件信息：" + upyun.getFileInfo(filePath));
+
+        System.out.println();
     }
 
     /**
      * 读取文件/下载文件
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public static void testReadFile() throws IOException {
 
@@ -167,24 +196,23 @@ public class FileBucketTest {
         String filePath = DIR_ROOT + FILE_NAME;
 
 		/*
-         * 方法1：直接读取文本内容
+		 * 方法1：直接读取文本内容
 		 */
-        String data = client.readFileText(filePath);
-
+        String data = upyun.readFile(filePath);
         System.out.println(filePath + " 的文件内容:" + data);
         assert "tmp content".equals(data);
 
 		/*
-         * 方法2：下载文件，采用数据流模式下载文件（节省内存）
+		 * 方法2：下载文件，采用数据流模式下载文件（节省内存）
 		 */
         // 要写入的本地临时文件
         File file = File.createTempFile("upyunTempFile_", "");
 
         // 把upyun空间下的文件下载到本地的临时文件
-        client.downloadFile(filePath, file);
-
-        assert file.exists();
-
+        boolean result = upyun.downloadFile(filePath, file);
+        System.out.println(filePath + " 下载" + isSuccess(result) + "，保存到 "
+                + file.getAbsolutePath());
+        System.out.println();
     }
 
     /**
@@ -196,8 +224,10 @@ public class FileBucketTest {
         String filePath = DIR_ROOT + FILE_NAME;
 
         // 删除文件
-        client.deleteFile(filePath);
+        boolean result = upyun.deleteFile(filePath);
 
+        System.out.println(filePath + " 删除" + isSuccess(result));
+        System.out.println();
     }
 
     /**
@@ -208,12 +238,15 @@ public class FileBucketTest {
         // 方法1：创建一级目录
         String dir1 = DIR_ROOT + FOLDER_NAME;
 
-        client.unRecursionMkDir().createFolder(dir1);
+        boolean result1 = upyun.unRecursionMkDir(dir1);
+        System.out.println("创建目录：" + dir1 + isSuccess(result1));
 
         // 方法2：创建多级目录，自动创建父级目录（最多10级）
         String dir2 = DIR_MORE + FOLDER_NAME;
 
-        client.recursionMkDir().createFolder(dir2);
+        boolean result2 = upyun.recursionMkDir(dir2);
+        System.out.println("自动创建多级目录：" + dir2 + isSuccess(result2));
+        System.out.println();
     }
 
     /**
@@ -225,7 +258,7 @@ public class FileBucketTest {
         String dirPath = DIR_ROOT;
 
         // 读取目录列表，将返回 List 或 NULL
-        List<FileItem> items = client.listFiles(dirPath);
+        List<FileItem> items = upyun.readDir(dirPath);
 
         if (null == items) {
             System.out.println("'" + dirPath + "'目录下没有文件。");
@@ -251,8 +284,10 @@ public class FileBucketTest {
         // 带删除的目录必须存在，并且目录下已不存在任何文件或子目录
         String dirPath = DIR_MORE + FOLDER_NAME;
 
-        client.deleteFolder(dirPath);
+        boolean result = upyun.rmDir(dirPath);
 
+        System.out.println("删除目录：" + dirPath + isSuccess(result));
+        System.out.println();
     }
 
     private static String isSuccess(boolean result) {

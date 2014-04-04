@@ -1,17 +1,21 @@
 package demo;
 
-import com.upyun.*;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.upyun.Crypto;
+import com.upyun.UpYun;
+import com.upyun.PARAMS;
+import org.junit.Test;
 
 /**
  * 图片类空间的demo，一般性操作参考文件空间的demo（FileBucketDemo.java）
  * <p/>
  * 注意：直接使用部分图片处理功能后，将会丢弃原图保存处理后的图片
  */
-public class PicBucketTest {
+public class PicBucketDemo {
 
     // 运行前先设置好以下三个参数
     private static final String BUCKET_NAME = "apictest";
@@ -40,17 +44,17 @@ public class PicBucketTest {
     private static final String SAMPLE_PIC_FILE;
 
 
-    private static UpYunClient upYunClient;
+    private static UpYun upyun = null;
 
     static {
-        SAMPLE_PIC_FILE = PicBucketTest.class.getResource("/sample.jpeg").getFile();
+        SAMPLE_PIC_FILE = PicBucketDemo.class.getResource("/sample.jpeg").getFile();
     }
 
     @Test
     public void test() throws Exception {
 
         // 初始化空间
-        upYunClient = UpYunClient.create(BUCKET_NAME, USER_NAME, USER_PWD);
+        upyun = new UpYun(BUCKET_NAME, USER_NAME, USER_PWD);
 
         // ****** 可选设置 begin ******
 
@@ -61,13 +65,13 @@ public class PicBucketTest {
         // upyun.timeout(60);
 
         // 设置是否开启debug模式，默认不开启
-        upYunClient.enableDebug();
+        upyun.enableDebug();
 
         // ****** 可选设置 end ******
 
 		/*
          * 一般性操作参考文件空间的demo（FileBucketDemo.java）
-		 *
+		 * 
 		 * 注：图片的所有参数均可以自由搭配使用
 		 */
 
@@ -88,7 +92,7 @@ public class PicBucketTest {
     /**
      * 上传文件
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public void testWriteFile() throws IOException {
 
@@ -100,7 +104,7 @@ public class PicBucketTest {
 
         // 设置待上传文件的 Content-MD5 值
         // 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
-        upYunClient.contentMD5(Crypto.md5(file));
+        upyun.contentMD5(Crypto.md5(file));
 
         // 设置待上传文件的"访问密钥"
         // 注意：
@@ -108,16 +112,31 @@ public class PicBucketTest {
         // 举例：
         // 如果缩略图间隔标志符为"!"，密钥为"bac"，上传文件路径为"/folder/test.jpg"，
         // 那么该图片的对外访问地址为：http://空间域名 /folder/test.jpg!bac
-        upYunClient.fileSecret("bac");
+        upyun.fileSecret("bac");
 
         // 上传文件，并自动创建父级目录（最多10级）
-        PictureItem pictureItem = upYunClient.recursionMkDir().uploadPicture(filePath, file);
+        boolean result = upyun.uploadFile(filePath, file, true);
 
-        assert pictureItem.getWidth() == 640;
 
-        assert pictureItem.getHeight() == 427;
+        System.out.println(filePath + " 上传" + isSuccess(result));
 
-        assert "JPEG".equals(pictureItem.getType());
+        // 获取上传文件后的信息（仅图片空间有返回数据）
+        System.out.println("\r\n****** " + file.getName() + " 的图片信息 *******");
+        // 图片宽度
+        System.out.println("图片宽度:" + upyun.getPicWidth());
+        // 图片高度
+        System.out.println("图片高度:" + upyun.getPicHeight());
+        // 图片帧数
+        System.out.println("图片帧数:" + upyun.getPicFrames());
+        // 图片类型
+        System.out.println("图片类型:" + upyun.getPicType());
+
+        System.out.println("****************************************\r\n");
+
+        System.out.println("若设置过访问密钥(bac)，且缩略图间隔标志符为'!'，则可以通过以下路径来访问图片：");
+        System.out.println(URL + filePath + "!bac");
+        System.out.println();
+
 
     }
 
@@ -126,7 +145,7 @@ public class PicBucketTest {
      * <p/>
      * 注意：若使用了缩略图功能，则会丢弃原图
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public static void testGmkerl() throws IOException {
 
@@ -136,26 +155,39 @@ public class PicBucketTest {
         // 本地待上传的图片文件
         File file = new File(SAMPLE_PIC_FILE);
 
+        // 设置缩略图的参数
+        Map<String, String> params = new HashMap<String, String>();
 
+        // 设置缩略图类型，必须搭配缩略图参数值（KEY_VALUE）使用，否则无效
+        params.put(PARAMS.KEY_X_GMKERL_TYPE.getValue(),
+                PARAMS.VALUE_FIX_BOTH.getValue());
+
+        // 设置缩略图参数值，必须搭配缩略图类型（KEY_TYPE）使用，否则无效
+        params.put(PARAMS.KEY_X_GMKERL_VALUE.getValue(), "150x150");
+
+        // 设置缩略图的质量，默认 95
+        params.put(PARAMS.KEY_X_GMKERL_QUALITY.getValue(), "95");
+
+        // 设置缩略图的锐化，默认锐化（true）
+        params.put(PARAMS.KEY_X_GMKERL_UNSHARP.getValue(), "true");
+
+        // 若在 upyun 后台配置过缩略图版本号，则可以设置缩略图的版本名称
+        // 注意：只有存在缩略图版本名称，才会按照配置参数制作缩略图，否则无效
+        params.put(PARAMS.KEY_X_GMKERL_THUMBNAIL.getValue(), "small");
 
         // 上传文件，并自动创建父级目录（最多10级）
-        PictureItem pictureItem = upYunClient.recursionMkDir()
-                .picThumbnail(ThumbnailType.VALUE_FIX_BOTH, 150, 150)
-                .picThumbnailQuality(95)
-                .picThumbnailSharpen()
-                .picThumbnailName("small").uploadPicture(filePath, file);
+        boolean result = upyun.writeFile(filePath, file, true, params);
 
-
-        assert pictureItem.getHeight() == 150;
-        assert pictureItem.getWidth() == 150;
-
+        System.out.println(filePath + " 制作缩略图" + isSuccess(result));
+        System.out.println("可以通过该路径来访问图片：" + URL + filePath);
+        System.out.println();
 
     }
 
     /**
      * 图片旋转
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public static void testRotate() throws IOException {
 
@@ -166,21 +198,25 @@ public class PicBucketTest {
         File file = new File(SAMPLE_PIC_FILE);
 
         // 图片旋转功能具体可参考：http://wiki.upyun.com/index.php?title=图片旋转
+        Map<String, String> params = new HashMap<String, String>();
+
+        // 设置图片旋转：只接受"auto"，"90"，"180"，"270"四种参数
+        params.put(PARAMS.KEY_X_GMKERL_ROTATE.getValue(),
+                PARAMS.VALUE_ROTATE_90.getValue());
 
         // 上传文件，并自动创建父级目录（最多10级）
-        PictureItem pictureItem = upYunClient.picRotateAngle(PictureRotateAngle._90).uploadPicture(filePath, file);
+        boolean result = upyun.writeFile(filePath, file, true, params);
 
-        assert pictureItem.getWidth() == 427;
-
-        assert pictureItem.getHeight() == 640;
-
+        System.out.println(filePath + " 图片旋转" + isSuccess(result));
+        System.out.println("可以通过该路径来访问图片：" + URL + filePath);
+        System.out.println();
 
     }
 
     /**
      * 图片裁剪
      *
-     * @throws java.io.IOException
+     * @throws IOException
      */
     public static void testCrop() throws IOException {
 
@@ -191,15 +227,21 @@ public class PicBucketTest {
         File file = new File(SAMPLE_PIC_FILE);
 
         // 图片裁剪功能具体可参考：http://wiki.upyun.com/index.php?title=图片裁剪
+        Map<String, String> params = new HashMap<String, String>();
+
         // 设置图片裁剪，参数格式：x,y,width,height
+        params.put(PARAMS.KEY_X_GMKERL_CROP.getValue(), "50,50,300,300");
 
         // 上传文件，并自动创建父级目录（最多10级）
-        PictureItem pictureItem = upYunClient.picCutCutting(50, 50, 300, 300).uploadPicture(filePath, file);
+        boolean result = upyun.writeFile(filePath, file, true, params);
 
-        assert pictureItem.getHeight() == 300;
-
-        assert pictureItem.getWidth() == 300;
-
+        System.out.println(filePath + " 图片裁剪" + isSuccess(result));
+        System.out.println("可以通过该路径来访问图片：" + URL + filePath);
+        System.out.println();
     }
 
+    private static String isSuccess(boolean result) {
+        assert result;
+        return result ? " 成功" : " 失败";
+    }
 }
