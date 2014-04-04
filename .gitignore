@@ -2,4 +2,9 @@ bin/
 bin/*
 *.class
 .settings/
+.project
+.classpath
+target
+.idea
+*.iml
 
