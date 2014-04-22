@@ -20,14 +20,28 @@ public class UpYunClient {
     private final String METHOD_DELETE = "DELETE";
 
 
+    /**
+     * 是否创建文件夹
+     */
     private final static String RECURSION_MKDIR_HEAD = "createFolder";
+    /**
+     * 认证
+     */
     private final static String AUTHORIZATION = "Authorization";
+
+
     private final static String CONTENT_MD5_HEAD = "Content­MD5";
+
     private final static String DATE_HEAD = "Date";
+
     private final String CONTENT_LENGTH_HEAD = "Content-Length";
+
     private final static String CONTENT_SECRET_HEAD = "Content­Secret";
+
     private final String FILE_TYPE_HEAD = "x-upyun-file-type";
+
     private final String FILE_SIZE_HEAD = "x-upyun-file-size";
+
     private final String FILE_DATE_HEAD = "x-upyun-file-date";
     // 待上传文件的"访问密钥"
     private String fileSecret = null;
@@ -63,7 +77,6 @@ public class UpYunClient {
     private String bucketName;
     private String userName;
     private String password;
-
 
     private boolean debug = true;
 
@@ -121,6 +134,12 @@ public class UpYunClient {
         return this;
     }
 
+    /**
+     * 设置缩略图的名称
+     *
+     * @param nameValue
+     * @return
+     */
     public UpYunClient picThumbnailName(String nameValue) {
         assert !_.isEmpty(nameValue);
         params.put("x-gmkerl-thumbnail", nameValue);
@@ -197,6 +216,12 @@ public class UpYunClient {
 
     }
 
+    /**
+     * 图片旋转角度
+     *
+     * @param angle
+     * @return
+     */
     public UpYunClient picRotateAngle(PictureRotateAngle angle) {
         params.put("x-gmkerl-rotate", angle.getValue());
         return this;
@@ -264,11 +289,21 @@ public class UpYunClient {
     }
 
 
+    /**
+     * 取消debug信息
+     *
+     * @return
+     */
     public UpYunClient disableDebug() {
         debug = false;
         return this;
     }
 
+    /**
+     * 打开调试
+     *
+     * @return
+     */
     public UpYunClient enableDebug() {
         debug = true;
         return this;
@@ -358,6 +393,12 @@ public class UpYunClient {
     }
 
 
+    /**
+     * 读取文件文本
+     *
+     * @param remoteFilePath
+     * @return
+     */
     public String readFileText(String remoteFilePath) {
         HttpURLConnection conn = null;
         try {
@@ -431,6 +472,12 @@ public class UpYunClient {
 
     }
 
+    /**
+     * 列出路径下所有文件
+     *
+     * @param path
+     * @return
+     */
     public List<FileItem> listFiles(String path) {
         HttpURLConnection conn = null;
         try {
@@ -615,6 +662,13 @@ public class UpYunClient {
         }
     }
 
+    /**
+     * 上传图片
+     *
+     * @param remotePath
+     * @param upload
+     * @return
+     */
     public PictureItem uploadPicture(String remotePath, File upload) {
         assert upload != null;
 
@@ -672,6 +726,12 @@ public class UpYunClient {
     }
 
 
+    /**
+     * 上传文件
+     *
+     * @param remotePath
+     * @param upload
+     */
     public void uploadFile(String remotePath, File upload) {
         assert upload != null;
 
@@ -724,6 +784,12 @@ public class UpYunClient {
     }
 
 
+    /**
+     * 上传文本
+     *
+     * @param remotePath
+     * @param content
+     */
     public void uploadFile(String remotePath, String content) {
         assert content != null;
 
@@ -746,7 +812,6 @@ public class UpYunClient {
 
             // 是否自动创建父级目录
             conn.setRequestProperty(RECURSION_MKDIR_HEAD, "true");
-
 
 
             // 创建链接
@@ -772,6 +837,13 @@ public class UpYunClient {
         }
     }
 
+    /**
+     * 创建默认连接
+     *
+     * @param path
+     * @param method
+     * @return
+     */
     private HttpURLConnection createDefaultConn(String path, String method) {
         HttpURLConnection conn = null;
         try {
@@ -786,6 +858,9 @@ public class UpYunClient {
 
             // 设置时间
             conn.setRequestProperty(DATE_HEAD, _.getGMTDate());
+        } catch (MalformedURLException e) {
+            throw new UpYunIOException("new URL of  " + path + " failure", e);
+
         } catch (IOException e) {
             throw new UpYunIOException("open " + path + " failure", e);
         }
@@ -794,16 +869,12 @@ public class UpYunClient {
     }
 
 
-    private URL createURL(String path) {
-        try {
-            return new URL("http://" + apiEntry + path);
-        } catch (MalformedURLException e) {
-            throw new UpYunIOException("new URL of  " + path + " failure", e);
-
-        }
-    }
-
-
+    /**
+     * 校验HTTP的返回码
+     *
+     * @param code
+     * @param responseMessage
+     */
     private void verifyConnectionCode(int code, String responseMessage) {
         if (code == 400) {
             throw new UpYunBaseException("Bad Request");
@@ -848,15 +919,6 @@ public class UpYunClient {
 
         if (code >= 500)
             throw new UpYunServerErrorException("some errors at server");
-    }
-
-    private boolean isConnectionResponseOK(HttpURLConnection conn) {
-        assert conn != null;
-        try {
-            return conn.getResponseCode() == 200;
-        } catch (IOException e) {
-            throw new UpYunIOException(e);
-        }
     }
 
     /**
