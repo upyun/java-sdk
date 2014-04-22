@@ -44,6 +44,22 @@ public class UpYunClient {
     // 默认为自动识别接入点
     private String apiEntry = "v0.api.upyun.com";
 
+    /**
+     * 电信入口
+     */
+    public final static String TELECOMMUNICATIONS_ENTRY = "v1.api.upyun.com";
+
+    /**
+     * 联通网通入口
+     */
+    public final static String UNICOM_ENTRY = "v2.api.upyun.com";
+
+    /**
+     * 移动铁通入口
+     */
+    public final static String MOBILE_ENTRY = "v3.api.upyun.com";
+
+
     private String bucketName;
     private String userName;
     private String password;
@@ -68,7 +84,6 @@ public class UpYunClient {
      */
     public void resetParams() {
         params.clear();
-
     }
 
     /**
@@ -223,7 +238,7 @@ public class UpYunClient {
      * @return
      */
     public UpYunClient selectTelecomAPIEntry() {
-        apiEntry = "v1.api.upyun.com";
+        apiEntry = TELECOMMUNICATIONS_ENTRY;
         return this;
     }
 
@@ -233,8 +248,8 @@ public class UpYunClient {
      *
      * @return
      */
-    public UpYunClient selectCNCAPIEntry() {
-        apiEntry = "v2.api.upyun.com";
+    public UpYunClient selectUnicomAPIEntry() {
+        apiEntry = UNICOM_ENTRY;
         return this;
     }
 
@@ -243,8 +258,8 @@ public class UpYunClient {
      *
      * @return
      */
-    public UpYunClient selectCTTAPIEntry() {
-        apiEntry = "v3.api.upyun.com";
+    public UpYunClient selectMobileAPIEntry() {
+        apiEntry = MOBILE_ENTRY;
         return this;
     }
 
@@ -316,8 +331,7 @@ public class UpYunClient {
 
         try {
             // 获取链接
-
-            conn = createDefaultConn(createURL(formatPath(path)), METHOD_HEAD);
+            conn = createDefaultConn(formatPath(path), METHOD_HEAD);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(path), 0));
@@ -348,7 +362,7 @@ public class UpYunClient {
         HttpURLConnection conn = null;
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(formatPath(remoteFilePath)), METHOD_GET);
+            conn = createDefaultConn(formatPath(remoteFilePath), METHOD_GET);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(remoteFilePath), 0));
@@ -358,7 +372,10 @@ public class UpYunClient {
 
             verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
 
-            return _.readTextFromConnectionResponse(conn);
+            String result = _.readTextFromConnectionResponse(conn);
+            conn.disconnect();
+            conn = null;
+            return result;
 
         } catch (IOException e) {
             if (debug)
@@ -383,15 +400,15 @@ public class UpYunClient {
 
         String method = METHOD_GET;
 
-        String uri = formatPath("/") + "/?usage";
+        String url = formatPath("/") + "/?usage";
 
         HttpURLConnection conn = null;
 
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(uri), method);
+            conn = createDefaultConn(url, method);
             // 设置签名
-            conn.setRequestProperty(AUTHORIZATION, sign(conn, uri, 0));
+            conn.setRequestProperty(AUTHORIZATION, sign(conn, url, 0));
 
             // 创建链接
             conn.connect();
@@ -418,7 +435,7 @@ public class UpYunClient {
         HttpURLConnection conn = null;
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(formatPath(path) + SEPARATOR), METHOD_GET);
+            conn = createDefaultConn(formatPath(path) + SEPARATOR, METHOD_GET);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(path) + SEPARATOR, 0));
@@ -459,10 +476,12 @@ public class UpYunClient {
 
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(formatPath(path)), METHOD_GET);
+            conn = createDefaultConn(formatPath(path), METHOD_GET);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(path), 0));
+
+            wrapperParams(conn);
 
             // 创建链接
             conn.connect();
@@ -503,9 +522,11 @@ public class UpYunClient {
 
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(formatPath(path)), METHOD_DELETE);
+            conn = createDefaultConn(formatPath(path), METHOD_DELETE);
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(path), 0));
+
+            wrapperParams(conn);
 
             // 创建链接
             conn.connect();
@@ -536,10 +557,11 @@ public class UpYunClient {
         InputStream is = null;
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(formatPath(filePath)), METHOD_DELETE);
+            conn = createDefaultConn(formatPath(filePath), METHOD_DELETE);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(filePath), 0));
+            wrapperParams(conn);
 
             // 创建链接
             conn.connect();
@@ -561,6 +583,7 @@ public class UpYunClient {
      * @param path
      */
     public void createFolder(String path) {
+
         params.put("folder", "true");
 
         HttpURLConnection conn = null;
@@ -568,11 +591,14 @@ public class UpYunClient {
 
         try {
             // 获取链接
-            conn = createDefaultConn(createURL(formatPath(path)), METHOD_PUT);
+            conn = createDefaultConn(formatPath(path), METHOD_PUT);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, formatPath(path), 0));
             conn.setRequestProperty(CONTENT_LENGTH_HEAD, "0");
+
+            wrapperParams(conn);
+
             // 创建链接
             conn.connect();
 
@@ -603,7 +629,7 @@ public class UpYunClient {
             is = new FileInputStream(upload);
 
 
-            conn = createDefaultConn(createURL(remotePath), METHOD_PUT);
+            conn = createDefaultConn(remotePath, METHOD_PUT);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, remotePath, is.available()));
@@ -659,8 +685,7 @@ public class UpYunClient {
             // 读取待上传的文件
             is = new FileInputStream(upload);
 
-
-            conn = createDefaultConn(createURL(remotePath), METHOD_PUT);
+            conn = createDefaultConn(remotePath, METHOD_PUT);
 
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, remotePath, is.available()));
@@ -713,14 +738,15 @@ public class UpYunClient {
             byte[] data = content.getBytes("UTF-8");
 
 
-            conn = createDefaultConn(createURL(remotePath), METHOD_PUT);
-
+            conn = createDefaultConn(remotePath, METHOD_PUT);
+            wrapperParams(conn);
             // 设置签名
             conn.setRequestProperty(AUTHORIZATION, sign(conn, remotePath, data.length));
             conn.setRequestProperty(CONTENT_LENGTH_HEAD, "" + data.length);
 
             // 是否自动创建父级目录
             conn.setRequestProperty(RECURSION_MKDIR_HEAD, "true");
+
 
 
             // 创建链接
@@ -746,9 +772,10 @@ public class UpYunClient {
         }
     }
 
-    private HttpURLConnection createDefaultConn(URL url, String method) {
+    private HttpURLConnection createDefaultConn(String path, String method) {
         HttpURLConnection conn = null;
         try {
+            URL url = new URL("http://" + apiEntry + path);
             conn = (HttpURLConnection) url.openConnection();
             // 设置必要参数
             conn.setConnectTimeout(timeout);
@@ -760,11 +787,12 @@ public class UpYunClient {
             // 设置时间
             conn.setRequestProperty(DATE_HEAD, _.getGMTDate());
         } catch (IOException e) {
-            throw new UpYunIOException("open " + url.getPath() + " failure", e);
+            throw new UpYunIOException("open " + path + " failure", e);
         }
 
         return conn;
     }
+
 
     private URL createURL(String path) {
         try {
@@ -779,7 +807,6 @@ public class UpYunClient {
     private void verifyConnectionCode(int code, String responseMessage) {
         if (code == 400) {
             throw new UpYunBaseException("Bad Request");
-
         }
 
         if (code == 401 && "Unauthorized".equals(responseMessage))
@@ -814,11 +841,10 @@ public class UpYunClient {
             throw new UpYunBaseException("Image Crop Invalid Parameters");
 
         if (code == 404 && "Not Found".equals(responseMessage))
-            throw new UpYunNotFoundException("Not Found \n");
+            throw new UpYunNotFoundException("Not Found");
 
         if (code == 406 && responseMessage.contains("Not Acceptable"))
             throw new UpYunBaseException("The folder exists");
-
 
         if (code >= 500)
             throw new UpYunServerErrorException("some errors at server");
@@ -856,7 +882,6 @@ public class UpYunClient {
      * @return 格式化后的路径
      */
     private String formatPath(String path) {
-
         if (!_.isEmpty(path)) {
 
             // 去除前后的空格
@@ -873,6 +898,7 @@ public class UpYunClient {
 
     /**
      * 向HttpURLConnect包装参数
+     *
      * @param conn
      */
     private void wrapperParams(HttpURLConnection conn) {

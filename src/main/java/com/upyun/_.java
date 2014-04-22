@@ -106,24 +106,6 @@ public class _ {
             }
         } catch (IOException e) {
             throw new UpYunIOException(e);
-        } finally {
-            try {
-                if (sr != null) {
-                    sr.close();
-                    sr = null;
-                }
-                if (is != null) {
-                    is.close();
-                    is = null;
-                }
-                if (br != null) {
-                    br.close();
-                    br = null;
-                }
-
-            } catch (IOException e) {
-                throw new UpYunIOException("", e);
-            }
         }
         return text.toString();
 

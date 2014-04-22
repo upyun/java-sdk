@@ -3,6 +3,7 @@ package demo;
 import com.upyun.Crypto;
 import com.upyun.FileItem;
 import com.upyun.UpYunClient;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 文件类空间的demo
  */
+
 public class FileBucketTest {
 
     // 运行前先设置好以下三个参数
@@ -26,11 +28,11 @@ public class FileBucketTest {
     /**
      * 多级目录
      */
-    private static final String DIR_MORE = "/1/2/3/";
+    private static final String DIR_MORE = "/1/2/4/";
     /**
      * 目录名
      */
-    private static final String FOLDER_NAME = "tmp4";
+    private static final String FOLDER_NAME = "tm66";
     /**
      * 上传到upyun的文件名
      */
@@ -47,11 +49,27 @@ public class FileBucketTest {
         SAMPLE_TXT_FILE = FileBucketTest.class.getResource("/test.txt").getFile();
     }
 
-    @Test
-    public void test() throws Exception {
-
+    @Before
+    public void setUp() throws Exception {
         // 初始化空间
         client = UpYunClient.create(BUCKET_NAME, USER_NAME, USER_PWD);
+    }
+
+    @Test
+    public void testCreateFolder() {
+        // 方法1：创建一级目录
+        String dir1 = "/k";
+        client.unRecursionMkDir().createFolder(dir1);
+
+        // 方法2：创建多级目录，自动创建父级目录（最多10级）
+        String dir2 = "/ssf/sss/ddd";
+        client.recursionMkDir().createFolder(dir2);
+
+    }
+
+
+    //  @Test
+    public void test() throws Exception {
 
 
         // ****** 可选设置 begin ******
@@ -64,32 +82,28 @@ public class FileBucketTest {
 
         // 设置是否开启debug模式，默认不开启
         client.enableDebug();
-
         // ****** 可选设置 end ******
 
         // 1.创建目录，有两种形式
         testMkDir();
 
-        // 2.上传文件，图片空间的文件上传请参考 PicBucketDemo.java
-        testWriteFile();
-
         // 3.获取文件信息
-        testGetFileInfo();
+        //  testGetFileInfo();
 
         // 4.读取目录
-        testReadDir();
+        //  testReadDir();
 
         // 5.获取空间占用大小
-        testGetBucketUsage();
+        //  testGetBucketUsage();
 
         // 7.读取文件/下载文件
-        testReadFile();
+        //  testReadFile();
 
         // 8.删除文件
-        testDeleteFile();
+        //testDeleteFile();
 
         // 9.删除目录
-        testRmDir();
+        //testRmDir();
     }
 
     /**
@@ -108,7 +122,8 @@ public class FileBucketTest {
      *
      * @throws java.io.IOException
      */
-    public static void testWriteFile() throws IOException {
+    @Test
+    public void testUploadFile() throws IOException {
 
         // 要上传的纯文字内容
         String content = "test content";
@@ -122,18 +137,20 @@ public class FileBucketTest {
          * 上传方法1：文本内容直接上传
 		 */
         client.uploadFile(filePath, content);
-        /*
+
+        assert client.readFileText(filePath).equals("test content");
+
+         /*
          * 上传方法2：文本内容直接上传，可自动创建父级目录（最多10级）
 		 */
-        client.recursionMkDir().uploadFile(filePath2, content);
-
-		/*
+        client.recursionMkDir().uploadFile(filePath, content);
+         /*
          * 上传方法3：采用数据流模式上传文件（节省内存），可自动创建父级目录（最多10级）
 		 */
         File file = new File(SAMPLE_TXT_FILE);
         client.recursionMkDir().uploadFile(filePath, file);
 
-		/*
+	    /*
          * 上传方法4：对待上传的文件设置 MD5 值，确保上传到 Upyun 的文件的完整性和正确性
 		 */
         File file4 = new File(SAMPLE_TXT_FILE);
@@ -161,7 +178,8 @@ public class FileBucketTest {
      *
      * @throws java.io.IOException
      */
-    public static void testReadFile() throws IOException {
+    @Test
+    public void testReadFile() throws IOException {
 
         // upyun空间下存在的文件的路径
         String filePath = DIR_ROOT + FILE_NAME;
@@ -190,7 +208,8 @@ public class FileBucketTest {
     /**
      * 删除文件
      */
-    public static void testDeleteFile() {
+    @Test
+    public void testDeleteFile() {
 
         // upyun空间下存在的文件的路径
         String filePath = DIR_ROOT + FILE_NAME;
@@ -203,23 +222,27 @@ public class FileBucketTest {
     /**
      * 创建目录
      */
-    public static void testMkDir() {
+    @Test
+    public void testMkDir() {
+
+        // 方法2：创建多级目录，自动创建父级目录（最多10级）
+        String dir2 = DIR_MORE + FOLDER_NAME;
+        client.recursionMkDir().createFolder(dir2);
+
 
         // 方法1：创建一级目录
         String dir1 = DIR_ROOT + FOLDER_NAME;
 
         client.unRecursionMkDir().createFolder(dir1);
 
-        // 方法2：创建多级目录，自动创建父级目录（最多10级）
-        String dir2 = DIR_MORE + FOLDER_NAME;
 
-        client.recursionMkDir().createFolder(dir2);
     }
 
     /**
      * 读取目录下的文件列表
      */
-    public static void testReadDir() {
+    @Test
+    public void testReadDir() {
 
         // 参数可以换成其他目录路径
         String dirPath = DIR_ROOT;
@@ -246,7 +269,8 @@ public class FileBucketTest {
     /**
      * 删除目录
      */
-    public static void testRmDir() {
+    @Test
+    public void testRmDir() {
 
         // 带删除的目录必须存在，并且目录下已不存在任何文件或子目录
         String dirPath = DIR_MORE + FOLDER_NAME;
@@ -255,8 +279,5 @@ public class FileBucketTest {
 
     }
 
-    private static String isSuccess(boolean result) {
-        assert result;
-        return result ? " 成功" : " 失败";
-    }
+
 }

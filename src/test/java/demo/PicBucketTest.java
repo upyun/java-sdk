@@ -18,11 +18,6 @@ public class PicBucketTest {
     private static final String USER_NAME = "root1";
     private static final String USER_PWD = "a123123123";
 
-    /**
-     * 绑定的域名
-     */
-    private static final String URL = "http://" + BUCKET_NAME
-            + ".b0.upaiyun.com";
 
     /**
      * 根目录
