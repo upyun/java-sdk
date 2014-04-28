@@ -9,6 +9,7 @@
 使用方法
 ---
 
+
 **下载地址：**
 
 
@@ -40,32 +41,28 @@
 大家可通过[又拍云主站](https://www.upyun.com/login.php)创建自己的个性化空间。具体教程请参见[“创建空间”](http://wiki.upyun.com/index.php?title=创建空间)。
 
 ##### 初始化UpYun    
-    UpYun upyun = new UpYun("空间名称", "授权操作员名称", "操作员密码");
-
-在使用`Java SDK`中的任何操作之前，都必须先创建一个`UpYun`对象。
+    UpYun upyun = UpYunClient.create("空间名称", "授权操作员名称", "操作员密码");
 
 若不了解`授权操作员`，请参见[“授权操作员”](http://wiki.upyun.com/index.php?title=创建操作员并授权)
 
 ##### 是否开启debug模式：默认不开启
-    upyun.setDebug(true);
+   upyun.enableDebug();
 
 ##### 手动设置超时时间：默认为30秒
-    upyun.setTimeout(60);
+    upyun.timeout(60);
 
-##### 选择最优的接入点  
-    upyun.setApiDomain(UpYun.ED_AUTO);
+##### 选择最优的接入点
     
 根据国内的网络情况，又拍云存储API目前提供了电信、联通网通、移动铁通三个接入点。
 
-在upyun初始化后，可以通过`setApiDomain()`方法进行设置。若没有明确进行设置，`UpYun`默认将根据网络条件自动选择接入点。
+若没有明确进行设置，`UpYun`默认将根据网络条件自动选择接入点。
 
+接入点可使用相信的API来切换：
 
-接入点有四个值可选：
-
-* **UpYun.ED_AUTO** ：根据网络条件自动选择接入点
-* **UpYun.ED_TELECOM** ：电信接入点
-* **UpYun.ED_CNC** ：联通网通接入点
-* **UpYun.ED_CTT** ：移动铁通接入点
+* 根据网络条件自动选择接入点： upyun.selectAutoAPIEntry();
+* 电信接入点：upyun.selectTelecomAPIEntry();
+* 联通网通接入点：upyun.selectUnicomAPIEntry();
+* 移动铁通接入点：upyun.selectMobileAPIEntry();
 
 _**注：**建议大家根据服务器网络状况，手动设置合理的接入点已获取最佳的访问速度。_
 
