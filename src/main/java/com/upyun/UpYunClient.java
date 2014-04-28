@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +264,8 @@ public class UpYunClient {
             conn.connect();
             verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
 
+            System.out.println(conn.getResponseMessage());
+
             long fileSize = conn.getHeaderField(FILE_SIZE_HEAD) == null ? 0 : Long.valueOf(conn.getHeaderField(FILE_SIZE_HEAD));
 
             FileItem result = new FileItem(
@@ -378,7 +381,7 @@ public class UpYunClient {
             verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
 
             String result = _.readTextFromConnectionResponse(conn);
-            if (_.isEmpty(result)) return null;
+            if (_.isEmpty(result)) return new ArrayList<FileItem>();
             return FileItem.convertFolderItems(result);
 
         } catch (IOException e) {
@@ -523,6 +526,8 @@ public class UpYunClient {
 
             os = conn.getOutputStream();
             os.flush();
+
+            resetParams();
 
             verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
         } catch (IOException e) {
@@ -691,6 +696,8 @@ public class UpYunClient {
 
             verifyConnectionCode(conn.getResponseCode(), conn.getResponseMessage());
 
+            resetParams();
+
         } catch (IOException e) {
             if (debug)
                 System.err.println(e.getMessage());
@@ -778,7 +785,7 @@ public class UpYunClient {
         if (code == 403 && "Image Crop Invalid Parameters".equals(responseMessage))
             throw new UpYunBaseException("Image Crop Invalid Parameters");
 
-        if (code == 404 && "Not Found".equals(responseMessage))
+        if (code == 404)
             throw new UpYunNotFoundException("Not Found");
 
         if (code == 406 && responseMessage.contains("Not Acceptable"))

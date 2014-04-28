@@ -3,6 +3,7 @@ package demo;
 import com.upyun.Crypto;
 import com.upyun.FileItem;
 import com.upyun.UpYunClient;
+import com.upyun.UpYunNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -118,6 +119,7 @@ public class FileBucketTest {
         client.deleteFile("/a/b.txt");
         client.deleteFile("/a/c.txt");
 
+
         /**
          * 删除目录
          */
@@ -156,4 +158,13 @@ public class FileBucketTest {
     }
 
 
+    @Test(expected = UpYunNotFoundException.class)
+    public void testNotFound() throws Exception {
+        client.getFileInfo("/olol/ss.x");
+    }
+
+    @Test(expected = UpYunNotFoundException.class)
+    public void testDeleteFileAndNotFoundIt() throws Exception {
+        client.deleteFile("/a/cc.txt");
+    }
 }
