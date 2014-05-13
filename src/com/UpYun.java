@@ -883,6 +883,7 @@ public class UpYun {
 			conn.setUseCaches(false);
 
             // @see https://developer.android.com/reference/java/net/URLConnection.html#setDoOutput(boolean)
+            // @see https://stackoverflow.com/questions/8587913/what-exactly-does-urlconnection-setdooutput-affect
             if (!method.equals(METHOD_GET))
 			    conn.setDoOutput(true);
 
