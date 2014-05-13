@@ -99,7 +99,7 @@ public class UpYun {
 
 	/**
 	 * 初始化 UpYun 存储接口
-	 * 
+	 *
 	 * @param bucketName
 	 *            空间名称
 	 * @param userName
@@ -122,7 +122,7 @@ public class UpYun {
 	 * 2) UpYun.ED_TELECOM(v1.api.upyun.com)：电信接入点<br>
 	 * 3) UpYun.ED_CNC(v2.api.upyun.com)：联通网通接入点<br>
 	 * 4) UpYun.ED_CTT(v3.api.upyun.com)：移动铁通接入点
-	 * 
+	 *
 	 * @param domain
 	 *            域名接入点
 	 */
@@ -132,7 +132,7 @@ public class UpYun {
 
 	/**
 	 * 查看当前的域名接入点
-	 * 
+	 *
 	 * @return
 	 */
 	public String getApiDomain() {
@@ -141,7 +141,7 @@ public class UpYun {
 
 	/**
 	 * 设置连接超时时间，默认为30秒
-	 * 
+	 *
 	 * @param second
 	 *            秒数，60即为一分钟超时
 	 */
@@ -151,7 +151,7 @@ public class UpYun {
 
 	/**
 	 * 查看当前的超时时间
-	 * 
+	 *
 	 * @return
 	 */
 	public int getTimeout() {
@@ -160,7 +160,7 @@ public class UpYun {
 
 	/**
 	 * 查看当前是否是debug模式
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isDebug() {
@@ -169,7 +169,7 @@ public class UpYun {
 
 	/**
 	 * 设置是否开启debug模式
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setDebug(boolean debug) {
@@ -180,7 +180,7 @@ public class UpYun {
 	 * 设置待上传文件的 Content-MD5 值
 	 * <p>
 	 * 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 Not Acceptable 错误
-	 * 
+	 *
 	 * @param md5Value
 	 *            文件 MD5 校验后的内容
 	 */
@@ -197,7 +197,7 @@ public class UpYun {
 	 * 举例:<br>
 	 * 如果缩略图间隔标志符为"!"，密钥为"bac"，上传文件路径为"/folder/test.jpg"，<br>
 	 * 那么该图片的对外访问地址为：http://空间域名 /folder/test.jpg!bac
-	 * 
+	 *
 	 * @param secret
 	 *            密钥字符串
 	 */
@@ -223,7 +223,7 @@ public class UpYun {
 
 	/**
 	 * 获取当前SDK的版本号
-	 * 
+	 *
 	 * @return SDK版本号
 	 */
 	public String version() {
@@ -232,7 +232,7 @@ public class UpYun {
 
 	/**
 	 * 获取总体空间的占用量
-	 * 
+	 *
 	 * @param path
 	 *            目标路径
 	 * @return 空间占用量，失败时返回 -1
@@ -255,7 +255,7 @@ public class UpYun {
 
 	/**
 	 * 获取某个子目录的占用量
-	 * 
+	 *
 	 * @param path
 	 *            目标路径
 	 * @return 空间占用量，失败时返回 -1
@@ -280,12 +280,12 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param datas
 	 *            文件内容
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean writeFile(String filePath, byte[] datas) {
@@ -294,14 +294,14 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param datas
 	 *            文件内容
 	 * @param auto
 	 *            是否自动创建父级目录(最多10级)
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean writeFile(String filePath, byte[] datas, boolean auto) {
@@ -310,7 +310,7 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param datas
@@ -319,7 +319,7 @@ public class UpYun {
 	 *            是否自动创建父级目录(最多10级)
 	 * @param params
 	 *            额外参数
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean writeFile(String filePath, byte[] datas, boolean auto,
@@ -331,12 +331,12 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param String
 	 *            datas 文件内容
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean writeFile(String filePath, String datas) {
@@ -345,14 +345,14 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param String
 	 *            datas 文件内容
 	 * @param auto
 	 *            是否自动创建父级目录(最多10级)
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean writeFile(String filePath, String datas, boolean auto) {
@@ -361,7 +361,7 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param String
@@ -370,7 +370,7 @@ public class UpYun {
 	 *            是否自动创建父级目录(最多10级)
 	 * @param params
 	 *            额外参数
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean writeFile(String filePath, String datas, boolean auto,
@@ -389,12 +389,12 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param file
 	 *            待上传的文件
-	 * 
+	 *
 	 * @return true or false
 	 * @throws IOException
 	 */
@@ -404,14 +404,14 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param file
 	 *            待上传的文件
 	 * @param auto
 	 *            是否自动创建父级目录(最多10级)
-	 * 
+	 *
 	 * @return true or false
 	 * @throws IOException
 	 */
@@ -422,7 +422,7 @@ public class UpYun {
 
 	/**
 	 * 上传文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param file
@@ -431,7 +431,7 @@ public class UpYun {
 	 *            是否自动创建父级目录(最多10级)
 	 * @param params
 	 *            额外参数
-	 * 
+	 *
 	 * @return true or false
 	 * @throws IOException
 	 */
@@ -533,10 +533,10 @@ public class UpYun {
 
 	/**
 	 * 读取文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
-	 * 
+	 *
 	 * @return 文件内容 或 null
 	 */
 	public String readFile(String filePath) {
@@ -545,12 +545,12 @@ public class UpYun {
 
 	/**
 	 * 读取文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
 	 * @param file
 	 *            临时文件
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean readFile(String filePath, File file) {
@@ -563,10 +563,10 @@ public class UpYun {
 
 	/**
 	 * 获取文件信息
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
-	 * 
+	 *
 	 * @return 文件信息 或 null
 	 */
 	public Map<String, String> getFileInfo(String filePath) {
@@ -588,10 +588,10 @@ public class UpYun {
 
 	/**
 	 * 删除文件
-	 * 
+	 *
 	 * @param filePath
 	 *            文件路径（包含文件名）
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean deleteFile(String filePath) {
@@ -601,10 +601,10 @@ public class UpYun {
 
 	/**
 	 * 创建目录
-	 * 
+	 *
 	 * @param path
 	 *            目录路径
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean mkDir(String path) {
@@ -613,12 +613,12 @@ public class UpYun {
 
 	/**
 	 * 创建目录
-	 * 
+	 *
 	 * @param path
 	 *            目录路径
 	 * @param auto
 	 *            是否自动创建父级目录(最多10级)
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean mkDir(String path, boolean auto) {
@@ -634,10 +634,10 @@ public class UpYun {
 
 	/**
 	 * 读取目录列表
-	 * 
+	 *
 	 * @param path
 	 *            目录路径
-	 * 
+	 *
 	 * @return List<FolderItem> 或 null
 	 */
 	public List<FolderItem> readDir(String path) {
@@ -661,10 +661,10 @@ public class UpYun {
 
 	/**
 	 * 删除目录
-	 * 
+	 *
 	 * @param path
 	 *            目录路径
-	 * 
+	 *
 	 * @return true or false
 	 */
 	public boolean rmDir(String path) {
@@ -673,11 +673,11 @@ public class UpYun {
 
 	/**
 	 * 获取上传文件后的信息（仅图片空间有返回数据）
-	 * 
+	 *
 	 * @param key
 	 *            信息字段名（x-upyun-width、x-upyun-height、x-upyun-frames、x-upyun-file
 	 *            -type）
-	 * 
+	 *
 	 * @return value or NULL
 	 * @deprecated
 	 */
@@ -700,10 +700,10 @@ public class UpYun {
 
 	/**
 	 * 对字符串进行 MD5 加密
-	 * 
+	 *
 	 * @param str
 	 *            待加密字符串
-	 * 
+	 *
 	 * @return 加密后字符串
 	 */
 	public static String md5(String str) {
@@ -735,10 +735,10 @@ public class UpYun {
 
 	/**
 	 * 对文件进行 MD5 加密
-	 * 
+	 *
 	 * @param file
 	 *            待加密的文件
-	 * 
+	 *
 	 * @return 文件加密后的 MD5 值
 	 * @throws IOException
 	 */
@@ -781,7 +781,7 @@ public class UpYun {
 
 	/**
 	 * 获取 GMT 格式时间戳
-	 * 
+	 *
 	 * @return GMT 格式时间戳
 	 */
 	private String getGMTDate() {
@@ -793,14 +793,14 @@ public class UpYun {
 
 	/**
 	 * 计算签名
-	 * 
+	 *
 	 * @param conn
 	 *            连接
 	 * @param uri
 	 *            请求地址
 	 * @param length
 	 *            请求所发Body数据长度
-	 * 
+	 *
 	 * @return 签名字符串
 	 */
 	private String sign(HttpURLConnection conn, String uri, long length) {
@@ -811,12 +811,12 @@ public class UpYun {
 
 	/**
 	 * 连接处理逻辑
-	 * 
+	 *
 	 * @param method
 	 *            请求方式 {GET, POST, PUT, DELETE}
 	 * @param uri
 	 *            请求地址
-	 * 
+	 *
 	 * @return 请求结果（字符串）或 null
 	 */
 	private String HttpAction(String method, String uri) {
@@ -825,7 +825,7 @@ public class UpYun {
 
 	/**
 	 * 连接处理逻辑
-	 * 
+	 *
 	 * @param method
 	 *            请求方式 {GET, POST, PUT, DELETE}
 	 * @param uri
@@ -836,7 +836,7 @@ public class UpYun {
 	 *            文件描述符（可为 null）
 	 * @param auto
 	 *            自动创建父级目录(最多10级)
-	 * 
+	 *
 	 * @return 请求结果（字符串）或 null
 	 */
 	private String HttpAction(String method, String uri, byte[] datas,
@@ -847,7 +847,7 @@ public class UpYun {
 
 	/**
 	 * 连接处理逻辑
-	 * 
+	 *
 	 * @param method
 	 *            请求方式 {GET, POST, PUT, DELETE}
 	 * @param uri
@@ -860,7 +860,7 @@ public class UpYun {
 	 *            自动创建父级目录(最多10级)
 	 * @param params
 	 *            额外参数
-	 * 
+	 *
 	 * @return 请求结果（字符串）或 null
 	 */
 	private String HttpAction(String method, String uri, byte[] datas,
@@ -881,7 +881,10 @@ public class UpYun {
 			conn.setConnectTimeout(timeout);
 			conn.setRequestMethod(method);
 			conn.setUseCaches(false);
-			conn.setDoOutput(true);
+
+            // @see https://developer.android.com/reference/java/net/URLConnection.html#setDoOutput(boolean)
+            if (!method.equals(METHOD_GET))
+			    conn.setDoOutput(true);
 
 			// 设置时间
 			conn.setRequestProperty(DATE, getGMTDate());
@@ -992,9 +995,9 @@ public class UpYun {
 
 	/**
 	 * 获得连接请求的返回数据
-	 * 
+	 *
 	 * @param conn
-	 * 
+	 *
 	 * @return 字符串
 	 */
 	private String getText(HttpURLConnection conn, boolean isHeadMethod)
@@ -1068,7 +1071,7 @@ public class UpYun {
 
 	/**
 	 * 判断字符串是否为空
-	 * 
+	 *
 	 * @param str
 	 * @return 是否为空
 	 */
@@ -1080,7 +1083,7 @@ public class UpYun {
 	 * 格式化路径参数，去除前后的空格并确保以"/"开头，最后添加"/空间名"
 	 * <p>
 	 * 最终构成的格式："/空间名/文件路径"
-	 * 
+	 *
 	 * @param path
 	 *            目录路径或文件路径
 	 * @return 格式化后的路径
@@ -1161,7 +1164,7 @@ public class UpYun {
 		 * 6)VALUE_FIX_BOTH("fix_both")："固定宽度和高度"<br>
 		 * 7)VALUE_FIX_SCALE("fix_scale")："等比例缩放"<br>
 		 * 8)VALUE_SQUARE("square")："方块图，固定高固定宽"<br>
-		 * 
+		 *
 		 * @see 参数举例：http://wiki.upyun.com/index.php?title=缩略图方式差别举例
 		 */
 		KEY_X_GMKERL_TYPE("x-gmkerl-type"),
@@ -1197,7 +1200,7 @@ public class UpYun {
 		 * 使用场景：快速处理原图，生成自定义的缩略图。
 		 * <p>
 		 * 说明：使用该参数前需要创建好缩略图版本号；另外，使用该参数后将不保存原图，切忌。
-		 * 
+		 *
 		 * @see http://wiki.upyun.com/index.php?title=如何创建自定义缩略图
 		 */
 		KEY_X_GMKERL_THUMBNAIL("x-gmkerl-thumbnail"),
@@ -1209,7 +1212,7 @@ public class UpYun {
 		 * <p>
 		 * 说明：只接受"auto"，"90"，"180"，"270"四种参数，其中"auto"参数根据图片 EXIF
 		 * 中的信息进行自动扶正，若图片没有 EXIF 信息，则该参数无效。另外，使用该参数后将不保存原图，切忌。
-		 * 
+		 *
 		 * @see http://wiki.upyun.com/index.php?title=图片旋转
 		 */
 		KEY_X_GMKERL_ROTATE("x-gmkerl-rotate"),
@@ -1221,7 +1224,7 @@ public class UpYun {
 		 * <p>
 		 * 说明：参数格式为x,y,width,height，且需要满足 x >= 0 && y >=0 && width > 0 && height
 		 * > 0
-		 * 
+		 *
 		 * @see http://wiki.upyun.com/index.php?title=图片裁剪
 		 */
 		KEY_X_GMKERL_CROP("x-gmkerl-crop"),
