@@ -12,9 +12,9 @@ import com.UpYun;
 public class FileBucketDemo {
 
 	// 运行前先设置好以下三个参数
-	private static final String BUCKET_NAME = "文件类空间名";
-	private static final String USER_NAME = "操作员名";
-	private static final String USER_PWD = "操作员密码";
+	private static final String BUCKET_NAME = "file-test-space";
+	private static final String USER_NAME = "operator";
+	private static final String USER_PWD = "wxlfight";
 
 	/** 根目录 */
 	private static final String DIR_ROOT = "/";

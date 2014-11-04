@@ -16,9 +16,9 @@ import com.UpYun.PARAMS;
 public class PicBucketDemo {
 
 	// 运行前先设置好以下三个参数
-	private static final String BUCKET_NAME = "图片类空间名";
-	private static final String USER_NAME = "操作员名";
-	private static final String USER_PWD = "操作员密码";
+	private static final String BUCKET_NAME = "test-pic-space";
+	private static final String USER_NAME = "wxl";
+	private static final String USER_PWD = "678254aa";
 
 	/** 绑定的域名 */
 	private static final String URL = "http://" + BUCKET_NAME
@@ -28,11 +28,11 @@ public class PicBucketDemo {
 	private static final String DIR_ROOT = "/";
 
 	/** 上传到upyun的图片名 */
-	private static final String PIC_NAME = "sample.jpeg";
+	private static final String PIC_NAME = "zero.jpeg";
 
 	/** 本地待上传的测试文件 */
 	private static final String SAMPLE_PIC_FILE = System
-			.getProperty("user.dir") + "/sample.jpeg";
+			.getProperty("user.dir") + "/zero.jpeg";
 
 	private static UpYun upyun = null;
 
@@ -58,7 +58,7 @@ public class PicBucketDemo {
 		// upyun.setTimeout(60);
 
 		// 设置是否开启debug模式，默认不开启
-		upyun.setDebug(true);
+		upyun.setDebug(false);
 
 		// ****** 可选设置 end ******
 

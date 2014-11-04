@@ -868,7 +868,12 @@ public class UpYun {
 			conn.setConnectTimeout(timeout);
 			conn.setRequestMethod(method);
 			conn.setUseCaches(false);
-			conn.setDoOutput(true);
+			if(method.equals(METHOD_DELETE)){
+				conn.setDoOutput(true);
+//				datas = "aaaa".getBytes();
+			}else{
+				conn.setDoOutput(true);
+			}
 
 			// 设置时间
 			conn.setRequestProperty(DATE, getGMTDate());
