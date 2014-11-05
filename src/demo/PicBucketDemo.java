@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.UpYun;
-import com.UpYun.PARAMS;
+import com.constant.PARAMS;
+import com.util.Util;
 
 /**
  * 图片类空间的demo，一般性操作参考文件空间的demo（FileBucketDemo.java）
@@ -97,7 +98,7 @@ public class PicBucketDemo {
 
 		// 设置待上传文件的 Content-MD5 值
 		// 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
-		upyun.setContentMD5(UpYun.md5(file));
+		upyun.setContentMD5(Util.md5(file));
 
 		// 设置待上传文件的"访问密钥"
 		// 注意：

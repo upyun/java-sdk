@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.List;
 
 import com.UpYun;
+import com.pojo.FolderItem;
+import com.util.Util;
 
 /**
  * 文件类空间的demo
@@ -150,7 +152,7 @@ public class FileBucketDemo {
 		File file4 = new File(SAMPLE_TXT_FILE);
 		// 设置待上传文件的 Content-MD5 值
 		// 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
-		upyun.setContentMD5(UpYun.md5(file4));
+		upyun.setContentMD5(Util.md5(file4));
 
 		boolean result4 = upyun.writeFile(filePath, file4, true);
 		System.out.println("4.上传 " + filePath + isSuccess(result4));
@@ -242,7 +244,7 @@ public class FileBucketDemo {
 		String dirPath = DIR_ROOT;
 
 		// 读取目录列表，将返回 List 或 NULL
-		List<UpYun.FolderItem> items = upyun.readDir(dirPath);
+		List<FolderItem> items = upyun.readDir(dirPath);
 
 		if (null == items) {
 			System.out.println("'" + dirPath + "'目录下没有文件。");
