@@ -17,8 +17,8 @@ public class PicBucketDemo {
 
 	// 运行前先设置好以下三个参数
 	private static final String BUCKET_NAME = "test-pic-space";
-	private static final String USER_NAME = "wxl";
-	private static final String USER_PWD = "678254aa";
+	private static final String OPERATOR_NAME = "wxl";
+	private static final String OPERATOR_PWD = "678254aa";
 
 	/** 绑定的域名 */
 	private static final String URL = "http://" + BUCKET_NAME
@@ -28,11 +28,11 @@ public class PicBucketDemo {
 	private static final String DIR_ROOT = "/";
 
 	/** 上传到upyun的图片名 */
-	private static final String PIC_NAME = "zero.jpeg";
+	private static final String PIC_NAME = "sample.jpeg";
 
 	/** 本地待上传的测试文件 */
 	private static final String SAMPLE_PIC_FILE = System
-			.getProperty("user.dir") + "/zero.jpeg";
+			.getProperty("user.dir") + "/sample.jpeg";
 
 	private static UpYun upyun = null;
 
@@ -47,7 +47,7 @@ public class PicBucketDemo {
 	public static void main(String[] args) throws Exception {
 
 		// 初始化空间
-		upyun = new UpYun(BUCKET_NAME, USER_NAME, USER_PWD);
+		upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
 		// ****** 可选设置 begin ******
 

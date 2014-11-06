@@ -13,8 +13,8 @@ public class FileBucketDemo {
 
 	// 运行前先设置好以下三个参数
 	private static final String BUCKET_NAME = "file-test-space";
-	private static final String USER_NAME = "operator";
-	private static final String USER_PWD = "wxlfight";
+	private static final String OPERATOR_NAME = "operator";
+	private static final String OPERATOR_PWD = "wxlfight";
 
 	/** 根目录 */
 	private static final String DIR_ROOT = "/";
@@ -42,7 +42,7 @@ public class FileBucketDemo {
 	public static void main(String[] args) throws Exception {
 
 		// 初始化空间
-		upyun = new UpYun(BUCKET_NAME, USER_NAME, USER_PWD);
+		upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
 		// ****** 可选设置 begin ******
 
