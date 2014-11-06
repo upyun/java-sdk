@@ -1,4 +1,4 @@
-package com;
+package test.java;
 
 import static org.junit.Assert.*;
 
@@ -7,19 +7,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import main.java.com.UpYun;
+import main.java.com.UpYun.PARAMS;
 
-import com.UpYun.PARAMS;
+import org.junit.Test;
 
 public class TestPicBucket {
 	// 运行前先设置好以下三个参数
 	private static final String BUCKET_NAME = "test-pic-space";
 	private static final String OPERATOR_NAME = "wxl";
 	private static final String OPERATOR_PWD = "678254aa";
-
-	/** 绑定的域名 */
-	private static final String URL = "http://" + BUCKET_NAME
-			+ ".b0.upaiyun.com";
 
 	/** 根目录 */
 	private static final String DIR_ROOT = "/";

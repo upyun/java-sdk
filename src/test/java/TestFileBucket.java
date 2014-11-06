@@ -1,18 +1,12 @@
-package com;
+package test.java;
 
 import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.Assert;
-
+import main.java.com.UpYun;
 import org.junit.Test;
-
-import com.UpYun.PARAMS;
 
 public class TestFileBucket {
 	private static final String BUCKET_NAME = "file-test-space";
@@ -31,10 +25,6 @@ public class TestFileBucket {
 	private static final String FILE_NAME = "test.txt";
 	/** 本地待上传的测试文件 */
 	private static final String SAMPLE_TXT_FILE = System.getProperty("user.dir") + "/test.txt";
-	/** 上传到upyun的图片名 */
-	private static final String PIC_NAME = "sample.jpeg";
-	/** 本地待上传的测试文件 */
-	private static final String SAMPLE_PIC_FILE = System.getProperty("user.dir") + "/sample.jpeg";
 
 	private static final String content = "tmp content";
 	
@@ -147,7 +137,6 @@ public class TestFileBucket {
 		 * 方法1：直接读取文本内容
 		 */
 		String datas = upyun.readFile(filePath);
-		System.out.println("datas:"+datas);
 		assertTrue(content.equals(datas));
 
 		/*
