@@ -1,3 +1,4 @@
+![build](https://travis-ci.org/upyun/java-sdk.svg)
 # UPYUN Java SDK
 
 又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://wiki.upyun.com/index.php?title=HTTP_REST_API接口) 开发，适用于Java 6及以上版本。
