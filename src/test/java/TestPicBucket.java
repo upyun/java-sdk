@@ -14,9 +14,9 @@ import org.junit.Test;
 
 public class TestPicBucket {
 	// 运行前先设置好以下三个参数
-	private static final String BUCKET_NAME = "test-pic-space";
-	private static final String OPERATOR_NAME = "wxl";
-	private static final String OPERATOR_PWD = "678254aa";
+	private static final String BUCKET_NAME = "sdkimg";
+	private static final String OPERATOR_NAME = "tester";
+	private static final String OPERATOR_PWD = "grjxv2mxELR3";
 
 	/** 根目录 */
 	private static final String DIR_ROOT = "/";

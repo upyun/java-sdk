@@ -9,9 +9,9 @@ import main.java.com.UpYun;
 import org.junit.Test;
 
 public class TestFileBucket {
-	private static final String BUCKET_NAME = "file-test-space";
-	private static final String OPERATOR_NAME = "operator";
-	private static final String OPERATOR_PWD = "wxlfight";
+	private static final String BUCKET_NAME = "sdkfile";
+	private static final String OPERATOR_NAME = "tester";
+	private static final String OPERATOR_PWD = "grjxv2mxELR3";
 	
 	private UpYun upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 

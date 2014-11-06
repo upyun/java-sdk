@@ -16,9 +16,9 @@ import main.java.com.UpYun.PARAMS;
 public class PicBucketDemo {
 
 	// 运行前先设置好以下三个参数
-	private static final String BUCKET_NAME = "test-pic-space";
-	private static final String OPERATOR_NAME = "wxl";
-	private static final String OPERATOR_PWD = "678254aa";
+	private static final String BUCKET_NAME = "空间名称";
+	private static final String OPERATOR_NAME = "操作员名称";
+	private static final String OPERATOR_PWD = "操作员密码";
 
 	/** 绑定的域名 */
 	private static final String URL = "http://" + BUCKET_NAME
