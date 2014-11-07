@@ -37,7 +37,7 @@ public class TestPicBucket {
 
 		// 本地待上传的图片文件
 		File file = new File(SAMPLE_PIC_FILE);
-
+		upyun.setTimeout(120);
 		// 设置待上传文件的 Content-MD5 值
 		// 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
 		upyun.setContentMD5(UpYun.md5(file));
