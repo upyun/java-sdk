@@ -2,7 +2,7 @@
 
 ![build](https://travis-ci.org/upyun/java-sdk.svg?branch=master)
 
-又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://wiki.upyun.com/index.php?title=HTTP_REST_API接口) 开发，适用于Java 6及以上版本。
+又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://docs.upyun.com/api/rest_api/) 开发，适用于Java 6及以上版本。
 
 **更新说明**
 
@@ -304,12 +304,7 @@ public boolean deleteFile(String filePath);
 
 <a name="图片处理接口"></a>
 ## 图片处理接口
-对于图片的自定义处理，又拍云存储支持以下两种方式：
 
-1. [自定义版本](http://wiki.upyun.com/index.php?title=如何使用自定义缩略图)方式
-2. 在上传图片请求中附加图片处理参数
-
-以下内容详细介绍第二种方式：
 
 **方法原型：**
 
@@ -323,7 +318,7 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
 * `filePath`：保存到又拍云存储的路径
 * 第二个参数：接受`String`、`File`和`byte[]`三种类型的**图片数据内容**
 * `auto`（可选）：自动创建父级目录（只支持自动创建10级以内的父级目录）
-* `params`：自定义图片处理参数的组合
+* `params`：自定义图片处理参数的组合，详情请看[params参数说明](http://docs.upyun.com/api/rest_api/#_4)
 
 **返回值说明：**
 * 结果为`true`图片上传并处理成功
@@ -359,10 +354,6 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
     boolean result = upyun.writeFile(filePath, file, true, params);
 ```
 
-**其他说明：**
-* 图片处理参数的具体使用方法，请参考[标准API上传文件](http://wiki.upyun.com/index.php?title=标准API上传文件)
-* 缩略图功能只能处理图片文件；若上传非图片文件且传递了图片处理参数时，将返回『不是图片』的错误
-
 ---
 
 <a name="图片裁剪"></a>
@@ -382,10 +373,6 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
     // 上传图片，并同时进行图片处理
     boolean result = upyun.writeFile(savePath, file, autoMkDir, params);
 ```
-
-**其他说明：**
-* 参数格式暂时只支持：`x,y,width,height`。比如`0,0,100,100`表示从左上角顶点裁剪`100px × 100px`大小的图片
-* 具体可参考[图片裁剪](http://wiki.upyun.com/index.php?title=图片裁剪)
 
 ---
 
