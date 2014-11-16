@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.upyun</groupId>
 	<artifactId>java-sdk</artifactId>
-	<version>3.0-SNAPSHOT</version>
+	<version>3.0</version>
 	<packaging>jar</packaging>
 	<name>Java SDK</name>
 	<description>UpYun Java SDK</description>
@@ -41,8 +41,13 @@
 		<connection>scm:git:git://github.com/upyun/java-sdk.git</connection>
 		<developerConnection>scm:git:git@github.com:upyun/java-sdk.git</developerConnection>
 		<url>https://github.com/upyun/java-sdk</url>
-	  <tag>HEAD</tag>
-  </scm>
+	</scm>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<dependencies>
 		<dependency>
