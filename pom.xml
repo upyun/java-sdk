@@ -43,6 +43,7 @@
 		<connection>scm:git:git://github.com/upyun/java-sdk.git</connection>
 		<developerConnection>scm:git:git@github.com:upyun/java-sdk.git</developerConnection>
 		<url>https://github.com/upyun/java-sdk</url>
+        <tag>java-sdk-2.0</tag>
 	</scm>
 
 	<parent>
@@ -51,7 +52,7 @@
 		<version>7</version>
 	</parent>
 
-	<dependencies>
+    <dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
