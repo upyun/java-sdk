@@ -301,7 +301,6 @@ public boolean deleteFile(String filePath);
     boolean result = upyun.deleteFile(filePath);
 ```
 
-
 <a name="图片处理接口"></a>
 ## 图片处理接口
 
