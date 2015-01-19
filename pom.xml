@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.upyun</groupId>
 	<artifactId>java-sdk</artifactId>
-	<version>3.1-SNAPSHOT</version>
+	<version>3.0</version>
 	<packaging>jar</packaging>
 	<name>Java SDK</name>
 	<description>UpYun Java SDK</description>
