@@ -4,6 +4,14 @@
 
 又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://docs.upyun.com/api/rest_api/) 开发，适用于Java 6及以上版本。
 
+
+## Maven 安装
+<dependency>
+    <groupId>com.upyun</groupId>
+    <artifactId>java-sdk</artifactId>
+    <version>3.0</version>
+</dependency>
+
 **更新说明**
 
 使用1.0.x系列版本SDK的用户，注意原有部分方法已经不再推荐使用，但是出于兼容考虑目前任然保留，建议更新升级程序使用新版SDK提供的方法。
