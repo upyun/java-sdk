@@ -8,11 +8,10 @@
 ## Maven 安装
 
 ```
-
 <dependency>
-    <groupId>com.upyun</groupId>
-    <artifactId>java-sdk</artifactId>
-    <version>3.0</version>
+  <groupId>com.upyun</groupId>
+  <artifactId>java-sdk</artifactId>
+  <version>3.1</version>
 </dependency>
 
 ```
