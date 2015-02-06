@@ -62,7 +62,6 @@ public class FileBucketDemo {
 
 		// 2.上传文件，图片空间的文件上传请参考 PicBucketDemo.java
 		testWriteFile();
-
 		// 3.获取文件信息
 		testGetFileInfo();
 

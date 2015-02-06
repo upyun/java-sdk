@@ -881,10 +881,7 @@ public class UpYun {
 			conn.setConnectTimeout(timeout);
 			conn.setRequestMethod(method);
 			conn.setUseCaches(false);
-			if(method.equals(METHOD_DELETE)){
-				conn.setDoOutput(true);
-//				datas = "aaaa".getBytes();
-			}else{
+			if(!method.equals(METHOD_DELETE) && !method.equals(METHOD_HEAD) && !method.equals(METHOD_GET)){
 				conn.setDoOutput(true);
 			}
 
@@ -897,9 +894,10 @@ public class UpYun {
 			}
 
 			long contentLength = 0;
-			if (datas == null)
+			
+			if (datas == null){
 				conn.setRequestProperty(CONTENT_LENGTH, "0");
-			else {
+			} else {
 				contentLength = datas.length;
 				conn.setRequestProperty(CONTENT_LENGTH,
 						String.valueOf(datas.length));
