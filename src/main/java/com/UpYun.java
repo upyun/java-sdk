@@ -786,7 +786,7 @@ public class UpYun {
 	 */
 	private String getGMTDate() {
 		SimpleDateFormat formater = new SimpleDateFormat(
-				"EEE, dd MMM yyyy HH:mm:ss GMT", Locale.US);
+				"EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
 		formater.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return formater.format(new Date());
 	}
