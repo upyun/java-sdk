@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/upyun/java-sdk.svg?branch=master)](https://travis-ci.org/upyun/java-sdk)
 
-又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://docs.upyun.com/api/rest_api/) 和 [又拍云HTTP FORM API接口](http://docs.upyun.com/api/form_api/)开发，适用于Java 6及以上版本。
+又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) 和 [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/)开发，适用于 Java 6 及以上版本。
 
 
 ## Maven 安装
@@ -11,18 +11,18 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>3.4</version>
+  <version>3.5</version>
 </dependency>
 
 ```
 
 **更新说明**
 
-使用1.0.x系列版本SDK的用户，注意原有部分方法已经不再推荐使用，但是出于兼容考虑目前任然保留，建议更新升级程序使用新版SDK提供的方法。
+使用1.0.x系列版本 SDK 的用户，注意原有部分方法已经不再推荐使用，但是出于兼容考虑目前任然保留，建议更新升级程序使用新版 SDK 提供的方法。
 
 ## 目录
 * [云存储基础接口](#云存储基础接口)
-  * [初始化UpYun](#初始化UpYun)
+  * [初始化 UpYun](#初始化 UpYun)
   * [创建目录](#创建目录)
   * [删除目录](#删除目录)
   * [获取目录文件列表](#获取目录文件列表)
@@ -36,15 +36,16 @@
   * [图片裁剪](#图片裁剪)
   * [图片旋转](#图片旋转)
 * [表单上传接口](#表单上传接口)
-  * [初始化FormUploader](#初始化FormUploader)
+  * [初始化 FormUploader](#初始化 FormUploader)
   * [表单上传文件](#表单上传文件)
+  * [表单上传作图](#表单上传作图)
   * [错误说明](#错误说明)
 
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
 
-<a name="初始化UpYun"></a>
-### 初始化UpYun
+<a name="初始化 UpYun"></a>
+### 初始化 UpYun
 
 ```Java
     UpYun upyun = new UpYun("空间名称", "操作员名称", "操作员密码");
@@ -52,7 +53,7 @@
 
 **可选属性：**
 
-- 是否开启debug模式：默认不开启
+- 是否开启 debug 模式：默认不开启
 
 ```Java
     upyun.setDebug(true);
@@ -69,14 +70,15 @@
 ```Java
     upyun.setApiDomain(UpYun.ED_AUTO);
 ```
->根据国内的网络情况，又拍云存储API目前提供了电信、联通网通、移动铁通三个接入点。可以通过`setApiDomain()`方法进行设置，默认将根据网络条件自动选择接入点。
+>根据国内的网络情况，又拍云存储 API 目前提供了电信、联通网通、移动铁通三个接入点。可以通过`setApiDomain()`方法进行设置，默认将根据网络条件自动选择接入点。
 
 > 接入点有四个值可选：
+
 ```Java
-UpYun.ED_AUTO    //根据网络条件自动选择接入点
-UpYun.ED_TELECOM //电信接入点
-UpYun.ED_CNC     //联通网通接入点
-UpYun.ED_CTT     //移动铁通接入点
+	UpYun.ED_AUTO    //根据网络条件自动选择接入点
+	UpYun.ED_TELECOM //电信接入点
+	UpYun.ED_CNC     //联通网通接入点
+	UpYun.ED_CTT     //移动铁通接入点
 ```
 
 _**注：**建议大家根据服务器网络状况，手动设置合理的接入点已获取最佳的访问速度_
@@ -87,19 +89,23 @@ _**注：**建议大家根据服务器网络状况，手动设置合理的接入
 ### 创建目录
 
 **方法原型：**
+
 ```Java
-public boolean mkDir(String path, boolean auto);
+	public boolean mkDir(String path, boolean auto);
 ```
 **参数说明：**
-* `path`：目录路径，以`/`结尾
-* `auto`（可选）：若为`true`则自动创建父级目录（只支持自动创建10级以内的父级目录）
+
+* `path`	目录路径，以`/`结尾
+* `auto`	（可选）：若为 `true` 则自动创建父级目录（只支持自动创建10级以内的父级目录）
 
 **返回值说明：**
-* 结果为`true`创建目录成功
+
+* 结果为 `true` 创建目录成功
 * 若空间相同目录下已经存在同名的文件，则将返回『不允许创建目录』的错误
 
 
 **举例说明：**
+
 ```Java
 	String path = "/dir1/dir2/";
     // 创建目录，自动创建父级目录
@@ -112,17 +118,21 @@ public boolean mkDir(String path, boolean auto);
 ### 删除目录
 
 **方法原型：**
+
 ```Java
 public boolean rmDir(String path);
 ```
 **参数说明：**
-* `path`：目录路径
+
+* `path`	目录路径
 
 **返回值说明：**
-* 结果为`true`删除目录成功
-* 若待删除的目录`path`下还存在任何文件或子目录，将返回『不允许删除』的错误
+
+* 结果为 `true` 删除目录成功
+* 若待删除的目录 `path` 下还存在任何文件或子目录，将返回『不允许删除』的错误
 
 **举例说明：**
+
 ```Java
 	String path = "/dir1/dir2/";
     // 删除目录
@@ -135,26 +145,30 @@ public boolean rmDir(String path);
 ### 获取目录文件列表
 
 **方法原型：**
+
 ```Java
 public List<FolderItem> readDir(String path);
 ```
->`UpYun.FolderItem`包含属性:
+>`UpYun.FolderItem` 包含属性:
 >
->* `name` 文件名
->* `type` 文件类型
->* `size` 文件大小
->* `date` 文件创建日期
+>* `name`  文件名
+>* `type`  文件类型
+>* `size`  文件大小
+>* `date`  文件创建日期
 >
->以上属性作用域皆为`public`，可直接调用
+>以上属性作用域皆为 `public`，可直接调用
 
 **参数说明：**
-* `path`：目录路径
+
+* `path`  目录路径
 
 **返回值说明：**
-* 若`path`目录没有内容时，返回`null`
-* 若`path`目录不存在时，则将返『不存在目录』的错误
+
+* 若 `path` 目录没有内容时，返回`null`
+* 若 `path` 目录不存在时，则将返『不存在目录』的错误
 
 **举例说明：**
+
 ```Java   
 	String path = "/dir1/";
     // 获取目录中文件列表
@@ -170,27 +184,32 @@ public List<FolderItem> readDir(String path);
 ### 上传文件
 
 **方法原型：**
+
 ```Java
 public boolean writeFile(String filePath, String datas, boolean auto);
 public boolean writeFile(String filePath, File file, boolean auto);
 public boolean writeFile(String filePath, byte[] datas, boolean auto);
 ```
 **参数说明：**
-* `filePath`：保存到又拍云存储的文件路径，以`/`开始
-* 第二个参数：接受`String`、`File`和`byte[]`三种类型的数据
-* `auto`（可选）：若为`true`则自动创建父级目录（只支持自动创建10级以内的父级目录）
+
+* `filePath`  保存到又拍云存储的文件路径，以`/`开始
+* 第二个参数  接受 `String` 、 `File` 和 `byte[]` 三种类型的数据
+* `auto`  （可选）：若为 `true` 则自动创建父级目录（只支持自动创建10级以内的父级目录）
 
 **返回值说明：**
-* 结果为`true`上传文件成功
+
+* 结果为 `true` 上传文件成功
 
 **可选属性：**
-* 上传文件时可进行文件的`MD5`校验，若又拍云服务端收到的文件MD5值与用户设置的不一致，将返回 `406 Not Acceptable` 错误。对于需要确保上传文件的完整性要求的业务，可以设置该参数：
+
+* 上传文件时可进行文件的 `MD5` 校验，若又拍云服务端收到的文件MD5值与用户设置的不一致，将返回 `406 Not Acceptable` 错误。对于需要确保上传文件的完整性要求的业务，可以设置该参数：
 
 ```Java
     upyun.setContentMD5(UpYun.md5(file));  
 ```
 
 **举例说明：**
+
 ```Java
     // 例1：上传纯文本内容，自动创建父级目录
     String str = "Hello UpYun";
@@ -212,20 +231,23 @@ _**注：**
 ### 获取文件信息
 
 **方法原型：**
+
 ```Java
 public Map<String, String> getFileInfo(String filePath);
 ```
 
 **参数说明：**
-* `filePath`：又拍云中文件的路径
+
+* `filePath`  又拍云中文件的路径
 
 **返回值说明：**
-* 若`filePath`所指定文件不存在，则直接返回`null`
+
+* 若 `filePath` 所指定文件不存在，则直接返回 `null`
 * `Map` 包含3个Key：
 
-> * `type` 文件类型
-> * `size` 文件大小
-> * `date` 创建日期
+> * `type`  文件类型
+> * `size`  文件大小
+> * `date`  创建日期
 
 **举例说明：**
 
@@ -244,12 +266,14 @@ public Map<String, String> getFileInfo(String filePath);
 ### 获取使用量信息
 
 **方法原型：**
+
 ```Java
 public long getBucketUsage();
 public long getFolderUsage(String path);
 ```
 
 **举例说明：**
+
 ```Java
     // 例1：获取整个空间的使用量情况
     long usage = upyun.getBucketUsage();
@@ -259,7 +283,8 @@ public long getFolderUsage(String path);
 ```
 
 **返回值说明：**
-* 返回值单位为Byte
+
+* 返回值单位为 Byte
 
 ---
 
@@ -267,20 +292,24 @@ public long getFolderUsage(String path);
 ### 下载文件
 
 **方法原型：**
+
 ```Java
 public String readFile(String filePath)；
 public boolean readFile(String filePath, File file)；
 ```
 
 **参数说明：**
-* `filePath`：文件在又拍云存储中的路径
-* `file`：本地临时文件（用来保存下载下来的数据）
+
+* `filePath`  文件在又拍云存储中的路径
+* `file`  本地临时文件（用来保存下载下来的数据）
 
 **返回值说明：**
+
 * 方法一：文本内容
-* 方法二：结果为`true`下载成功
+* 方法二：结果为 `true` 下载成功
 
 **举例说明：**
+
 ```Java
     // 例1：直接读取文本内容
     String remoteFilePath = "/path/to/file";
@@ -298,18 +327,22 @@ public boolean readFile(String filePath, File file)；
 ### 删除文件
 
 **方法原型：**
+
 ```Java
 public boolean deleteFile(String filePath);
 ```
 
 **参数说明：**
-* `filePath`：文件在又拍云的路径
+
+* `filePath`  文件在又拍云的路径
 
 **返回值说明：**
-* 若`filePath`指定的文件不存在，则返回『文件不存在』的错误
-* 结果为`true`删除文件成功
+
+* 若 `filePath` 指定的文件不存在，则返回『文件不存在』的错误
+* 结果为 `true` 删除文件成功
 
 **举例说明：**
+
 ```Java
 	String filePath = "/path/to/file";
     // 删除文件
@@ -329,16 +362,18 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
 ```
 
 **参数说明：**
-* `filePath`：保存到又拍云存储的路径
-* 第二个参数：接受`String`、`File`和`byte[]`三种类型的**图片数据内容**
-* `auto`（可选）：自动创建父级目录（只支持自动创建10级以内的父级目录）
-* `params`：自定义图片处理参数的组合，详情请看[params参数说明](http://docs.upyun.com/api/rest_api/#_4)
+
+* `filePath`  保存到又拍云存储的路径
+* 第二个参数  接受 `String` 、`File` 和 `byte[]` 三种类型的**图片数据内容**
+* `auto`  （可选）：自动创建父级目录（只支持自动创建10级以内的父级目录）
+* `params`  自定义图片处理参数的组合，详情请看[params参数说明](http://docs.upyun.com/api/rest_api/#_4)
 
 **返回值说明：**
-* 结果为`true`图片上传并处理成功
+
+* 结果为 `true` 图片上传并处理成功
 
 
-图片处理包括『制作图片缩略图』，『图片裁剪』，『图片旋转』。只需要选则不同的PARAMS参数就可以分别完成这些操作，下面分别举例说明。
+图片处理包括『制作图片缩略图』，『图片裁剪』，『图片旋转』。只需要选则不同的 PARAMS 参数就可以分别完成这些操作，下面分别举例说明。
 
 ---
 
@@ -374,6 +409,7 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
 ### 图片裁剪
 
 **举例说明：**
+
 ```Java 
     // 设置缩略图的参数
     Map<String, String> params = new HashMap<String, String>();
@@ -412,8 +448,8 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
 <a name="表单上传接口"></a>
 ## 表单上传接口
 
-<a name="初始化FormUploader"></a>
-### 初始化FormUploader
+<a name="初始化 FormUploader"></a>
+### 初始化 FormUploader
 
 ```java
 	FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
@@ -421,9 +457,9 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
 ```
 参数说明：
 
-* `BUCKET_NAME `	空间名
-* `APIKEY `	表单密匙
-* `signatureListener `	签名回调
+* `BUCKET_NAME `	 空间名
+* `APIKEY `  表单密匙
+* `signatureListener `  签名回调
 
 两种初始化方法任选一种，可以将表单密匙保存在本地，也可在签名回调中访问服务器获取签名。
 `signatureListener` 回调接口规则如下：
@@ -477,13 +513,57 @@ SignatureListener signatureListener=new SignatureListener() {
 
 **返回说明:**
 
-> * Result.Succeed	是否成功
-> * Result.code		返回http消息码
-> * Result.msg	返回消息
+> * `Result.Succeed`  是否成功
+> * `Result.code`  返回http消息码
+> * `Result.msg`  返回消息
 
 **举例说明：**
 
 表单上传示例可见[ FormUploadDemo ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/FormUploadDemo.java)。
+
+<a name="表单上传作图"></a>
+###表单上传作图
+
+**上传同步作图**
+
+```java
+    private static void testSync() {
+        FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+
+        final Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(Params.SAVE_KEY, savePath);
+        paramsMap.put(Params.X_GMKERL_THUMB, "/fw/300/unsharp/true/quality/80/format/png");
+
+        System.out.println(uploader.upload(paramsMap, file));
+    }
+	
+```
+
+`paramsMap` 添加键值对，`Params.X_GMKERL_THUMB` 为 key，作图规则见[上传作图 API](http://docs.upyun.com/cloud/image/#_2)
+
+**上传异步作图**
+
+```java
+	 private static void testAsync() {
+        FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+
+        final Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put(Params.SAVE_KEY, savePath);
+
+        JSONArray array = new JSONArray();
+        JSONObject json = new JSONObject();
+
+        json.put("name", "thumb");
+        json.put(Params.X_GMKERL_THUMB, "/fw/300/unsharp/true/quality/80/format/png");
+        json.put("save_as", "/path/to/fw_100.jpg");
+        json.put("notify_url","http://httpbin.org/post");
+
+        array.put(json);
+        paramsMap.put(Params.APPS, array);
+        System.out.println(uploader.upload(paramsMap, file));
+    }
+```
+`paramsMap` 添加键值对，`Params.APPS` 为 key，作图规则见[上传作图 API](http://docs.upyun.com/cloud/image/#_2)
 
 <a name="错误说明"></a>
 ###错误说明
