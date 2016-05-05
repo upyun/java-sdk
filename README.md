@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/upyun/java-sdk.svg?branch=master)](https://travis-ci.org/upyun/java-sdk)
 
-又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://docs.upyun.com/api/rest_api/) 开发，适用于Java 6及以上版本。
+又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://docs.upyun.com/api/rest_api/) 和 [又拍云HTTP FORM API接口](http://docs.upyun.com/api/form_api/)开发，适用于Java 6及以上版本。
 
 
 ## Maven 安装
