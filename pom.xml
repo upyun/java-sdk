@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.upyun</groupId>
     <artifactId>java-sdk</artifactId>
-    <version>3.5-SNAPSHOT</version>
+    <version>3.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Java SDK</name>
     <description>UpYun Java SDK</description>
@@ -42,7 +42,7 @@
         <connection>scm:git:git://github.com/upyun/java-sdk.git</connection>
         <developerConnection>scm:git:git@github.com:upyun/java-sdk.git</developerConnection>
         <url>https://github.com/upyun/java-sdk</url>
-        <tag>java-sdk-3.4</tag>
+        <tag>java-sdk-3.5</tag>
     </scm>
 
     <parent>
