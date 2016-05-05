@@ -4,7 +4,6 @@
 
 又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) 和 [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/)开发，适用于 Java 6 及以上版本。
 
-
 ## Maven 安装
 
 ```
@@ -268,8 +267,8 @@ public Map<String, String> getFileInfo(String filePath);
 **方法原型：**
 
 ```Java
-public long getBucketUsage();
-public long getFolderUsage(String path);
+	public long getBucketUsage();
+	public long getFolderUsage(String path);
 ```
 
 **举例说明：**
@@ -294,8 +293,8 @@ public long getFolderUsage(String path);
 **方法原型：**
 
 ```Java
-public String readFile(String filePath)；
-public boolean readFile(String filePath, File file)；
+	public String readFile(String filePath)；
+	public boolean readFile(String filePath, File file)；
 ```
 
 **参数说明：**
@@ -329,7 +328,7 @@ public boolean readFile(String filePath, File file)；
 **方法原型：**
 
 ```Java
-public boolean deleteFile(String filePath);
+	public boolean deleteFile(String filePath);
 ```
 
 **参数说明：**
@@ -356,9 +355,9 @@ public boolean deleteFile(String filePath);
 **方法原型：**
 
 ```Java
-public boolean writeFile(String filePath, File file, boolean auto, Map<String, String> params);
-public boolean writeFile(String filePath, byte[] datas, boolean auto, Map<String, String> params);
-public boolean writeFile(String filePath, String datas, boolean auto, Map<String, String> params);
+	public boolean writeFile(String filePath, File file, boolean 	auto, Map<String, String> params);
+	public boolean writeFile(String filePath, byte[] datas, boolean 	auto, Map<String, String> params);
+	public boolean writeFile(String filePath, String datas, boolean 	auto, Map<String, String> params);
 ```
 
 **参数说明：**
@@ -465,12 +464,12 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
 `signatureListener` 回调接口规则如下：
 
 ```java
-SignatureListener signatureListener=new SignatureListener() {
-    @Override
-    public String getSignature(String raw) {
-        return UpYunUtils.md5(raw+KEY);
-    }
-};
+	SignatureListener signatureListener=new SignatureListener() {
+    	@Override
+    	public String getSignature(String raw) {
+        	return UpYunUtils.md5(raw+KEY);
+    	}
+	};
 ```
 将参数 `raw` 传给后台服务器和表单密匙连接后做一次 md5 运算返回结果。
 
