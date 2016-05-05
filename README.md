@@ -1,6 +1,6 @@
 # UPYUN Java SDK
 
-![build](https://travis-ci.org/upyun/java-sdk.svg?branch=master)
+[![Build Status](https://travis-ci.org/upyun/java-sdk.svg?branch=master)](https://travis-ci.org/upyun/java-sdk)
 
 又拍云存储Java SDK，基于 [又拍云存储HTTP REST API接口](http://docs.upyun.com/api/rest_api/) 开发，适用于Java 6及以上版本。
 
@@ -11,7 +11,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>3.1</version>
+  <version>3.4</version>
 </dependency>
 
 ```
@@ -35,7 +35,10 @@
   * [制作图片缩略图](#制作图片缩略图)
   * [图片裁剪](#图片裁剪)
   * [图片旋转](#图片旋转)
-  
+* [表单上传接口](#表单上传接口)
+  * [初始化FormUploader](#初始化FormUploader)
+  * [表单上传文件](#表单上传文件)
+  * [错误说明](#错误说明)
 
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
@@ -405,3 +408,85 @@ public boolean writeFile(String filePath, String datas, boolean auto, Map<String
     // 上传图片，并同时进行图片处理
     boolean result = upyun.writeFile(savePath, file, autoMkDir, params);
 ```
+
+<a name="表单上传接口"></a>
+## 表单上传接口
+
+<a name="初始化FormUploader"></a>
+### 初始化FormUploader
+
+```java
+	FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+	FormUploader uploader = new FormUploader(BUCKET_NAME, null, signatureListener);
+```
+参数说明：
+
+* `BUCKET_NAME `	空间名
+* `APIKEY `	表单密匙
+* `signatureListener `	签名回调
+
+两种初始化方法任选一种，可以将表单密匙保存在本地，也可在签名回调中访问服务器获取签名。
+`signatureListener` 回调接口规则如下：
+
+```java
+SignatureListener signatureListener=new SignatureListener() {
+    @Override
+    public String getSignature(String raw) {
+        return UpYunUtils.md5(raw+KEY);
+    }
+};
+```
+将参数 `raw` 传给后台服务器和表单密匙连接后做一次 md5 运算返回结果。
+
+**可选属性：**
+
+- 手动设置超时时间：默认为30秒
+
+```java
+	public void setTimeout(int timeout)
+```
+
+- 选择最优的接入点,默认 `v0.api.upyun.com`
+
+```Java
+    public void setApiDomain(String domain)
+```
+
+- 选择默认过期时间，默认1800秒
+
+```java
+	public void setExpiration(int expiration)
+```
+
+<a name="表单上传文件"></a>
+### 表单上传文件
+
+**方法原型：**
+
+```java
+	public Result upload(Map<String, Object> params, File file) 
+	public Result upload(Map<String, Object> params, byte[] datas) 
+```
+**参数说明：**
+
+* `params `  参数键值对
+* `file `  上传文件
+* `datas ` 上传数组
+
+参数键值对中 `Params.SAVE_KEY` 为必选参数，其他可选参数见 [Params](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/Params.java) 或者[官网 API 文档](http://docs.upyun.com/api/form_api/#api_1)。
+
+**返回说明:**
+
+> * Result.Succeed	是否成功
+> * Result.code		返回http消息码
+> * Result.msg	返回消息
+
+**举例说明：**
+
+表单上传示例可见[ FormUploadDemo ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/FormUploadDemo.java)。
+
+<a name="错误说明"></a>
+###错误说明
+
+请参照 [API 错误码表](http://docs.upyun.com/api/errno/#api)
+
