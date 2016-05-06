@@ -526,16 +526,22 @@ public Map<String, String> getFileInfo(String filePath);
 **上传同步作图**
 
 ```java
-    private static void testSync() {
+     private static void testSync() {
+        //初始化uploader
         FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
 
+        //初始化参数组 Map
         final Map<String, Object> paramsMap = new HashMap<String, Object>();
+
+        //添加 SAVE_KEY 参数
         paramsMap.put(Params.SAVE_KEY, savePath);
+
+        //添加同步上传作图参数 X_GMKERL_THUMB
         paramsMap.put(Params.X_GMKERL_THUMB, "/fw/300/unsharp/true/quality/80/format/png");
 
+        //打印结果
         System.out.println(uploader.upload(paramsMap, file));
-    }
-	
+    }	
 ```
 
 `paramsMap` 添加键值对，`Params.X_GMKERL_THUMB` 为 key，作图规则见[上传作图 API](http://docs.upyun.com/cloud/image/#_2)
@@ -544,21 +550,40 @@ public Map<String, String> getFileInfo(String filePath);
 
 ```java
 	 private static void testAsync() {
+        //uploader
         FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
 
+        //初始化参数组 Map
         final Map<String, Object> paramsMap = new HashMap<String, Object>();
+
+        //添加 SAVE_KEY 参数
         paramsMap.put(Params.SAVE_KEY, savePath);
 
+        //初始化JSONArray
         JSONArray array = new JSONArray();
+
+        //初始化JSONObject
         JSONObject json = new JSONObject();
 
+        //json 添加 name 属性
         json.put("name", "thumb");
+
+        //json 添加 X_GMKERL_THUMB 属性
         json.put(Params.X_GMKERL_THUMB, "/fw/300/unsharp/true/quality/80/format/png");
+
+        //json 添加 save_as 属性
         json.put("save_as", "/path/to/fw_100.jpg");
+
+        //json 添加 notify_url 属性
         json.put("notify_url","http://httpbin.org/post");
 
+        //将json 对象放入 JSONArray
         array.put(json);
+
+        //添加异步作图参数 APPS
         paramsMap.put(Params.APPS, array);
+
+        //打印结果
         System.out.println(uploader.upload(paramsMap, file));
     }
 ```
