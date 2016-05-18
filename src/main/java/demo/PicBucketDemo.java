@@ -105,7 +105,7 @@ public class PicBucketDemo {
 		// 举例：
 		// 如果缩略图间隔标志符为"!"，密钥为"bac"，上传文件路径为"/folder/test.jpg"，
 		// 那么该图片的对外访问地址为：http://空间域名 /folder/test.jpg!bac
-		upyun.setFileSecret("bac");
+		// 代码示例：upyun.setFileSecret("bac");
 
 		// 上传文件，并自动创建父级目录（最多10级）
 		boolean result = upyun.writeFile(filePath, file, true);
