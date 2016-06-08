@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/upyun/java-sdk.svg?branch=master)](https://travis-ci.org/upyun/java-sdk)
 
-又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) 和 [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/)开发，适用于 Java 6 及以上版本。
+又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) ， [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/) 和 [又拍云异步音视频处理接口](http://docs.upyun.com/cloud/av/)开发，适用于 Java 6 及以上版本。
 
 ## Maven 安装
 
@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>3.6</version>
+  <version>3.7</version>
 </dependency>
 
 ```
@@ -39,6 +39,11 @@
   * [表单上传文件](#表单上传文件)
   * [表单上传作图](#表单上传作图)
   * [错误说明](#错误说明)
+* [异步音视频处理](#异步音视频处理)
+  * [初始化 MediaHandler](#初始化 MediaHandler)
+  * [发起异步处理请求](#发起异步处理请求)
+  * [查询处理进度](#查询处理进度)
+  * [查询处理结果](#查询处理结果)
 
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
@@ -588,9 +593,93 @@ public Map<String, String> getFileInfo(String filePath);
     }
 ```
 `paramsMap` 添加键值对，`Params.APPS` 为 key，作图规则见[上传作图 API](http://docs.upyun.com/cloud/image/#_2)
+<a name="异步音视频处理"></a>
+## 异步音视频处理
+
+<a name="初始化 MediaHandler"></a>
+### 初始化 MediaHandler
+```java
+	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+```
+参数说明：
+
+* `BUCKET_NAME `	 空间名
+* `OPERATOR_NAME `  操作员名称
+* `OPERATOR_PWD `  操作员密码
+
+**可选属性：**
+
+- 手动设置超时时间：默认为30秒
+
+```java
+	public void setTimeout(int timeout)
+```
+
+<a name="发起异步处理请求"></a>
+### 发起异步处理请求
+
+**方法原型：**
+
+```java
+	 public Result process(Map<String, Object> params) throws IOException 
+```
+**参数说明：**
+
+* `params `  参数键值对
+
+详细参数可见 [MediaHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/MediaHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/av/#_3)。
+
+**返回说明:**
+
+> * `Result.Succeed`  是否成功
+> * `Result.code`  返回http消息码
+> * `Result.msg`  返回消息
+
+**举例说明：**
+
+示例可见[ testMediaProcess ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/MediaHandlerDemo.java)。
+
+
+<a name="查询处理进度"></a>
+### 查询处理进度
+**方法原型：**
+
+```java
+	 public Result getStatus(Map<String, Object> params) throws IOException 
+```
+**参数说明：**
+
+* `params `  参数键值对 包括 `bucket_name` 和 `task_ids `
+
+**返回说明:**
+
+同上
+
+**举例说明：**
+
+示例可见[ testMediaStatus ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/MediaHandlerDemo.java)。
+
+<a name="查询处理结果"></a>
+### 查询处理结果
+**方法原型：**
+
+```java
+	 public Result getResult(Map<String, Object> params) throws IOException
+```
+**参数说明：**
+
+同上
+
+**返回说明:**
+
+同上
+
+**举例说明：**
+
+示例可见[ testMediaResult ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/MediaHandlerDemo.java)。
 
 <a name="错误说明"></a>
-###错误说明
+##错误说明
 
 请参照 [API 错误码表](http://docs.upyun.com/api/errno/#api)
 
