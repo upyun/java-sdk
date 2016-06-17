@@ -420,6 +420,7 @@ public class UpYun {
 		return writeFile(filePath, file, auto, null);
 	}
 
+
 	/**
 	 * 上传文件
 	 * 
@@ -441,13 +442,57 @@ public class UpYun {
 		filePath = formatPath(filePath);
 
 		InputStream is = null;
-		OutputStream os = null;
-		HttpURLConnection conn = null;
-
+	
 		try {
 			// 读取待上传的文件
 			is = new FileInputStream(file);
 
+			writeFile(filePath, is, auto, params);
+
+			// 上传成功
+			return true;
+
+		} catch (IOException e) {
+			if (debug)
+				e.printStackTrace();
+
+			// 上传失败
+			return false;
+
+		} finally {
+
+		
+			if (is != null) {
+				is.close();
+				is = null;
+			}
+			
+		}
+	}
+	
+	/**
+	 * 
+	 * @param filePath
+	 * 				件路径（包含文件名）
+	 * @param is
+	 * 				待上传的内容
+	 * @param auto
+	 * 				 是否自动创建父级目录(最多10级)
+	 * @param params
+	 * 				 额外参数
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean writeFile(String filePath, InputStream is, boolean auto,
+			Map<String, String> params) throws IOException {
+
+		filePath = formatPath(filePath);
+
+		OutputStream os = null;
+		HttpURLConnection conn = null;
+
+		try {
+		
 			// 获取链接
 			URL url = new URL("http://" + apiDomain + filePath);
 			conn = (HttpURLConnection) url.openConnection();
@@ -520,17 +565,13 @@ public class UpYun {
 				os.close();
 				os = null;
 			}
-			if (is != null) {
-				is.close();
-				is = null;
-			}
+		
 			if (conn != null) {
 				conn.disconnect();
 				conn = null;
 			}
 		}
 	}
-
 	/**
 	 * 读取文件
 	 * 
