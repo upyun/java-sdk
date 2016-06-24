@@ -152,7 +152,7 @@ public class FormUploader {
         conn.setUseCaches(false);
         conn.setDoOutput(true);
         conn.setRequestProperty("Connection", "Keep-Alive");
-        conn.setRequestProperty("User-Agent", "upyun-java-sdk/3.2");
+        conn.setRequestProperty("User-Agent", "upyun-java-sdk/3.8");
         conn.setRequestProperty("x-upyun-api-version ", "2");
         conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 

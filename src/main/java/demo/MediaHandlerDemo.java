@@ -34,7 +34,7 @@ public class MediaHandlerDemo {
     private static String[] testMediaProcess() {
 
         //初始化 MediaHandler
-        MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+        MediaHandler handler = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
         //初始化参数组 Map
         Map<String, Object> paramsMap = new HashMap<String, Object>();
@@ -78,11 +78,11 @@ public class MediaHandlerDemo {
         paramsMap.put(MediaHandler.Params.TASKS, array);
 
         try {
-            Result result = handle.process(paramsMap);
+            Result result = handler.process(paramsMap);
             System.out.println(result);
             if (result.isSucceed()) {
 
-                String[] ids = MediaHandler.getTaskId(result.getMsg());
+                String[] ids = handler.getTaskId(result.getMsg());
                 System.out.println(Arrays.toString(ids));
                 return ids;
 

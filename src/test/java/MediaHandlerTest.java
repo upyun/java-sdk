@@ -22,7 +22,7 @@ public class MediaHandlerTest {
 
     @Test
     public void testMediaProcess() {
-        MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+        MediaHandler handler = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
         //初始化参数组 Map
         Map<String, Object> paramsMap = new HashMap<String, Object>();
@@ -55,7 +55,7 @@ public class MediaHandlerTest {
 
         Result result = null;
         try {
-            result = handle.process(paramsMap);
+            result = handler.process(paramsMap);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +65,7 @@ public class MediaHandlerTest {
         assertTrue(result.isSucceed());
         assertNotNull(result.getMsg());
 
-        String[] ids = MediaHandler.getTaskId(result.getMsg());
+        String[] ids = handler.getTaskId(result.getMsg());
         assertNotNull(ids);
     }
 
