@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/upyun/java-sdk.svg?branch=master)](https://travis-ci.org/upyun/java-sdk)
 
-又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) ， [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/) 和 [又拍云异步音视频处理接口](http://docs.upyun.com/cloud/av/)开发，适用于 Java 6 及以上版本。
+又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) ， [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/) 和 [又拍云云处理文档 ](http://docs.upyun.com/cloud/)开发，适用于 Java 6 及以上版本。
 
 ## Maven 安装
 
@@ -39,11 +39,18 @@
   * [表单上传文件](#表单上传文件)
   * [表单上传作图](#表单上传作图)
   * [错误说明](#错误说明)
-* [异步音视频处理](#异步音视频处理)
-  * [初始化 MediaHandler](#初始化 MediaHandler)
-  * [发起异步处理请求](#发起异步处理请求)
-  * [查询处理进度](#查询处理进度)
-  * [查询处理结果](#查询处理结果)
+* [云处理](#云处理)
+  * [异步音视频处理](#异步音视频处理)
+     * [初始化 MediaHandler](#初始化 MediaHandler)
+  	  * [发起异步处理请求](#发起异步处理请求)
+  	  * [查询处理进度](#查询处理进度)
+  	  * [查询处理结果](#查询处理结果)
+  * [压缩解压缩](#压缩解压缩)
+     * [初始化 CompressHandler](#初始化 CompressHandler)
+     * [发起异步处理请求](#发起异步处理请求)
+  * [异步文件拉取](#异步文件拉取)
+     * [初始化 PullingHandler](#初始化 PullingHandler)
+     * [发起异步处理请求](#发起异步处理请求)
 
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
@@ -593,11 +600,15 @@ public Map<String, String> getFileInfo(String filePath);
     }
 ```
 `paramsMap` 添加键值对，`Params.APPS` 为 key，作图规则见[上传作图 API](http://docs.upyun.com/cloud/image/#_2)
+
+<a name="云处理"></a>
+##云处理
+
 <a name="异步音视频处理"></a>
-## 异步音视频处理
+### 异步音视频处理
 
 <a name="初始化 MediaHandler"></a>
-### 初始化 MediaHandler
+#### 初始化 MediaHandler
 ```java
 	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 ```
@@ -677,6 +688,62 @@ public Map<String, String> getFileInfo(String filePath);
 **举例说明：**
 
 示例可见[ testMediaResult ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/MediaHandlerDemo.java)。
+
+<a name="压缩解压缩"></a>
+###压缩解压缩
+
+<a name="初始化 CompressHandler"></a>
+####初始化 CompressHandler
+
+```java
+	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+```
+参数说明：
+
+* `BUCKET_NAME `	 空间名
+* `OPERATOR_NAME `  操作员名称
+* `OPERATOR_PWD `  操作员密码
+
+
+<a name="发起异步处理请求"></a>
+####发起异步处理请求
+
+```java
+	 public Result process(Map<String, Object> params) throws IOException 
+```
+**参数说明：**
+
+* `params `  参数键值对
+
+详细参数可见 [CompressHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/CompressHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/unzip/)。
+
+详细示例见[CompressDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/CompressDemo.java)
+
+<a name="异步文件拉取"></a>
+###异步文件拉取
+
+<a name="初始化 CompressHandler"></a>
+####初始化 CompressHandler
+
+```java
+	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+```
+参数说明：同上
+
+<a name="发起异步处理请求"></a>
+####发起异步处理请求
+
+```java
+	 public Result process(Map<String, Object> params) throws IOException 
+```
+**参数说明：**
+
+* `params `  参数键值对
+
+详细参数可见 [PullingHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/PullingHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/spider/)。
+
+详细示例见[PullingDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/PullingDemo.java)
+
 
 <a name="错误说明"></a>
 ##错误说明
