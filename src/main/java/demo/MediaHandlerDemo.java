@@ -45,7 +45,7 @@ public class MediaHandlerDemo {
         //回调地址
         paramsMap.put(MediaHandler.Params.NOTIFY_URL, "http://httpbin.org/post");
         //必须指定为 json
-        paramsMap.put(MediaHandler.Params.ACCEPT, "accept");
+        paramsMap.put(MediaHandler.Params.ACCEPT, "json");
         //需要处理视频路径
         paramsMap.put(MediaHandler.Params.SOURCE, "/test.mp4");
 

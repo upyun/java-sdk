@@ -29,7 +29,7 @@ public class MediaHandlerTest {
 
         paramsMap.put(MediaHandler.Params.BUCKET_NAME, BUCKET_NAME);
         paramsMap.put(MediaHandler.Params.NOTIFY_URL, "http://httpbin.org/post");
-        paramsMap.put(MediaHandler.Params.ACCEPT, "accept");
+        paramsMap.put(MediaHandler.Params.ACCEPT, "json");
         paramsMap.put(MediaHandler.Params.SOURCE, "/test.mp4");
 
         JSONArray array = new JSONArray();
