@@ -457,8 +457,9 @@ public class UpYun {
 			conn.setRequestMethod(METHOD_PUT);
 			conn.setUseCaches(false);
 			conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(0);
 
-			// 设置时间
+            // 设置时间
 			conn.setRequestProperty(DATE, getGMTDate());
 			// 设置签名
 			conn.setRequestProperty(AUTHORIZATION,

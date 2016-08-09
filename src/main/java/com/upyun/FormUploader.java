@@ -155,6 +155,7 @@ public class FormUploader {
         conn.setRequestProperty("User-Agent", "upyun-java-sdk/3.8");
         conn.setRequestProperty("x-upyun-api-version ", "2");
         conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
+        conn.setChunkedStreamingMode(0);
 
         // 创建链接
         conn.connect();
