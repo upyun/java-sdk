@@ -463,7 +463,7 @@ public class UpYun {
 			conn.setRequestProperty(DATE, getGMTDate());
 			// 设置签名
 			conn.setRequestProperty(AUTHORIZATION,
-					sign(conn, filePath, is.available()));
+					sign(conn, filePath, file.length()));
 
 			// 设置文件的 MD5 参数
 			if (!isEmpty(this.contentMD5)) {
