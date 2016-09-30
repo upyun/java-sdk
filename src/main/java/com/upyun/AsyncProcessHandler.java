@@ -60,7 +60,7 @@ public class AsyncProcessHandler {
         conn.setUseCaches(false);
         conn.setDoOutput(true);
         conn.setRequestProperty("Connection", "Keep-Alive");
-        conn.setRequestProperty("User-Agent", "upyun-java-sdk/3.8");
+        conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
 
         // 设置时间
         conn.setRequestProperty(DATE, getGMTDate());

@@ -30,6 +30,7 @@
   * [获取使用量信息](#获取使用量信息)
   * [下载文件](#下载文件)
   * [删除文件](#删除文件)
+  * [断点续传](#断点续传)
 * [图片处理接口](#图片处理接口)
   * [制作图片缩略图](#制作图片缩略图)
   * [图片裁剪](#图片裁剪)
@@ -359,6 +360,36 @@ public Map<String, String> getFileInfo(String filePath);
     // 删除文件
     boolean result = upyun.deleteFile(filePath);
 ```
+
+<a name="断点续传"></a>
+### 断点续传
+初始化 UpResume
+```java
+	UpResume resume = new UpResume("空间名称", "操作员名称", "操作员密码")
+```
+设置上传进度监听
+```java
+	 resume.setOnProgressListener(new UpResume.OnProgressListener()
+```
+设置 MD5 校验
+
+```java
+	resume.setCheckMD5(true);
+```
+开始上传
+
+```java
+	public boolean upload(String filePath, String uploadPath,Map<String, String> params)	
+```
+
+**参数说明：**
+
+* `filePath ` 待上传文件路径
+*  `uploadPath ` 上传至空间目录
+*  `params `	通用可选上传参数见文档 可为null
+
+**详细示例：** 
+见 [ResumeUploadDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ResumeUploadDemo)
 
 <a name="图片处理接口"></a>
 ## 图片处理接口

@@ -1,5 +1,7 @@
 package main.java.com;
 
+import main.java.com.upyun.UpYunUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -888,6 +890,7 @@ public class UpYun {
 
 			// 设置时间
 			conn.setRequestProperty(DATE, getGMTDate());
+			conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
 
 			// 是否自动创建父级目录
 			if (auto) {

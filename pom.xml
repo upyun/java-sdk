@@ -64,6 +64,12 @@
             <version>20160212
             </version>
         </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.4.1</version>
+        </dependency>
     </dependencies>
 
     <build>
