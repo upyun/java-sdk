@@ -18,7 +18,7 @@ public class ResumeUploadDemo {
     //上传至空间路径
     private static final String UPLOAD_PATH = "/test.MOV";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         final ResumeUploader resume = new ResumeUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
@@ -38,7 +38,7 @@ public class ResumeUploadDemo {
                 super.run();
                 try {
                     try {
-                        System.out.println(resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
+                        System.out.println("first:" + resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
                     } catch (UpException e) {
                         e.printStackTrace();
                     }
@@ -48,27 +48,29 @@ public class ResumeUploadDemo {
             }
         }.start();
 
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Thread.sleep(2000);
+
+        resume.interrupt(new ResumeUploader.OnInterruptListener() {
+            public void OnInterrupt(boolean interrupted) {
+
+                System.out.println("interrupted:" + interrupted);
+
+                if (interrupted) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            super.run();
+                            try {
+                                System.out.println("second:" + resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (UpException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
                 }
-                resume.interrupt();
             }
-        }.start();
-
-
-        try {
-            Thread.sleep(10000);
-            System.out.println(resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        });
     }
-
 }

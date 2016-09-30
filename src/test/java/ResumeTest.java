@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 public class ResumeTest {
     private static final String BUCKET_NAME = "formtest";
@@ -24,6 +25,7 @@ public class ResumeTest {
     public void testResumeUpload() throws InterruptedException, IOException, UpException {
 
         final ResumeUploader resume = new ResumeUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         //设置上传进度监听
         resume.setOnProgressListener(new ResumeUploader.OnProgressListener() {
@@ -41,56 +43,34 @@ public class ResumeTest {
             public void run() {
                 super.run();
                 //开始上传
-                boolean b = false;
                 try {
-                    b = resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null);
-                } catch (Exception e){
+                    Assert.assertFalse(resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
+                    latch.countDown();
+                } catch (Exception e) {
                     System.out.println(e);
                 }
-                Assert.assertFalse(b);
             }
         }.start();
 
         Thread.sleep(2000);
 
-        //终端上传
-        resume.interrupt();
+        resume.interrupt(new ResumeUploader.OnInterruptListener() {
+            public void OnInterrupt(boolean interrupted) {
 
-        Thread.sleep(2000);
+                System.out.println("interrupted:" + interrupted);
+                if (interrupted) {
+                    try {
+                        Assert.assertTrue(resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
+                    } catch (IOException e) {
+                        Assert.fail();
+                    } catch (UpException e) {
+                        Assert.fail();
+                    }
+                }
+            }
+        });
 
-        Assert.assertTrue(resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
-//        String uuid = resume.getUuid();
-//
-//        int index = resume.getNextPartIndex();
-//
-//        Thread.sleep(2000);
-//
-//        try {
-//            Assert.assertFalse(resume.resume("haah", 0));
-//        } catch (IOException e) {
-//            Assert.fail();
-//        } catch (UpException e) {
-//            Assert.assertNotNull(e);
-//        }
-//
-//        try {
-//            Assert.assertFalse(resume.resume());
-////            Assert.assertTrue(resume.resume());
-//        } catch (IOException e) {
-//            Assert.fail();
-//        } catch (UpException e) {
-//            Assert.assertNotNull(e);
-//        }
-//        Thread.sleep(2000);
-//
-//        try {
-//            Assert.assertTrue(resume.resume(uuid, index));
-//        } catch (IOException e) {
-//            Assert.fail();
-//        } catch (UpException e) {
-//            e.printStackTrace();
-//            Assert.fail();
-//        }
+        latch.await();
     }
 
 }

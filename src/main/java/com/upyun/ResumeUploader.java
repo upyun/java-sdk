@@ -48,7 +48,7 @@ public class ResumeUploader {
     // 操作员密码
     protected String password = null;
     //超时设置(s)
-    private int timeout = 10;
+    private int timeout = 20;
 
     private String url;
 
@@ -57,7 +57,11 @@ public class ResumeUploader {
 
     private OnProgressListener onProgressListener;
 
+    private OnInterruptListener onInterruptListener;
+
     private int totalBlock;
+
+    private boolean executed;
 
     /**
      * 断点续传
@@ -116,13 +120,10 @@ public class ResumeUploader {
     /**
      * 中断上传
      */
-    synchronized public void interrupt() {
-        System.out.println("interrupt");
+    public void interrupt(OnInterruptListener listener) {
+
+        this.onInterruptListener = listener;
         interrupt = true;
-        if (currentCall != null && !currentCall.isExecuted() && !currentCall.isCanceled()) {
-            System.out.println("interrupt:" + interrupt);
-            currentCall.cancel();
-        }
     }
 
     /**
@@ -246,7 +247,9 @@ public class ResumeUploader {
         byte[] data = new byte[0];
         while (nextPartIndex >= 0) {
 
-            if (interrupt) {
+            if (interrupt && onInterruptListener != null) {
+                onInterruptListener.OnInterrupt(true);
+                onInterruptListener = null;
                 return false;
             }
 
@@ -258,22 +261,24 @@ public class ResumeUploader {
 
             String sign = sign("PUT", date, uploadPath, bucketName, userName, password, requestBody.contentLength());
 
-            Request request = new Request.Builder()
+            Request.Builder builder = new Request.Builder()
                     .url(url)
                     .header(DATE, date)
                     .header(AUTHORIZATION, sign)
                     .header(X_UPYUN_MULTI_STAGE, "upload")
                     .header(X_UPYUN_MULTI_UUID, uuid)
                     .header(X_UPYUN_PART_ID, nextPartIndex + "")
-                    .header(CONTENT_MD5, UpYunUtils.md5(data))
                     .header("User-Agent", UpYunUtils.VERSION)
-                    .put(requestBody)
-                    .build();
+                    .put(requestBody);
+
+            if (checkMD5) {
+                builder.header(CONTENT_MD5, UpYunUtils.md5(data));
+            }
 
             if (onProgressListener != null) {
                 onProgressListener.onProgress(nextPartIndex + 2, totalBlock);
             }
-            callRequest(request);
+            callRequest(builder.build());
         }
 
         return completeUpload();
@@ -281,7 +286,9 @@ public class ResumeUploader {
 
     private boolean completeUpload() throws IOException, UpException {
 
-        if (interrupt) {
+        if (interrupt && onInterruptListener != null) {
+            onInterruptListener.OnInterrupt(true);
+            onInterruptListener = null;
             return false;
         }
 
@@ -291,7 +298,7 @@ public class ResumeUploader {
 
         String sign = sign("PUT", date, uploadPath, bucketName, userName, password, requestBody.contentLength());
 
-        Request request = new Request.Builder()
+        Request.Builder builder = new Request.Builder()
                 .url(url)
                 .header(DATE, date)
                 .header(AUTHORIZATION, sign)
@@ -299,25 +306,23 @@ public class ResumeUploader {
                 .header(X_UPYUN_MULTI_UUID, uuid)
                 .header(CONTENT_MD5, UpYunUtils.md5(mFile, BLOCK_SIZE))
                 .header("User-Agent", UpYunUtils.VERSION)
-                .put(requestBody)
-                .build();
+                .put(requestBody);
 
-        callRequest(request);
+        if (checkMD5) {
+            builder.header(CONTENT_MD5, UpYunUtils.md5(mFile, BLOCK_SIZE));
+        }
+
+        callRequest(builder.build());
 
         if (onProgressListener != null) {
             onProgressListener.onProgress(totalBlock, totalBlock);
         }
 
         uuid = null;
-
         return true;
     }
 
-    synchronized private void callRequest(Request request) throws IOException, UpException {
-
-        if(interrupt){
-            return;
-        }
+    private void callRequest(Request request) throws IOException, UpException {
 
         currentCall = mClient.newCall(request);
 
@@ -369,5 +374,9 @@ public class ResumeUploader {
 
     public interface OnProgressListener {
         void onProgress(int index, int total);
+    }
+
+    public interface OnInterruptListener {
+        void OnInterrupt(boolean interrupted);
     }
 }
