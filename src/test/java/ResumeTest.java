@@ -56,13 +56,10 @@ public class ResumeTest {
         //终端上传
         resume.interrupt();
 
-        Thread.sleep(1000);
-
         String uuid = resume.getUuid();
 
         int index = resume.getNextPartIndex();
 
-        Thread.sleep(2000);
         try {
             Assert.assertFalse(resume.resume("", 0));
         } catch (IOException e) {

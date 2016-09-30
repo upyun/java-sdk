@@ -116,7 +116,7 @@ public class ResumeUploader {
     /**
      * 中断上传
      */
-    public void interrupt() {
+    synchronized public void interrupt() {
         System.out.println("interrupt");
         interrupt = true;
         if (currentCall != null && !currentCall.isExecuted() && !currentCall.isCanceled()) {
@@ -313,7 +313,11 @@ public class ResumeUploader {
         return true;
     }
 
-    private void callRequest(Request request) throws IOException, UpException {
+    synchronized private void callRequest(Request request) throws IOException, UpException {
+
+        if(interrupt){
+            return;
+        }
 
         currentCall = mClient.newCall(request);
 
