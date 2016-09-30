@@ -46,12 +46,13 @@ public class ResumeTest {
                 } catch (IOException e) {
                     Assert.fail();
                 } catch (UpException e) {
+                    System.out.println(e);
                     Assert.fail();
                 }
             }
         }.start();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         //终端上传
         resume.interrupt();
@@ -60,8 +61,10 @@ public class ResumeTest {
 
         int index = resume.getNextPartIndex();
 
+        Thread.sleep(2000);
+
         try {
-            Assert.assertFalse(resume.resume("", 0));
+            Assert.assertFalse(resume.resume("haah", 0));
         } catch (IOException e) {
             Assert.fail();
         } catch (UpException e) {
