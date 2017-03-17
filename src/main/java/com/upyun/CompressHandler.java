@@ -29,7 +29,7 @@ public class CompressHandler extends AsyncProcessHandler {
      * @return 请求结果
      * @throws IOException
      */
-    public Result process(Map<String, Object> params) throws IOException {
+    public Result process(Map<String, Object> params) throws IOException, UpException {
 
         return super.process(params);
 

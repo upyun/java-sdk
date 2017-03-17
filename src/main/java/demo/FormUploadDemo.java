@@ -5,13 +5,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FormUploadDemo {
-    // 运行前先设置好以下两个参数
-    private static final String BUCKET_NAME = "空间名";
-    private static final String APIKEY = "表单密匙";
+    // 运行前先设置好以下三个参数
+    private static final String BUCKET_NAME = "formtest";
+    private static final String OPERATOR_NAME = "one";
+    private static final String OPERATOR_PWD = "qwertyuiop";
+
 
     //上传测试文件
     private static final String SAMPLE_PIC_FILE = System.getProperty("user.dir") + "/sample.jpeg";
@@ -21,7 +26,7 @@ public class FormUploadDemo {
     //保存路径 必须设置该参数
     private static String savePath = "/uploads/{year}{mon}{day}/{random32}{.suffix}";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
 
         testWriteFile();
         testWatermark();
@@ -32,24 +37,13 @@ public class FormUploadDemo {
     /**
      * 测试上传文件
      */
-    private static void testWriteFile() {
+    private static void testWriteFile() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         final Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(Params.SAVE_KEY, savePath);
 
-        FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+        FormUploader uploader = new FormUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
         Result result = uploader.upload(paramsMap, file);
         System.out.println(result);
-
-        //通过回到凡是获取签名
-        SignatureListener signatureListener = new SignatureListener() {
-            public String getSignature(String raw) {
-                return UpYunUtils.md5(raw + APIKEY);
-            }
-        };
-
-        FormUploader uploader2 = new FormUploader(BUCKET_NAME, null, signatureListener);
-        Result result2 = uploader2.upload(paramsMap, file);
-        System.out.println(result2);
 
         System.out.println(uploader.upload(paramsMap, "test1".getBytes()));
     }
@@ -58,8 +52,8 @@ public class FormUploadDemo {
      * 测试上传图片添加水印
      */
 
-    private static void testWatermark() {
-        FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+    private static void testWatermark() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        FormUploader uploader = new FormUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
         final Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put(Params.SAVE_KEY, savePath);
@@ -72,9 +66,9 @@ public class FormUploadDemo {
      * 测试上传同步作图
      */
 
-    private static void testSync() {
+    private static void testSync() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         //初始化uploader
-        FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+        FormUploader uploader = new FormUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
         //初始化参数组 Map
         final Map<String, Object> paramsMap = new HashMap<String, Object>();
@@ -93,9 +87,9 @@ public class FormUploadDemo {
      * 测试上传异步作图
      */
 
-    private static void testAsync() {
+    private static void testAsync() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         //uploader
-        FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
+        FormUploader uploader = new FormUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
         //初始化参数组 Map
         final Map<String, Object> paramsMap = new HashMap<String, Object>();
@@ -119,7 +113,7 @@ public class FormUploadDemo {
         json.put("save_as", "/path/to/fw_100.jpg");
 
         //json 添加 notify_url 属性
-        json.put("notify_url","http://httpbin.org/post");
+        json.put("notify_url", "http://httpbin.org/post");
 
         //将json 对象放入 JSONArray
         array.put(json);

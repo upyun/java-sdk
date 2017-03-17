@@ -29,7 +29,7 @@ public class MediaHandler extends AsyncProcessHandler {
      * @return 请求结果
      * @throws IOException
      */
-    public Result process(Map<String, Object> params) throws IOException {
+    public Result process(Map<String, Object> params) throws IOException, UpException {
         return super.process(params);
     }
 
@@ -41,16 +41,16 @@ public class MediaHandler extends AsyncProcessHandler {
      * @return 请求结果
      * @throws IOException
      */
-    public Result getStatus(Map<String, Object> params) throws IOException {
+    public Result getStatus(Map<String, Object> params) throws IOException, UpException {
         InputStream is = null;
         HttpURLConnection conn;
 
-        StringBuilder sb = new StringBuilder(HOST + "status");
+        StringBuilder sb = new StringBuilder("/status");
         sb.append("?");
         for (Map.Entry<String, Object> mapping : params.entrySet()) {
             sb.append(mapping.getKey() + "=" + mapping.getValue().toString() + "&");
         }
-        URL url = new URL(sb.toString().substring(0, sb.length() - 1));
+        URL url = new URL(HOST + sb.toString().substring(0, sb.length() - 1));
 
         conn = (HttpURLConnection) url.openConnection();
 
@@ -66,7 +66,7 @@ public class MediaHandler extends AsyncProcessHandler {
         conn.setRequestProperty(DATE, getGMTDate());
         // 设置签名
         conn.setRequestProperty(AUTHORIZATION,
-                sign(params));
+                sign("GET", sb.toString().substring(0, sb.length() - 1), getGMTDate(), null));
 
         // 创建链接
         conn.connect();
@@ -90,16 +90,16 @@ public class MediaHandler extends AsyncProcessHandler {
      * @return 请求结果
      * @throws IOException
      */
-    public Result getResult(Map<String, Object> params) throws IOException {
+    public Result getResult(Map<String, Object> params) throws IOException, UpException {
         InputStream is = null;
         HttpURLConnection conn;
 
-        StringBuilder sb = new StringBuilder(HOST + "result");
+        StringBuilder sb = new StringBuilder("/result");
         sb.append("?");
         for (Map.Entry<String, Object> mapping : params.entrySet()) {
             sb.append(mapping.getKey() + "=" + mapping.getValue().toString() + "&");
         }
-        URL url = new URL(sb.toString().substring(0, sb.length() - 1));
+        URL url = new URL(HOST + sb.toString().substring(0, sb.length() - 1));
 
         conn = (HttpURLConnection) url.openConnection();
 
@@ -115,7 +115,7 @@ public class MediaHandler extends AsyncProcessHandler {
         conn.setRequestProperty(DATE, getGMTDate());
         // 设置签名
         conn.setRequestProperty(AUTHORIZATION,
-                sign(params));
+                sign("GET", sb.toString().substring(0, sb.length() - 1), getGMTDate(), null));
 
         // 创建链接
         conn.connect();

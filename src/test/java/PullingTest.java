@@ -2,6 +2,7 @@ package test.java;
 
 import main.java.com.upyun.PullingHandler;
 import main.java.com.upyun.Result;
+import main.java.com.upyun.UpException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -68,6 +69,8 @@ public class PullingTest {
             assertNotNull(ids);
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
             e.printStackTrace();
         }
 

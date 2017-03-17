@@ -3,6 +3,7 @@ package main.java.demo;
 import main.java.com.upyun.CompressHandler;
 import main.java.com.upyun.MediaHandler;
 import main.java.com.upyun.Result;
+import main.java.com.upyun.UpException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -69,6 +70,8 @@ public class CompressDemo {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
         }
 
     }
@@ -123,6 +126,8 @@ public class CompressDemo {
 
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
             e.printStackTrace();
         }
 

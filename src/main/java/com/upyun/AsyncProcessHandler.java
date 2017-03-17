@@ -12,7 +12,7 @@ import static main.java.com.upyun.UpYunUtils.md5;
 
 public class AsyncProcessHandler {
 
-    public static String HOST = "http://p0.api.upyun.com/";
+    public static String HOST = "http://p0.api.upyun.com";
     protected final String AUTHORIZATION = "Authorization";
     protected final String DATE = "Date";
 
@@ -42,7 +42,7 @@ public class AsyncProcessHandler {
      * @return 请求结果
      * @throws IOException
      */
-    protected Result process(Map<String, Object> params) throws IOException {
+    protected Result process(Map<String, Object> params) throws IOException, UpException {
 
         params.put(CompressHandler.Params.TASKS, Base64Coder.encodeString(params.get(CompressHandler.Params.TASKS).toString()));
 
@@ -50,9 +50,11 @@ public class AsyncProcessHandler {
         OutputStream os;
         HttpURLConnection conn;
 
-        URL url = new URL(HOST + "pretreatment/");
+        URL url = new URL(HOST + "/pretreatment/");
 
         conn = (HttpURLConnection) url.openConnection();
+
+        String date = getGMTDate();
 
         // 设置必要参数
         conn.setConnectTimeout(timeout);
@@ -61,12 +63,13 @@ public class AsyncProcessHandler {
         conn.setDoOutput(true);
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
+        conn.setRequestProperty("Date", date);
 
         // 设置时间
         conn.setRequestProperty(DATE, getGMTDate());
         // 设置签名
         conn.setRequestProperty(AUTHORIZATION,
-                sign(params));
+                sign("POST", "/pretreatment/", date, params));
 
         // 创建链接
         conn.connect();
@@ -157,21 +160,62 @@ public class AsyncProcessHandler {
      * @param params 参数组
      * @return 签名
      */
-    protected String sign(Map<String, Object> params) {
+    protected String sign(String method, String URI, String date, Map<String, Object> params) throws UpException {
+
+//        StringBuilder sb = new StringBuilder();
+//        List<Map.Entry<String, Object>> list = new ArrayList<Map.Entry<String, Object>>(params.entrySet());
+//        Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
+//            public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
+//                return o1.getKey().compareTo(o2.getKey());
+//            }
+//        });
+//        for (Map.Entry<String, Object> mapping : list) {
+//            sb.append(mapping.getKey() + mapping.getValue());
+//        }
+//
+//        String sign = userName + sb.toString() + password;
+//        return "UpYun " + userName + ":" + md5(sign);
+
+
+//        String contentSt = null;
+//
+//        if (params != null) {
+//            StringBuffer content = new StringBuffer();
+//
+//            for (Map.Entry<String, Object> mapping : params.entrySet()) {
+//                content.append((mapping.getKey() + "=" + mapping.getValue().toString() + "&"));
+//            }
+//            contentSt = content.toString().trim();
+//        }
 
         StringBuilder sb = new StringBuilder();
-        List<Map.Entry<String, Object>> list = new ArrayList<Map.Entry<String, Object>>(params.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
-            public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
-        for (Map.Entry<String, Object> mapping : list) {
-            sb.append(mapping.getKey() + mapping.getValue());
+        String sp = "&";
+        sb.append(method);
+        sb.append(sp);
+        sb.append(URI);
+
+        sb.append(sp);
+        sb.append(date);
+
+//        if (contentSt != null && contentSt.length() > 0) {
+//            sb.append(sp);
+//            sb.append(UpYunUtils.md5(contentSt));
+//        }
+        String raw = sb.toString().trim();
+        byte[] hmac = null;
+        try {
+            hmac = UpYunUtils.calculateRFC2104HMACRaw(password, raw);
+        } catch (Exception e) {
+            throw new UpException("calculate SHA1 wrong.");
         }
 
-        String sign = userName + sb.toString() + password;
-        return "UpYun " + userName + ":" + md5(sign);
+        if (hmac != null) {
+            return "UpYun " + userName + ":" + Base64Coder.encodeLines(hmac).trim();
+        }
+
+        return null;
+
+
     }
 
 

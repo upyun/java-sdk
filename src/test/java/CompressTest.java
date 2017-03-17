@@ -2,6 +2,7 @@ package test.java;
 
 import main.java.com.upyun.CompressHandler;
 import main.java.com.upyun.Result;
+import main.java.com.upyun.UpException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -60,6 +61,8 @@ public class CompressTest {
             assertNotNull(ids);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
         }
 
     }
@@ -113,6 +116,8 @@ public class CompressTest {
             assertNotNull(ids);
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
             e.printStackTrace();
         }
 

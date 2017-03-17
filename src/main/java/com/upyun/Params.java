@@ -38,9 +38,10 @@ public class Params {
     public final static String SAVE_KEY = "save-key";
     public final static String EXPIRATION = "expiration";
     //可选参数
+    public final static String DATE = "date";
+    public final static String CONTENT_MD5 = "content-md5";
     public final static String ALLOW_FILE_TYPE = "allow-file-type";
     public final static String CONTENT_LENGTH_RANGE = "content-length-range";
-    public final static String CONTENT_MD5 = "content-md5";
     public final static String CONTENT_SECRET = "content-secret";
     public final static String CONTENT_TYPE = "content-type";
     public final static String IMAGE_WIDTH_RANGE = "image-width-range";

@@ -213,12 +213,18 @@ public class ResumeUploader {
 
         String date = getGMTDate();
 
-        String sign = sign("PUT", date, uploadPath, bucketName, userName, password, requestBody.contentLength());
+        String md5 = null;
+
+        if (checkMD5) {
+            md5 = UpYunUtils.md5("");
+        }
+
+        String sign = UpYunUtils.sign("PUT", date, uploadPath, bucketName, userName, password, md5);
 
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .header(DATE, date)
-                .header(AUTHORIZATION, sign)
+                .header(AUTHORIZATION, sign.trim())
                 .header(X_UPYUN_MULTI_STAGE, "initiate")
                 .header(X_UPYUN_MULTI_TYPE, "application/octet-stream")
                 .header(X_UPYUN_MULTI_LENGTH, mFile.length() + "")
@@ -231,8 +237,8 @@ public class ResumeUploader {
             }
         }
 
-        if (checkMD5) {
-            builder.header(CONTENT_MD5, UpYunUtils.md5(""));
+        if (md5 != null) {
+            builder.header(CONTENT_MD5, md5);
         }
         callRequest(builder.build());
 
@@ -259,20 +265,26 @@ public class ResumeUploader {
 
             String date = getGMTDate();
 
-            String sign = sign("PUT", date, uploadPath, bucketName, userName, password, requestBody.contentLength());
+            String md5 = null;
+
+            if (checkMD5) {
+                md5 = UpYunUtils.md5(data);
+            }
+
+            String sign = UpYunUtils.sign("PUT", date, uploadPath, bucketName, userName, password, md5);
 
             Request.Builder builder = new Request.Builder()
                     .url(url)
                     .header(DATE, date)
-                    .header(AUTHORIZATION, sign)
+                    .header(AUTHORIZATION, sign.trim())
                     .header(X_UPYUN_MULTI_STAGE, "upload")
                     .header(X_UPYUN_MULTI_UUID, uuid)
                     .header(X_UPYUN_PART_ID, nextPartIndex + "")
                     .header("User-Agent", UpYunUtils.VERSION)
                     .put(requestBody);
 
-            if (checkMD5) {
-                builder.header(CONTENT_MD5, UpYunUtils.md5(data));
+            if (md5 != null) {
+                builder.header(CONTENT_MD5, md5);
             }
 
             if (onProgressListener != null) {
@@ -296,20 +308,26 @@ public class ResumeUploader {
 
         String date = getGMTDate();
 
-        String sign = sign("PUT", date, uploadPath, bucketName, userName, password, requestBody.contentLength());
+        String md5 = null;
+
+        if (checkMD5) {
+            md5 = UpYunUtils.md5(mFile, BLOCK_SIZE);
+        }
+
+        String sign = UpYunUtils.sign("PUT", date, uploadPath, bucketName, userName, password, md5);
 
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .header(DATE, date)
-                .header(AUTHORIZATION, sign)
+                .header(AUTHORIZATION, sign.trim())
                 .header(X_UPYUN_MULTI_STAGE, "complete")
                 .header(X_UPYUN_MULTI_UUID, uuid)
                 .header(CONTENT_MD5, UpYunUtils.md5(mFile, BLOCK_SIZE))
                 .header("User-Agent", UpYunUtils.VERSION)
                 .put(requestBody);
 
-        if (checkMD5) {
-            builder.header(CONTENT_MD5, UpYunUtils.md5(mFile, BLOCK_SIZE));
+        if (md5 != null) {
+            builder.header(CONTENT_MD5, md5);
         }
 
         callRequest(builder.build());
@@ -348,13 +366,13 @@ public class ResumeUploader {
         return formater.format(new Date());
     }
 
-    private String sign(String method, String date, String path, String bucket, String userName, String password, long length) {
-
-        String sign = method + "&/" + bucket + path + "&"
-                + date + "&" + length + "&" + password;
-
-        return "UpYun " + userName + ":" + UpYunUtils.md5(sign);
-    }
+//    private String sign(String method, String date, String path, String bucket, String userName, String password, long length) {
+//
+//        String sign = method + "&/" + bucket + path + "&"
+//                + date + "&" + length + "&" + password;
+//
+//        return "UpYun " + userName + ":" + UpYunUtils.md5(sign);
+//    }
 
     private byte[] readBlockByIndex(int index) throws IOException {
         byte[] block = new byte[BLOCK_SIZE];

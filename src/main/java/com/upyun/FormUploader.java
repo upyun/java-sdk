@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.Map;
 
 public class FormUploader {
@@ -16,19 +19,12 @@ public class FormUploader {
 
     //默认域名
     private String apiDomain = "http://v0.api.upyun.com";
-
-    //空间名
-    private String bucketName;
-
-    //表单密匙
-    private String apiKey;
-
-    //签名回调
-    private SignatureListener signatureListener;
-
-    public SignatureListener getSignatureListener() {
-        return signatureListener;
-    }
+    // 空间名
+    protected String bucketName = null;
+    // 操作员名
+    protected String userName = null;
+    // 操作员密码
+    protected String password = null;
 
     public int getTimeout() {
         return timeout;
@@ -36,10 +32,6 @@ public class FormUploader {
 
     public String getBucketName() {
         return bucketName;
-    }
-
-    public String getApiKey() {
-        return apiKey;
     }
 
     public int getExpiration() {
@@ -50,26 +42,18 @@ public class FormUploader {
         this.expiration = expiration;
     }
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
-    }
-
-    public void setSignatureListener(SignatureListener signatureListener) {
-        this.signatureListener = signatureListener;
     }
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
-    public FormUploader(String bucketName, String apiKey, SignatureListener signatureListener) {
+    public FormUploader(String bucketName, String userName, String password) {
         this.bucketName = bucketName;
-        this.apiKey = apiKey;
-        this.signatureListener = signatureListener;
+        this.userName = userName;
+        this.password = UpYunUtils.md5(password);
     }
 
     /**
@@ -79,7 +63,7 @@ public class FormUploader {
      * @param file   上传文件
      * @return 返回结果
      */
-    public Result upload(Map<String, Object> params, File file) {
+    public Result upload(Map<String, Object> params, File file) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
 
         return upload(params, file, null);
     }
@@ -91,12 +75,12 @@ public class FormUploader {
      * @param datas  上传数组
      * @return 返回结果
      */
-    public Result upload(Map<String, Object> params, byte[] datas) {
+    public Result upload(Map<String, Object> params, byte[] datas) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
 
         return upload(params, null, datas);
     }
 
-    private Result upload(Map<String, Object> params, File file, byte[] datas) {
+    private Result upload(Map<String, Object> params, File file, byte[] datas) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         if (params.get(Params.BUCKET) == null) {
             params.put(Params.BUCKET, this.bucketName);
         }
@@ -107,15 +91,42 @@ public class FormUploader {
 
         String policy = UpYunUtils.getPolicy(params);
 
-        String signature;
+        String signature = null;
 
-        if (this.apiKey != null) {
-            signature = UpYunUtils.getSignature(policy, apiKey);
-        } else if (signatureListener != null) {
-            signature = signatureListener.getSignature(policy + "&");
-        } else {
-            throw new RuntimeException("apiKey 和 signature 不能同时为null");
+
+        String date = (String) params.get(Params.DATE);
+        String contentMd5 = (String) params.get(Params.CONTENT_MD5);
+
+        StringBuilder sb = new StringBuilder();
+        String sp = "&";
+        sb.append("POST");
+        sb.append(sp);
+        sb.append("/" + bucketName);
+
+        if (date != null) {
+            sb.append(sp);
+            sb.append(date);
         }
+
+        sb.append(sp);
+        sb.append(policy);
+
+        if (contentMd5 != null) {
+            sb.append(sp);
+            sb.append(contentMd5);
+        }
+
+        String raw = sb.toString().trim();
+
+        byte[] hmac;
+
+        hmac = UpYunUtils.calculateRFC2104HMACRaw(password, raw);
+
+        if (hmac != null) {
+            signature = Base64Coder.encodeLines(hmac);
+        }
+
+        System.out.println("sign" + signature);
 
         URL url = null;
         try {
@@ -126,7 +137,7 @@ public class FormUploader {
 
         Result result;
         try {
-            result = postData(file, datas, url, policy, signature);
+            result = postData(file, datas, url, policy, signature.trim());
         } catch (IOException e) {
             result = new Result();
             result.setSucceed(false);
@@ -153,7 +164,7 @@ public class FormUploader {
         conn.setDoOutput(true);
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
-        conn.setRequestProperty("x-upyun-api-version ", "2");
+        conn.setRequestProperty("x-upyun-api-version", "2");
         conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
         conn.setChunkedStreamingMode(0);
 
@@ -162,7 +173,8 @@ public class FormUploader {
 
         os = conn.getOutputStream();
         os.write(getBoundaryStr("policy", BOUNDARY, policy).getBytes());
-        os.write(getBoundaryStr("signature", BOUNDARY, signature).getBytes());
+//        os.write(getBoundaryStr("signature", BOUNDARY, signature).getBytes());
+        os.write(getBoundaryStr("authorization", BOUNDARY, "UPYUN " + userName + ":" + signature).getBytes());
 
 
         String fileName = file != null ? file.getName() : "null";
@@ -228,7 +240,8 @@ public class FormUploader {
         result.setCode(code);
 
         try {
-            is = code >= 400 ? conn.getErrorStream() : conn.getInputStream();
+//            is = code >= 400 ? conn.getErrorStream() : conn.getInputStream();
+            is = conn.getInputStream();
 
             sr = new InputStreamReader(is);
             br = new BufferedReader(sr);

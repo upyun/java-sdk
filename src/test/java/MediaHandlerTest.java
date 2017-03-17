@@ -2,6 +2,7 @@ package test.java;
 
 import main.java.com.upyun.MediaHandler;
 import main.java.com.upyun.Result;
+import main.java.com.upyun.UpException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -59,6 +60,8 @@ public class MediaHandlerTest {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
         }
 
         assertNotNull(result);
@@ -95,6 +98,8 @@ public class MediaHandlerTest {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
         }
 
         assertNotNull(result);
@@ -127,6 +132,8 @@ public class MediaHandlerTest {
             result = handle.getStatus(paramsMap);
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
             e.printStackTrace();
         }
 

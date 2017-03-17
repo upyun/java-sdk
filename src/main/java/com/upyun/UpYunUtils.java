@@ -2,10 +2,10 @@ package main.java.com.upyun;
 
 import org.json.JSONObject;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.security.*;
 import java.util.Map;
 
 public class UpYunUtils {
@@ -97,5 +97,79 @@ public class UpYunUtils {
             hex.append(Integer.toHexString(b & 0xFF));
         }
         return hex.toString();
+    }
+
+    private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
+
+    public static String sign(String method, String date, String path, String bucket, String userName, String password, String md5) throws UpException {
+
+        StringBuilder sb = new StringBuilder();
+        String sp = "&";
+        sb.append(method);
+        sb.append(sp);
+        sb.append("/" + bucket + path);
+
+        sb.append(sp);
+        sb.append(date);
+
+        if (md5 != null && md5.length() > 0) {
+            sb.append(sp);
+            sb.append(md5);
+        }
+        String raw = sb.toString().trim();
+        byte[] hmac = null;
+        try {
+            hmac = calculateRFC2104HMACRaw(password, raw);
+        } catch (Exception e) {
+            throw new UpException("calculate SHA1 wrong.");
+        }
+
+        if (hmac != null) {
+            return "UPYUN " + userName + ":" + Base64Coder.encodeLines(hmac).trim();
+        }
+
+        return null;
+    }
+
+    public static String sign(String method, String date, String path, String userName, String password, String md5) throws UpException {
+
+        StringBuilder sb = new StringBuilder();
+        String sp = "&";
+        sb.append(method);
+        sb.append(sp);
+        sb.append(path);
+
+        sb.append(sp);
+        sb.append(date);
+
+        if (md5 != null && md5.length() > 0) {
+            sb.append(sp);
+            sb.append(md5);
+        }
+        String raw = sb.toString().trim();
+        byte[] hmac = null;
+        try {
+            hmac = calculateRFC2104HMACRaw(password, raw);
+        } catch (Exception e) {
+            throw new UpException("calculate SHA1 wrong.");
+        }
+
+        if (hmac != null) {
+            return "UPYUN " + userName + ":" + Base64Coder.encodeLines(hmac).trim();
+        }
+
+        return null;
+    }
+
+    public static byte[] calculateRFC2104HMACRaw(String key, String data)
+            throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+        byte[] keyBytes = key.getBytes();
+        SecretKeySpec signingKey = new SecretKeySpec(keyBytes, HMAC_SHA1_ALGORITHM);
+
+        // Get an hmac_sha1 Mac instance and initialize with the signing key
+        Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+        mac.init(signingKey);
+        // Compute the hmac on input data bytes
+        return mac.doFinal(data.getBytes());
     }
 }
