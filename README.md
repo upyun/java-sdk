@@ -494,27 +494,13 @@ public Map<String, String> getFileInfo(String filePath);
 ### 初始化 FormUploader
 
 ```java
-	FormUploader uploader = new FormUploader(BUCKET_NAME, APIKEY, null);
-	FormUploader uploader = new FormUploader(BUCKET_NAME, null, signatureListener);
+ 	public FormUploader(String bucketName, String userName, String password) 
 ```
 参数说明：
 
-* `BUCKET_NAME `	 空间名
-* `APIKEY `  表单密匙
-* `signatureListener `  签名回调
-
-两种初始化方法任选一种，可以将表单密匙保存在本地，也可在签名回调中访问服务器获取签名。
-`signatureListener` 回调接口规则如下：
-
-```java
-	SignatureListener signatureListener=new SignatureListener() {
-    	@Override
-    	public String getSignature(String raw) {
-        	return UpYunUtils.md5(raw+KEY);
-    	}
-	};
-```
-将参数 `raw` 传给后台服务器和表单密匙连接后做一次 md5 运算返回结果。
+* `bucketName `	 空间名
+* `userName `  操作员
+* `password `  密码
 
 **可选属性：**
 
