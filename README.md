@@ -1,18 +1,26 @@
 # UPYUN Java SDK
 
-[![Build Status](https://travis-ci.org/upyun/java-sdk.svg?branch=master)](https://travis-ci.org/upyun/java-sdk)
+ [ ![Download](https://api.bintray.com/packages/bintray/jcenter/com.upyun%3Ajava-sdk/images/download.svg) ](https://bintray.com/bintray/jcenter/com.upyun%3Ajava-sdk/_latestVersion)
 
 又拍云存储 Java SDK，基于 [又拍云存储 HTTP REST API 接口](http://docs.upyun.com/api/rest_api/) ， [又拍云 HTTP FORM API 接口](http://docs.upyun.com/api/form_api/) 和 [又拍云云处理文档 ](http://docs.upyun.com/cloud/)开发，适用于 Java 7 及以上版本。
 
 ## Maven 安装
 
-```
+```maven
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
   <version>3.14</version>
 </dependency>
 
+```
+
+## Gradle 安装
+
+```gradle
+dependencies {
+    compile 'com.upyun:java-sdk:LATEST_VERSION'
+}
 ```
 
 **更新说明**
