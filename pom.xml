@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.upyun</groupId>
     <artifactId>java-sdk</artifactId>
-    <version>3.16-SNAPSHOT</version>
+    <version>3.16</version>
     <packaging>jar</packaging>
     <name>Java SDK</name>
     <description>UpYun Java SDK</description>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>3.4.1</version>
+            <version>3.8.1</version>
         </dependency>
     </dependencies>
 
