@@ -37,7 +37,7 @@
     </distributionManagement>
 
     <url>https://github.com/upyun/java-sdk</url>
-
+123abcMM
     <scm>
         <connection>scm:git:git://github.com/upyun/java-sdk.git</connection>
         <developerConnection>scm:git:git@github.com:upyun/java-sdk.git</developerConnection>

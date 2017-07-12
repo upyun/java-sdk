@@ -341,12 +341,19 @@ public class ResumeUploader {
 
     private void callRequest(Request request) throws IOException, UpException {
 
+
         currentCall = mClient.newCall(request);
 
         Response response = currentCall.execute();
         if (!response.isSuccessful()) {
-            uuid = null;
-            throw new UpException(response.body().string());
+            int x_error_code = Integer.parseInt(response.header("X-Error-Code", "-1"));
+            if (x_error_code != 40011061 && x_error_code != 40011059) {
+                uuid = null;
+                throw new UpException(response.body().string());
+            } else {
+                nextPartIndex = Integer.parseInt(response.header(X_UPYUN_NEXT_PART_ID, "-2"));
+                return;
+            }
         }
 
         uuid = response.header(X_UPYUN_MULTI_UUID, "");
