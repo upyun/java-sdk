@@ -63,10 +63,9 @@ public class AsyncProcessHandler {
         conn.setDoOutput(true);
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
-        conn.setRequestProperty("Date", date);
 
         // 设置时间
-        conn.setRequestProperty(DATE, getGMTDate());
+        conn.setRequestProperty(DATE, date);
         // 设置签名
         conn.setRequestProperty(AUTHORIZATION,
                 sign("POST", "/pretreatment/", date, params));

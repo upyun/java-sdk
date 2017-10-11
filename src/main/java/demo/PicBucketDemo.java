@@ -7,6 +7,7 @@ import java.util.Map;
 
 import main.java.com.UpYun;
 import main.java.com.UpYun.PARAMS;
+import main.java.com.upyun.UpException;
 
 /**
  * 图片类空间的demo，一般性操作参考文件空间的demo（FileBucketDemo.java）
@@ -44,7 +45,7 @@ public class PicBucketDemo {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException,UpException {
 
 		// 初始化空间
 		upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
@@ -87,7 +88,7 @@ public class PicBucketDemo {
 	 * 
 	 * @throws IOException
 	 */
-	public static void testWriteFile() throws IOException {
+	public static void testWriteFile() throws IOException,UpException {
 
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + PIC_NAME;
@@ -137,7 +138,7 @@ public class PicBucketDemo {
 	 * 
 	 * @throws IOException
 	 */
-	public static void testGmkerl() throws IOException {
+	public static void testGmkerl() throws IOException,UpException {
 
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + "gmkerl.jpg";
@@ -178,7 +179,7 @@ public class PicBucketDemo {
 	 * 
 	 * @throws IOException
 	 */
-	public static void testRotate() throws IOException {
+	public static void testRotate() throws IOException,UpException {
 
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + "rotate.jpg";
@@ -206,7 +207,7 @@ public class PicBucketDemo {
 	 * 
 	 * @throws IOException
 	 */
-	public static void testCrop() throws IOException {
+	public static void testCrop() throws IOException,UpException {
 
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + "crop.jpg";

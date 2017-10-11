@@ -10,6 +10,7 @@ import java.util.Map;
 import main.java.com.UpYun;
 import main.java.com.UpYun.PARAMS;
 
+import main.java.com.upyun.UpException;
 import org.junit.Test;
 
 public class TestPicBucket {
@@ -31,7 +32,7 @@ public class TestPicBucket {
 
 	// 测试图片文件测试
 	@Test
-	public void testWritePic() throws IOException {
+	public void testWritePic() throws IOException,UpException {
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + PIC_NAME;
 
@@ -72,7 +73,7 @@ public class TestPicBucket {
 
 	// 制作图片缩略图测试
 	@Test
-	public void testGmkerl() throws IOException {
+	public void testGmkerl() throws IOException,UpException {
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + "gmkerl.jpg";
 
@@ -107,7 +108,7 @@ public class TestPicBucket {
 
 	// 图片旋转测试
 	@Test
-	public void testRotate() throws IOException {
+	public void testRotate() throws IOException,UpException {
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + "rotate.jpg";
 
@@ -129,7 +130,7 @@ public class TestPicBucket {
 
 	// 图片裁剪测试
 	@Test
-	public void testGrop() throws IOException {
+	public void testGrop() throws IOException,UpException{
 		// 要传到upyun后的文件路径
 		String filePath = DIR_ROOT + "crop.jpg";
 

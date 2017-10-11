@@ -1,18 +1,13 @@
 package main.java.com;
 
+import main.java.com.upyun.UpAPIException;
 import main.java.com.upyun.UpException;
 import main.java.com.upyun.UpYunUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -235,10 +230,9 @@ public class UpYun {
     /**
      * 获取总体空间的占用量
      *
-     * @param path 目标路径
      * @return 空间占用量，失败时返回 -1
      */
-    public long getBucketUsage() {
+    public long getBucketUsage() throws IOException, UpException {
         long usage = -1;
 
         String result = HttpAction(METHOD_GET, formatPath("/") + "/?usage");
@@ -261,7 +255,7 @@ public class UpYun {
      * @return 空间占用量，失败时返回 -1
      */
     @Deprecated
-    public long getFolderUsage(String path) {
+    public long getFolderUsage(String path) throws IOException, UpException {
 
         long usage = -1;
 
@@ -285,7 +279,7 @@ public class UpYun {
      * @param datas    文件内容
      * @return true or false
      */
-    public boolean writeFile(String filePath, byte[] datas) {
+    public boolean writeFile(String filePath, byte[] datas) throws IOException, UpException {
         return writeFile(filePath, datas, false, null);
     }
 
@@ -297,7 +291,7 @@ public class UpYun {
      * @param auto     是否自动创建父级目录(最多10级)
      * @return true or false
      */
-    public boolean writeFile(String filePath, byte[] datas, boolean auto) {
+    public boolean writeFile(String filePath, byte[] datas, boolean auto) throws IOException, UpException {
         return writeFile(filePath, datas, auto, null);
     }
 
@@ -311,7 +305,7 @@ public class UpYun {
      * @return true or false
      */
     public boolean writeFile(String filePath, byte[] datas, boolean auto,
-                             Map<String, String> params) {
+                             Map<String, String> params) throws IOException, UpException {
 
         return HttpAction(METHOD_PUT, formatPath(filePath), datas, null, auto,
                 params) != null;
@@ -321,10 +315,10 @@ public class UpYun {
      * 上传文件
      *
      * @param filePath 文件路径（包含文件名）
-     * @param String   datas 文件内容
+     * @param datas    datas 文件内容
      * @return true or false
      */
-    public boolean writeFile(String filePath, String datas) {
+    public boolean writeFile(String filePath, String datas) throws IOException, UpException {
         return writeFile(filePath, datas, false, null);
     }
 
@@ -332,11 +326,11 @@ public class UpYun {
      * 上传文件
      *
      * @param filePath 文件路径（包含文件名）
-     * @param String   datas 文件内容
+     * @param datas    datas 文件内容
      * @param auto     是否自动创建父级目录(最多10级)
      * @return true or false
      */
-    public boolean writeFile(String filePath, String datas, boolean auto) {
+    public boolean writeFile(String filePath, String datas, boolean auto) throws IOException, UpException {
         return writeFile(filePath, datas, auto, null);
     }
 
@@ -344,23 +338,15 @@ public class UpYun {
      * 上传文件
      *
      * @param filePath 文件路径（包含文件名）
-     * @param String   datas 文件内容
+     * @param datas    datas 文件内容
      * @param auto     是否自动创建父级目录(最多10级)
      * @param params   额外参数
      * @return true or false
      */
     public boolean writeFile(String filePath, String datas, boolean auto,
-                             Map<String, String> params) {
+                             Map<String, String> params) throws IOException, UpException {
 
-        boolean result = false;
-
-        try {
-            result = writeFile(filePath, datas.getBytes(UTF8), auto, params);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
+        return writeFile(filePath, datas.getBytes(UTF8), auto, params);
     }
 
     /**
@@ -371,7 +357,7 @@ public class UpYun {
      * @return true or false
      * @throws IOException
      */
-    public boolean writeFile(String filePath, File file) throws IOException {
+    public boolean writeFile(String filePath, File file) throws IOException, UpException {
         return writeFile(filePath, file, false, null);
     }
 
@@ -385,7 +371,7 @@ public class UpYun {
      * @throws IOException
      */
     public boolean writeFile(String filePath, File file, boolean auto)
-            throws IOException {
+            throws IOException, UpException {
         return writeFile(filePath, file, auto, null);
     }
 
@@ -400,7 +386,7 @@ public class UpYun {
      * @throws IOException
      */
     public boolean writeFile(String filePath, File file, boolean auto,
-                             Map<String, String> params) throws IOException {
+                             Map<String, String> params) throws IOException, UpException {
 
         filePath = formatPath(filePath);
 
@@ -408,97 +394,86 @@ public class UpYun {
         OutputStream os = null;
         HttpURLConnection conn = null;
 
-        try {
-            // 读取待上传的文件
-            is = new FileInputStream(file);
+//        try {
+        // 读取待上传的文件
+        is = new FileInputStream(file);
 
-            // 获取链接
-            URL url = new URL("http://" + apiDomain + filePath);
-            conn = (HttpURLConnection) url.openConnection();
+        // 获取链接
+        URL url = new URL("http://" + apiDomain + filePath);
+        conn = (HttpURLConnection) url.openConnection();
 
-            // 设置必要参数
-            conn.setConnectTimeout(timeout);
-            conn.setRequestMethod(METHOD_PUT);
-            conn.setUseCaches(false);
-            conn.setDoOutput(true);
-            conn.setChunkedStreamingMode(0);
+        // 设置必要参数
+        conn.setConnectTimeout(timeout);
+        conn.setRequestMethod(METHOD_PUT);
+        conn.setUseCaches(false);
+        conn.setDoOutput(true);
+        conn.setChunkedStreamingMode(0);
 
-            String date = getGMTDate();
+        String date = getGMTDate();
 
-            // 设置时间
-            conn.setRequestProperty(DATE, date);
+        // 设置时间
+        conn.setRequestProperty(DATE, date);
 
-            // 设置文件的 MD5 参数
-            if (!isEmpty(this.contentMD5)) {
-                conn.setRequestProperty(CONTENT_MD5, this.contentMD5);
-            }
+        // 设置文件的 MD5 参数
+        if (!isEmpty(this.contentMD5)) {
+            conn.setRequestProperty(CONTENT_MD5, this.contentMD5);
+        }
 
-            // 设置签名
+        // 设置签名
 //            conn.setRequestProperty(AUTHORIZATION,
 //                    sign(conn, filePath, file.length()));
 
-            conn.setRequestProperty(AUTHORIZATION,
-                    UpYunUtils.sign(METHOD_PUT, date, filePath, userName, password, contentMD5).trim());
-            this.contentMD5 = null;
+        conn.setRequestProperty(AUTHORIZATION,
+                UpYunUtils.sign(METHOD_PUT, date, filePath, userName, password, contentMD5).trim());
+        this.contentMD5 = null;
 
-            // 设置文件的访问密钥
-            if (!isEmpty(this.fileSecret)) {
-                conn.setRequestProperty(CONTENT_SECRET, this.fileSecret);
-                this.fileSecret = null;
-            }
+        // 设置文件的访问密钥
+        if (!isEmpty(this.fileSecret)) {
+            conn.setRequestProperty(CONTENT_SECRET, this.fileSecret);
+            this.fileSecret = null;
+        }
 
-            // 是否自动创建父级目录
-            if (auto) {
-                conn.setRequestProperty(MKDIR, "true");
-            }
+        // 是否自动创建父级目录
+        if (auto) {
+            conn.setRequestProperty(MKDIR, "true");
+        }
 
-            // 设置额外的参数，如图片缩略图等
-            if (params != null && !params.isEmpty()) {
+        // 设置额外的参数，如图片缩略图等
+        if (params != null && !params.isEmpty()) {
 
-                for (Map.Entry<String, String> param : params.entrySet()) {
-                    conn.setRequestProperty(param.getKey(), param.getValue());
-                }
-            }
-
-            // 创建链接
-            conn.connect();
-
-            os = conn.getOutputStream();
-            byte[] data = new byte[4096];
-            int temp = 0;
-
-            // 上传文件内容
-            while ((temp = is.read(data)) != -1) {
-                os.write(data, 0, temp);
-            }
-
-            // 获取返回的信息
-            getText(conn, false);
-
-            // 上传成功
-            return true;
-
-        } catch (Exception e) {
-            if (debug)
-                e.printStackTrace();
-
-            // 上传失败
-            return false;
-        } finally {
-
-            if (os != null) {
-                os.close();
-                os = null;
-            }
-            if (is != null) {
-                is.close();
-                is = null;
-            }
-            if (conn != null) {
-                conn.disconnect();
-                conn = null;
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                conn.setRequestProperty(param.getKey(), param.getValue());
             }
         }
+
+        // 创建链接
+        conn.connect();
+
+        os = conn.getOutputStream();
+        byte[] data = new byte[4096];
+        int temp = 0;
+
+        // 上传文件内容
+        while ((temp = is.read(data)) != -1) {
+            os.write(data, 0, temp);
+        }
+        // 获取返回的信息
+        getText(conn, false);
+
+        if (os != null) {
+            os.close();
+            os = null;
+        }
+        if (is != null) {
+            is.close();
+            is = null;
+        }
+        if (conn != null) {
+            conn.disconnect();
+            conn = null;
+        }
+        // 上传成功
+        return true;
     }
 
     /**
@@ -507,7 +482,7 @@ public class UpYun {
      * @param filePath 文件路径（包含文件名）
      * @return 文件内容 或 null
      */
-    public String readFile(String filePath) {
+    public String readFile(String filePath) throws IOException, UpException {
         return HttpAction(METHOD_GET, formatPath(filePath));
     }
 
@@ -518,7 +493,7 @@ public class UpYun {
      * @param file     临时文件
      * @return true or false
      */
-    public boolean readFile(String filePath, File file) {
+    public boolean readFile(String filePath, File file) throws IOException, UpException {
 
         String result = HttpAction(METHOD_GET, formatPath(filePath), null,
                 file, false);
@@ -532,7 +507,7 @@ public class UpYun {
      * @param filePath 文件路径（包含文件名）
      * @return 文件信息 或 null
      */
-    public Map<String, String> getFileInfo(String filePath) {
+    public Map<String, String> getFileInfo(String filePath) throws IOException, UpException {
 
         HttpAction(METHOD_HEAD, formatPath(filePath));
 
@@ -555,7 +530,7 @@ public class UpYun {
      * @param filePath 文件路径（包含文件名）
      * @return true or false
      */
-    public boolean deleteFile(String filePath) {
+    public boolean deleteFile(String filePath) throws IOException, UpException {
 
         return HttpAction(METHOD_DELETE, formatPath(filePath)) != null;
     }
@@ -566,7 +541,7 @@ public class UpYun {
      * @param path 目录路径
      * @return true or false
      */
-    public boolean mkDir(String path) {
+    public boolean mkDir(String path) throws IOException, UpException {
         return mkDir(path, false);
     }
 
@@ -577,7 +552,7 @@ public class UpYun {
      * @param auto 是否自动创建父级目录(最多10级)
      * @return true or false
      */
-    public boolean mkDir(String path, boolean auto) {
+    public boolean mkDir(String path, boolean auto) throws IOException, UpException {
 
         Map<String, String> params = new HashMap<String, String>(1);
         params.put(PARAMS.KEY_MAKE_DIR.getValue(), "true");
@@ -594,7 +569,7 @@ public class UpYun {
      * @param path 目录路径
      * @return List<FolderItem> 或 null
      */
-    public List<FolderItem> readDir(String path) {
+    public List<FolderItem> readDir(String path) throws IOException, UpException {
 
         String result = HttpAction(METHOD_GET, formatPath(path) + SEPARATOR);
 
@@ -619,7 +594,7 @@ public class UpYun {
      * @param path 目录路径
      * @return true or false
      */
-    public boolean rmDir(String path) {
+    public boolean rmDir(String path) throws IOException, UpException {
         return HttpAction(METHOD_DELETE, formatPath(path)) != null;
     }
 
@@ -758,7 +733,7 @@ public class UpYun {
      * @param uri    请求地址
      * @return 请求结果（字符串）或 null
      */
-    private String HttpAction(String method, String uri) {
+    private String HttpAction(String method, String uri) throws IOException, UpException {
         return HttpAction(method, uri, null, null, false);
     }
 
@@ -773,7 +748,7 @@ public class UpYun {
      * @return 请求结果（字符串）或 null
      */
     private String HttpAction(String method, String uri, byte[] datas,
-                              File outFile, boolean auto) {
+                              File outFile, boolean auto) throws IOException, UpException {
 
         return HttpAction(method, uri, datas, outFile, auto, null);
     }
@@ -790,7 +765,7 @@ public class UpYun {
      * @return 请求结果（字符串）或 null
      */
     private String HttpAction(String method, String uri, byte[] datas,
-                              File outFile, boolean auto, Map<String, String> params) {
+                              File outFile, boolean auto, Map<String, String> params) throws IOException, UpException {
 
         String result = null;
 
@@ -798,128 +773,117 @@ public class UpYun {
         OutputStream os = null;
         InputStream is = null;
 
-        try {
-            // 获取链接
-            URL url = new URL("http://" + apiDomain + uri);
-            conn = (HttpURLConnection) url.openConnection();
+        // 获取链接
+        URL url = new URL("http://" + apiDomain + uri);
+        conn = (HttpURLConnection) url.openConnection();
 
-            // 设置必要参数
-            conn.setConnectTimeout(timeout);
-            conn.setRequestMethod(method);
-            conn.setUseCaches(false);
-            if (!method.equals(METHOD_DELETE) && !method.equals(METHOD_HEAD) && !method.equals(METHOD_GET)) {
-                conn.setDoOutput(true);
+        // 设置必要参数
+        conn.setConnectTimeout(timeout);
+        conn.setRequestMethod(method);
+        conn.setUseCaches(false);
+        if (!method.equals(METHOD_DELETE) && !method.equals(METHOD_HEAD) && !method.equals(METHOD_GET)) {
+            conn.setDoOutput(true);
+        }
+
+        String date = getGMTDate();
+
+        // 设置时间
+        conn.setRequestProperty(DATE, date);
+        conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
+
+        // 是否自动创建父级目录
+        if (auto) {
+            conn.setRequestProperty(MKDIR, "true");
+        }
+
+        long contentLength = 0;
+
+        if (datas == null) {
+            conn.setRequestProperty(CONTENT_LENGTH, "0");
+        } else {
+            contentLength = datas.length;
+            conn.setRequestProperty(CONTENT_LENGTH,
+                    String.valueOf(datas.length));
+
+            // 设置文件的 MD5 参数
+            if (!isEmpty(this.contentMD5)) {
+                conn.setRequestProperty(CONTENT_MD5, this.contentMD5);
             }
-
-            String date = getGMTDate();
-
-            // 设置时间
-            conn.setRequestProperty(DATE, date);
-            conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
-
-            // 是否自动创建父级目录
-            if (auto) {
-                conn.setRequestProperty(MKDIR, "true");
-            }
-
-            long contentLength = 0;
-
-            if (datas == null) {
-                conn.setRequestProperty(CONTENT_LENGTH, "0");
-            } else {
-                contentLength = datas.length;
-                conn.setRequestProperty(CONTENT_LENGTH,
-                        String.valueOf(datas.length));
-
-                // 设置文件的 MD5 参数
-                if (!isEmpty(this.contentMD5)) {
-                    conn.setRequestProperty(CONTENT_MD5, this.contentMD5);
-                }
-                // 设置文件的访问密钥
-                if (!isEmpty(this.fileSecret)) {
-                    conn.setRequestProperty(CONTENT_SECRET, this.fileSecret);
-                    this.fileSecret = null;
-                }
-            }
-
-            // 设置签名
-//            conn.setRequestProperty(AUTHORIZATION,
-//                    sign(conn, uri, contentLength));
-
-            conn.setRequestProperty(AUTHORIZATION,
-                    UpYunUtils.sign(method, date, uri, userName, password, contentMD5));
-            this.contentMD5 = null;
-            // 是否是创建文件目录
-            boolean isFolder = false;
-
-            // 设置额外的参数，如图片缩略图等
-            if (params != null && !params.isEmpty()) {
-
-                isFolder = !isEmpty(params.get(PARAMS.KEY_MAKE_DIR.getValue()));
-
-                for (Map.Entry<String, String> param : params.entrySet()) {
-                    conn.setRequestProperty(param.getKey(), param.getValue());
-                }
-            }
-
-            // 创建链接
-            conn.connect();
-
-            if (datas != null) {
-                os = conn.getOutputStream();
-                os.write(datas);
-                os.flush();
-            }
-
-            if (isFolder) {
-                os = conn.getOutputStream();
-                os.flush();
-            }
-
-            if (outFile == null) {
-
-                result = getText(conn, METHOD_HEAD.equals(method));
-
-            } else {
-                result = "";
-
-                os = new FileOutputStream(outFile);
-                byte[] data = new byte[4096];
-                int temp = 0;
-
-                is = conn.getInputStream();
-
-                while ((temp = is.read(data)) != -1) {
-                    os.write(data, 0, temp);
-                }
-            }
-        } catch (Exception e) {
-            if (debug)
-                e.printStackTrace();
-
-            // 操作失败
-            return null;
-        } finally {
-
-            try {
-                if (os != null) {
-                    os.close();
-                    os = null;
-                }
-                if (is != null) {
-                    is.close();
-                    is = null;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (conn != null) {
-                conn.disconnect();
-                conn = null;
+            // 设置文件的访问密钥
+            if (!isEmpty(this.fileSecret)) {
+                conn.setRequestProperty(CONTENT_SECRET, this.fileSecret);
+                this.fileSecret = null;
             }
         }
 
+        // 设置签名
+//            conn.setRequestProperty(AUTHORIZATION,
+//                    sign(conn, uri, contentLength));
+
+        conn.setRequestProperty(AUTHORIZATION,
+                UpYunUtils.sign(method, date, uri, userName, password, contentMD5));
+        this.contentMD5 = null;
+        // 是否是创建文件目录
+        boolean isFolder = false;
+
+        // 设置额外的参数，如图片缩略图等
+        if (params != null && !params.isEmpty()) {
+
+            isFolder = !isEmpty(params.get(PARAMS.KEY_MAKE_DIR.getValue()));
+
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                conn.setRequestProperty(param.getKey(), param.getValue());
+            }
+        }
+
+        // 创建链接
+        conn.connect();
+
+        if (datas != null) {
+            os = conn.getOutputStream();
+            os.write(datas);
+            os.flush();
+        }
+
+        if (isFolder) {
+            os = conn.getOutputStream();
+            os.flush();
+        }
+
+        if (outFile == null) {
+
+            result = getText(conn, METHOD_HEAD.equals(method));
+
+        } else {
+            result = "";
+
+            os = new FileOutputStream(outFile);
+            byte[] data = new byte[4096];
+            int temp = 0;
+
+            is = conn.getInputStream();
+
+            while ((temp = is.read(data)) != -1) {
+                os.write(data, 0, temp);
+            }
+        }
+        try {
+            if (os != null) {
+                os.close();
+                os = null;
+            }
+            if (is != null) {
+                is.close();
+                is = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (conn != null) {
+            conn.disconnect();
+            conn = null;
+        }
         return result;
     }
 
@@ -930,7 +894,7 @@ public class UpYun {
      * @return 字符串
      */
     private String getText(HttpURLConnection conn, boolean isHeadMethod)
-            throws IOException {
+            throws IOException, UpAPIException {
 
         StringBuilder text = new StringBuilder();
         fileType = null;
@@ -993,13 +957,14 @@ public class UpYun {
         }
 
         if (code >= 400)
-            throw new IOException(text.toString());
+            throw new UpAPIException(code, text.toString());
 
         return text.toString();
     }
 
     /**
      * 判断字符串是否为空
+     * getTextgetText
      *
      * @param str
      * @return 是否为空
@@ -1093,7 +1058,7 @@ public class UpYun {
          * 7)VALUE_FIX_SCALE("fix_scale")："等比例缩放"<br>
          * 8)VALUE_SQUARE("square")："方块图，固定高固定宽"<br>
          *
-         * @see 参数举例：http://wiki.upyun.com/index.php?title=缩略图方式差别举例
+         * @see ：http://wiki.upyun.com/index.php?title=缩略图方式差别举例
          */
         KEY_X_GMKERL_TYPE("x-gmkerl-type"),
 
@@ -1129,7 +1094,7 @@ public class UpYun {
          * <p>
          * 说明：使用该参数前需要创建好缩略图版本号；另外，使用该参数后将不保存原图，切忌。
          *
-         * @see http://wiki.upyun.com/index.php?title=如何创建自定义缩略图
+         * @see :http://wiki.upyun.com/index.php?title=如何创建自定义缩略图
          */
         KEY_X_GMKERL_THUMBNAIL("x-gmkerl-thumbnail"),
 
@@ -1141,7 +1106,7 @@ public class UpYun {
          * 说明：只接受"auto"，"90"，"180"，"270"四种参数，其中"auto"参数根据图片 EXIF
          * 中的信息进行自动扶正，若图片没有 EXIF 信息，则该参数无效。另外，使用该参数后将不保存原图，切忌。
          *
-         * @see http://wiki.upyun.com/index.php?title=图片旋转
+         * @see :http://wiki.upyun.com/index.php?title=图片旋转
          */
         KEY_X_GMKERL_ROTATE("x-gmkerl-rotate"),
 
@@ -1153,7 +1118,7 @@ public class UpYun {
          * 说明：参数格式为x,y,width,height，且需要满足 x >= 0 && y >=0 && width > 0 && height
          * > 0
          *
-         * @see http://wiki.upyun.com/index.php?title=图片裁剪
+         * @see :http://wiki.upyun.com/index.php?title=图片裁剪
          */
         KEY_X_GMKERL_CROP("x-gmkerl-crop"),
 
