@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>3.16</version>
+  <version>3.18</version>
 </dependency>
 
 ```
@@ -619,7 +619,7 @@ public Map<String, String> getFileInfo(String filePath);
 `paramsMap` 添加键值对，`Params.APPS` 为 key，作图规则见[上传作图 API](http://docs.upyun.com/cloud/image/#_2)
 
 <a name="云处理"></a>
-##云处理
+## 处理
 
 <a name="异步音视频处理"></a>
 ### 异步音视频处理
@@ -707,10 +707,10 @@ public Map<String, String> getFileInfo(String filePath);
 示例可见[ testMediaResult ](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/MediaHandlerDemo.java)。
 
 <a name="压缩解压缩"></a>
-###压缩解压缩
+### 压缩解压缩
 
 <a name="初始化 CompressHandler"></a>
-####初始化 CompressHandler
+#### 初始化 CompressHandler
 
 ```java
 	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
@@ -723,7 +723,7 @@ public Map<String, String> getFileInfo(String filePath);
 
 
 <a name="发起异步处理请求"></a>
-####发起异步处理请求
+#### 发起异步处理请求
 
 ```java
 	 public Result process(Map<String, Object> params) throws IOException 
@@ -737,10 +737,10 @@ public Map<String, String> getFileInfo(String filePath);
 详细示例见[CompressDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/CompressDemo.java)
 
 <a name="异步文件拉取"></a>
-###异步文件拉取
+### 异步文件拉取
 
 <a name="初始化 CompressHandler"></a>
-####初始化 CompressHandler
+#### 初始化 CompressHandler
 
 ```java
 	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
@@ -748,7 +748,7 @@ public Map<String, String> getFileInfo(String filePath);
 参数说明：同上
 
 <a name="发起异步处理请求"></a>
-####发起异步处理请求
+#### 发起异步处理请求
 
 ```java
 	 public Result process(Map<String, Object> params) throws IOException 
