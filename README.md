@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>3.18</version>
+  <version>3.20</version>
 </dependency>
 
 ```
