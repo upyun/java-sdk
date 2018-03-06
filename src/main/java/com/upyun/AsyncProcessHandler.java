@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,7 +45,7 @@ public class AsyncProcessHandler {
      */
     protected Result process(Map<String, Object> params) throws IOException, UpException {
 
-        params.put(CompressHandler.Params.TASKS, Base64Coder.encodeString(params.get(CompressHandler.Params.TASKS).toString()));
+        params.put(CompressHandler.Params.TASKS, URLEncoder.encode(Base64Coder.encodeString(params.get(CompressHandler.Params.TASKS).toString()), "UTF-8"));
 
         InputStream is = null;
         OutputStream os;
