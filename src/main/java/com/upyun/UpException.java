@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 public class UpException extends Exception {
     public UpException(String msg) {

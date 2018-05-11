@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class UpYunUtils {
 
-    public static final String VERSION = "upyun-java-sdk/3.11";
+    public static final String VERSION = "upyun-java-sdk/4.0.1";
 
     /**
      * 计算policy

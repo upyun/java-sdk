@@ -1,7 +1,7 @@
-package main.java.demo;
+package demo;
 
-import main.java.com.upyun.ResumeUploader;
-import main.java.com.upyun.UpException;
+import com.upyun.ResumeUploader;
+import com.upyun.UpException;
 
 import java.io.IOException;
 

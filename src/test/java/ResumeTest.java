@@ -1,8 +1,5 @@
-package test.java;
-
-
-import main.java.com.upyun.ResumeUploader;
-import main.java.com.upyun.UpException;
+import com.upyun.ResumeUploader;
+import com.upyun.UpException;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,6 +1,4 @@
-package test.java;
-
-import main.java.com.upyun.*;
+import com.upyun.*;
 import org.junit.Test;
 
 import java.io.File;

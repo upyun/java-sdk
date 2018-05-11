@@ -1,11 +1,11 @@
-package main.java.demo;
+package demo;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import main.java.com.UpYun;
-import main.java.com.upyun.UpException;
+import com.UpYun;
+import com.upyun.UpException;
 
 /**
  * 文件类空间的demo

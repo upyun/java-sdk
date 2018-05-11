@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 public class UpAPIException extends UpException {
     public int statusCode;

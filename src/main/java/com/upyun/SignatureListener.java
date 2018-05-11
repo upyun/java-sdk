@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 public interface SignatureListener {
     String getSignature(String raw);

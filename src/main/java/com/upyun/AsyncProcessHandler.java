@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 import org.json.JSONArray;
 
@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static main.java.com.upyun.UpYunUtils.md5;
+import static com.upyun.UpYunUtils.md5;
 
 public class AsyncProcessHandler {
 

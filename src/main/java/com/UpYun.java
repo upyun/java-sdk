@@ -1,24 +1,16 @@
-package main.java.com;
+package com;
 
-import main.java.com.upyun.UpAPIException;
-import main.java.com.upyun.UpException;
-import main.java.com.upyun.UpYunUtils;
+import com.upyun.UpAPIException;
+import com.upyun.UpException;
+import com.upyun.UpYunUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 public class UpYun {
 
@@ -387,16 +379,27 @@ public class UpYun {
      */
     public boolean writeFile(String filePath, File file, boolean auto,
                              Map<String, String> params) throws IOException, UpException {
+        
+        InputStream inputStream = new FileInputStream(file);
+        return writeFile(filePath, inputStream, auto, params);
+    }
 
+    /**
+     * 上传文件
+     *
+     * @param filePath    文件路径（包含文件名）
+     * @param inputStream 待上传的 inputStream
+     * @param auto        是否自动创建父级目录(最多10级)
+     * @param params      额外参数
+     * @return true or false
+     * @throws IOException
+     */
+    public boolean writeFile(String filePath, InputStream inputStream, boolean auto,
+                             Map<String, String> params) throws IOException, UpException {
         filePath = formatPath(filePath);
 
-        InputStream is = null;
         OutputStream os = null;
         HttpURLConnection conn = null;
-
-//        try {
-        // 读取待上传的文件
-        is = new FileInputStream(file);
 
         // 获取链接
         URL url = new URL("http://" + apiDomain + filePath);
@@ -454,7 +457,7 @@ public class UpYun {
         int temp = 0;
 
         // 上传文件内容
-        while ((temp = is.read(data)) != -1) {
+        while ((temp = inputStream.read(data)) != -1) {
             os.write(data, 0, temp);
         }
         // 获取返回的信息
@@ -464,9 +467,9 @@ public class UpYun {
             os.close();
             os = null;
         }
-        if (is != null) {
-            is.close();
-            is = null;
+        if (inputStream != null) {
+            inputStream.close();
+            inputStream = null;
         }
         if (conn != null) {
             conn.disconnect();

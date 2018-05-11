@@ -1,13 +1,13 @@
-package main.java.demo;
+package demo;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import main.java.com.UpYun;
-import main.java.com.UpYun.PARAMS;
-import main.java.com.upyun.UpException;
+import com.UpYun;
+import com.UpYun.PARAMS;
+import com.upyun.UpException;
 
 /**
  * 图片类空间的demo，一般性操作参考文件空间的demo（FileBucketDemo.java）

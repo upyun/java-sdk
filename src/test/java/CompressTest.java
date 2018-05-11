@@ -1,8 +1,6 @@
-package test.java;
-
-import main.java.com.upyun.CompressHandler;
-import main.java.com.upyun.Result;
-import main.java.com.upyun.UpException;
+import com.upyun.CompressHandler;
+import com.upyun.Result;
+import com.upyun.UpException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;

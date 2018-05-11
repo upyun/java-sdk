@@ -1,9 +1,9 @@
-package main.java.demo;
+package demo;
 
-import main.java.com.upyun.CompressHandler;
-import main.java.com.upyun.MediaHandler;
-import main.java.com.upyun.Result;
-import main.java.com.upyun.UpException;
+import com.upyun.CompressHandler;
+import com.upyun.MediaHandler;
+import com.upyun.Result;
+import com.upyun.UpException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

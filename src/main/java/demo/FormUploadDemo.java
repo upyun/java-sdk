@@ -1,6 +1,6 @@
-package main.java.demo;
+package demo;
 
-import main.java.com.upyun.*;
+import com.upyun.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

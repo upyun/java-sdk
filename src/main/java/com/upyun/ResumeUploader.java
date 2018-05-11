@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 import okhttp3.*;
 import org.json.JSONObject;

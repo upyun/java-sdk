@@ -1,4 +1,4 @@
-package main.java.com.upyun;
+package com.upyun;
 
 import java.io.IOException;
 import java.io.InputStream;
