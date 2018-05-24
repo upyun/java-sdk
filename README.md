@@ -363,13 +363,13 @@ public Map<String, String> getFileInfo(String filePath);
 
 <a name="断点续传"></a>
 ### 断点续传
-初始化 UpResume
+初始化 ResumeUploader
 ```java
-	UpResume resume = new UpResume("空间名称", "操作员名称", "操作员密码")
+	ResumeUploader resume = new ResumeUploader("空间名称", "操作员名称", "操作员密码")
 ```
 设置上传进度监听
 ```java
-	 resume.setOnProgressListener(new UpResume.OnProgressListener()
+	 resume.setOnProgressListener(new ResumeUploader.OnProgressListener()
 ```
 设置 MD5 校验
 
