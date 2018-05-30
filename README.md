@@ -389,7 +389,7 @@ public Map<String, String> getFileInfo(String filePath);
 *  `params `	通用可选上传参数见文档 可为null
 
 **详细示例：** 
-见 [ResumeUploadDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ResumeUploadDemo)
+见 [ResumeUploadDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ResumeUploadDemo.java)
 
 <a name="图片处理接口"></a>
 ## 图片处理接口
