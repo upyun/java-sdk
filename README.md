@@ -281,7 +281,6 @@ public Map<String, String> getFileInfo(String filePath);
 
 ```Java
 	public long getBucketUsage();
-	public long getFolderUsage(String path);
 ```
 
 **举例说明：**
@@ -289,9 +288,6 @@ public Map<String, String> getFileInfo(String filePath);
 ```Java
     // 例1：获取整个空间的使用量情况
     long usage = upyun.getBucketUsage();
-    
-    // 例2：获取某个目录的使用量情况
-    long usage = upyun.getFolderUsage(dir);
 ```
 
 **返回值说明：**
