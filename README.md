@@ -279,7 +279,6 @@ public Map<String, String> getFileInfo(String filePath);
 
 ```Java
 	public long getBucketUsage();
-	public long getFolderUsage(String path);
 ```
 
 **举例说明：**
@@ -287,9 +286,6 @@ public Map<String, String> getFileInfo(String filePath);
 ```Java
     // 例1：获取整个空间的使用量情况
     long usage = upyun.getBucketUsage();
-    
-    // 例2：获取某个目录的使用量情况
-    long usage = upyun.getFolderUsage(dir);
 ```
 
 **返回值说明：**
@@ -416,7 +412,7 @@ public Map<String, String> getFileInfo(String filePath);
 *  `params `	通用可选上传参数见文档 可为null
 
 **详细示例：** 
-见 [ResumeUploadDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ResumeUploadDemo)
+见 [ResumeUploadDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ResumeUploadDemo.java)
 
 <a name="图片处理接口"></a>
 ## 图片处理接口
