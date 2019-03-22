@@ -30,7 +30,8 @@
   * [获取使用量信息](#获取使用量信息)
   * [下载文件](#下载文件)
   * [删除文件](#删除文件)
-  * [断点续传](#断点续传)
+  * [串行式断点续传](#串行式断点续传)
+  * [并行式断点续传](#并行式断点续传)
 * [图片处理接口](#图片处理接口)
   * [制作图片缩略图](#制作图片缩略图)
   * [图片裁剪](#图片裁剪)
@@ -42,16 +43,13 @@
   * [错误说明](#错误说明)
 * [云处理](#云处理)
   * [异步音视频处理](#异步音视频处理)
-     * [初始化 MediaHandler](#初始化 MediaHandler)
-  	  * [发起异步处理请求](#发起异步处理请求)
-  	  * [查询处理进度](#查询处理进度)
-  	  * [查询处理结果](#查询处理结果)
+  * [查询处理进度](#查询处理进度)
+  * [查询处理结果](#查询处理结果)
   * [压缩解压缩](#压缩解压缩)
-     * [初始化 CompressHandler](#初始化 CompressHandler)
-     * [发起异步处理请求](#发起异步处理请求)
   * [异步文件拉取](#异步文件拉取)
-     * [初始化 PullingHandler](#初始化 PullingHandler)
-     * [发起异步处理请求](#发起异步处理请求)
+  * [文档转换](#文档转换)
+  * [图片拼接](#图片拼接)
+
 
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
@@ -361,8 +359,8 @@ public Map<String, String> getFileInfo(String filePath);
     boolean result = upyun.deleteFile(filePath);
 ```
 
-<a name="断点续传"></a>
-### 断点续传
+<a name="串行式断点续传"></a>
+### 串行式断点续传
 初始化 ResumeUploader
 ```java
 	ResumeUploader resume = new ResumeUploader("空间名称", "操作员名称", "操作员密码")
@@ -376,6 +374,35 @@ public Map<String, String> getFileInfo(String filePath);
 ```java
 	resume.setCheckMD5(true);
 ```
+开始上传
+
+```java
+	public boolean upload(String filePath, String uploadPath,Map<String, String> params)	
+```
+<a name="并行式断点续传"></a>
+### 并行式断点续传
+初始化 ParallelUploader
+
+```java
+	ParallelUploader paralleUploader = new ParallelUploader("空间名称", "操作员名称", "操作员密码")
+```
+设置上传进度监听
+
+```java
+	 paralleUploader.setOnProgressListener(new ResumeUploader.OnProgressListener()
+```
+设置 MD5 校验
+
+```java
+	paralleUploader.setCheckMD5(true);
+```
+
+设置 并行数 校验
+
+```java
+	paralleUploader.setParalle(4);
+```
+
 开始上传
 
 ```java
@@ -624,7 +651,6 @@ public Map<String, String> getFileInfo(String filePath);
 <a name="异步音视频处理"></a>
 ### 异步音视频处理
 
-<a name="初始化 MediaHandler"></a>
 #### 初始化 MediaHandler
 ```java
 	MediaHandler handle = new MediaHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
@@ -643,7 +669,6 @@ public Map<String, String> getFileInfo(String filePath);
 	public void setTimeout(int timeout)
 ```
 
-<a name="发起异步处理请求"></a>
 ### 发起异步处理请求
 
 **方法原型：**
@@ -709,7 +734,6 @@ public Map<String, String> getFileInfo(String filePath);
 <a name="压缩解压缩"></a>
 ### 压缩解压缩
 
-<a name="初始化 CompressHandler"></a>
 #### 初始化 CompressHandler
 
 ```java
@@ -722,7 +746,6 @@ public Map<String, String> getFileInfo(String filePath);
 * `OPERATOR_PWD `  操作员密码
 
 
-<a name="发起异步处理请求"></a>
 #### 发起异步处理请求
 
 ```java
@@ -734,12 +757,11 @@ public Map<String, String> getFileInfo(String filePath);
 
 详细参数可见 [CompressHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/CompressHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/unzip/)。
 
-详细示例见[CompressDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/CompressDemo.java)
+详细示例见 [CompressDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/CompressDemo.java)
 
 <a name="异步文件拉取"></a>
 ### 异步文件拉取
 
-<a name="初始化 CompressHandler"></a>
 #### 初始化 CompressHandler
 
 ```java
@@ -747,7 +769,6 @@ public Map<String, String> getFileInfo(String filePath);
 ```
 参数说明：同上
 
-<a name="发起异步处理请求"></a>
 #### 发起异步处理请求
 
 ```java
@@ -759,7 +780,53 @@ public Map<String, String> getFileInfo(String filePath);
 
 详细参数可见 [PullingHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/PullingHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/spider/)。
 
-详细示例见[PullingDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/PullingDemo.java)
+详细示例见 [PullingDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/PullingDemo.java)
+
+<a name="文档转换"></a>
+### 文档转换
+
+#### 初始化 CompressHandler
+
+```java
+	ConvertHandler handle = new ConvertHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+```
+参数说明：同上
+
+#### 发起异步处理请求
+
+```java
+	 public Result process(Map<String, Object> params) throws IOException 
+```
+**参数说明：**
+
+* `params `  参数键值对
+
+详细参数可见 [ConvertHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/ConvertHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/uconvert/)。
+
+详细示例见 [JigsawDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ConvertDemo.java)
+
+<a name="图片拼接"></a>
+### 图片拼接
+
+#### 初始化 JigsawHandler
+
+```java
+	JigsawHandler handle = new JigsawHandler(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+```
+参数说明：同上
+
+#### 发起异步处理请求
+
+```java
+	 public Result process(Map<String, Object> params) throws IOException 
+```
+**参数说明：**
+
+* `params `  参数键值对
+
+详细参数可见 [JigsawHandler](https://github.com/upyun/java-sdk/blob/master/src/main/java/com/upyun/JigsawHandler.java) 或者[官网 API 文档](http://docs.upyun.com/cloud/async_image/)。
+
+详细示例见 [JigsawDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/JigsawDemo.java)
 
 
 <a name="错误说明"></a>

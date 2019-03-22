@@ -335,6 +335,7 @@ public class ResumeUploader {
             onProgressListener.onProgress(totalBlock, totalBlock);
         }
 
+        randomAccessFile.close();
         uuid = null;
         return true;
     }
@@ -348,6 +349,7 @@ public class ResumeUploader {
         if (!response.isSuccessful()) {
             int x_error_code = Integer.parseInt(response.header("X-Error-Code", "-1"));
             if (x_error_code != 40011061 && x_error_code != 40011059) {
+                randomAccessFile.close();
                 uuid = null;
                 throw new UpException(response.body().string());
             } else {

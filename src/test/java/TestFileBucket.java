@@ -1,7 +1,9 @@
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +12,9 @@ import com.upyun.UpException;
 import org.junit.Test;
 
 public class TestFileBucket {
-    private static final String BUCKET_NAME = "sdkfile";
-    private static final String OPERATOR_NAME = "tester";
-    private static final String OPERATOR_PWD = "grjxv2mxELR3";
+    private static final String BUCKET_NAME = "formtest";
+    private static final String OPERATOR_NAME = "one";
+    private static final String OPERATOR_PWD = "qwertyuiop";
 
     private UpYun upyun = new UpYun(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
@@ -64,28 +66,28 @@ public class TestFileBucket {
         // 保存在又拍云的文件路径：多级目录
         String filePath2 = DIR_MORE + FILE_NAME;
 
-		/*
+        /*
          * 上传方法1：文本内容直接上传
-		 */
+         */
         boolean result1 = upyun.writeFile(filePath, content);
         assertTrue(result1);
 
-		/*
+        /*
          * 上传方法2：文本内容直接上传，可自动创建父级目录（最多10级）
-		 */
+         */
         boolean result2 = upyun.writeFile(filePath2, content, true);
         assertTrue(result2);
 
-		/*
+        /*
          * 上传方法3：采用数据流模式上传文件（节省内存），可自动创建父级目录（最多10级）
-		 */
+         */
         File file = new File(SAMPLE_TXT_FILE);
         boolean result3 = upyun.writeFile(filePath, file, true);
         assertTrue(result3);
 
-		/*
-		 * 上传方法4：对待上传的文件设置 MD5 值，确保上传到 Upyun 的文件的完整性和正确性
-		 */
+        /*
+         * 上传方法4：对待上传的文件设置 MD5 值，确保上传到 Upyun 的文件的完整性和正确性
+         */
         File file4 = new File(SAMPLE_TXT_FILE);
         // 设置待上传文件的 Content-MD5 值
         // 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
@@ -144,15 +146,15 @@ public class TestFileBucket {
         // upyun空间下存在的文件的路径
         String filePath = DIR_ROOT + FILE_NAME;
 
-		/*
-		 * 方法1：直接读取文本内容
-		 */
+        /*
+         * 方法1：直接读取文本内容
+         */
         String datas = upyun.readFile(filePath);
         assertTrue(content.equals(datas));
 
-		/*
-		 * 方法2：下载文件，采用数据流模式下载文件（节省内存）
-		 */
+        /*
+         * 方法2：下载文件，采用数据流模式下载文件（节省内存）
+         */
         // 要写入的本地临时文件
         File file = File.createTempFile("upyunTempFile_", "");
 
@@ -180,6 +182,26 @@ public class TestFileBucket {
         String dirPath = DIR_MORE + FOLDER_NAME;
 
         boolean result = upyun.rmDir(dirPath);
+
+        assertTrue(result);
+    }
+
+    //复制文件测试
+    @Test
+    public void testCopyFile() throws IOException, UpException {
+        String filePath = DIR_ROOT + FILE_NAME;
+
+        boolean result = upyun.copyFile("/test.aa", "/" + BUCKET_NAME + filePath);
+
+        assertTrue(result);
+    }
+
+    //移动文件测试
+    @Test
+    public void testMoveFile() throws IOException, UpException {
+        String filePath = DIR_ROOT + FILE_NAME;
+
+        boolean result = upyun.moveFile("/test.aa", "/" + BUCKET_NAME + filePath);
 
         assertTrue(result);
     }

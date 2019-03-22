@@ -1,11 +1,13 @@
 package demo;
 
+import com.UpYun;
+import com.upyun.UpException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.UpYun;
-import com.upyun.UpException;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 文件类空间的demo
@@ -93,6 +95,12 @@ public class FileBucketDemo {
 
         // 9.删除目录
         testRmDir();
+
+        // 10.复制文件
+        testCopyFile();
+
+        // 9.移动文件
+        testMoveFile();
     }
 
     /**
@@ -259,6 +267,7 @@ public class FileBucketDemo {
 
         } else {
 
+
             for (int i = 0; i < items.size(); i++) {
                 System.out.println(items.get(i));
             }
@@ -282,6 +291,35 @@ public class FileBucketDemo {
 
         System.out.println("删除目录：" + dirPath + isSuccess(result));
         System.out.println();
+    }
+
+
+    /**
+     * 复制文件
+     *
+     * @throws IOException
+     * @throws UpException
+     */
+    public static void testCopyFile() throws IOException, UpException {
+        String filePath = DIR_ROOT + FILE_NAME;
+
+        boolean result = upyun.copyFile("/test.aa", "/" + BUCKET_NAME + filePath);
+
+        assertTrue(result);
+    }
+
+    /**
+     * 移动文件
+     *
+     * @throws IOException
+     * @throws UpException
+     */
+    public static void testMoveFile() throws IOException, UpException {
+        String filePath = DIR_ROOT + FILE_NAME;
+
+        boolean result = upyun.moveFile("/test.aa", "/" + BUCKET_NAME + filePath);
+
+        assertTrue(result);
     }
 
     private static String isSuccess(boolean result) {

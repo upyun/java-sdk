@@ -379,7 +379,7 @@ public class UpYun {
      */
     public boolean writeFile(String filePath, File file, boolean auto,
                              Map<String, String> params) throws IOException, UpException {
-        
+
         InputStream inputStream = new FileInputStream(file);
         return writeFile(filePath, inputStream, auto, params);
     }
@@ -602,6 +602,47 @@ public class UpYun {
     }
 
     /**
+     * 复制文件
+     *
+     * @param path       目标路径
+     * @param sourcePath 原路径
+     * @return
+     * @throws IOException
+     * @throws UpException
+     */
+    public boolean copyFile(String path, String sourcePath) throws IOException, UpException {
+
+
+        Map<String, String> params = new HashMap<String, String>(1);
+        params.put(PARAMS.KEY_X_UPYUN_COPY_SOURCE.getValue(), sourcePath);
+
+        String result = HttpAction(METHOD_PUT, formatPath(path), null, null,
+                false, params);
+
+        return result != null;
+    }
+
+    /**
+     * 复制文件
+     *
+     * @param path       目标路径
+     * @param sourcePath 原路径
+     * @return
+     * @throws IOException
+     * @throws UpException
+     */
+    public boolean moveFile(String path, String sourcePath) throws IOException, UpException {
+
+        Map<String, String> params = new HashMap<String, String>(1);
+        params.put(PARAMS.KEY_X_UPYUN_MOVE_SOURCE.getValue(), sourcePath);
+
+        String result = HttpAction(METHOD_PUT, formatPath(path), null, null,
+                false, params);
+
+        return result != null;
+    }
+
+    /**
      * 获取上传文件后的信息（仅图片空间有返回数据）
      *
      * @param key 信息字段名（x-upyun-width、x-upyun-height、x-upyun-frames、x-upyun-file
@@ -786,6 +827,7 @@ public class UpYun {
         conn.setUseCaches(false);
         if (!method.equals(METHOD_DELETE) && !method.equals(METHOD_HEAD) && !method.equals(METHOD_GET)) {
             conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(0);
         }
 
         String date = getGMTDate();
@@ -909,7 +951,8 @@ public class UpYun {
         int code = conn.getResponseCode();
 
         try {
-            is = conn.getInputStream();
+//            is = conn.getInputStream();
+            is = code >= 400 ? conn.getErrorStream() : conn.getInputStream();
 
             if (!isHeadMethod) {
                 sr = new InputStreamReader(is);
@@ -1141,6 +1184,20 @@ public class UpYun {
          * 说明：SDK内部使用
          */
         KEY_MAKE_DIR("folder"),
+
+        /**
+         * 复制文件
+         * <p>
+         * 说明：SDK内部使用
+         */
+        KEY_X_UPYUN_COPY_SOURCE("X-Upyun-Copy-Source"),
+
+        /**
+         * 移动文件
+         * <p>
+         * 说明：SDK内部使用
+         */
+        KEY_X_UPYUN_MOVE_SOURCE("X-Upyun-Move-Source"),
 
         /**
          * 缩略图类型之 "限定最长边，短边自适应"，参数为像素值，如: 150
