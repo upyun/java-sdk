@@ -1,14 +1,12 @@
 package demo;
 
 import com.upyun.BaseUploader;
-import com.upyun.ParallelUploader;
 import com.upyun.SerialUploader;
 import com.upyun.UpException;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
-public class ParallelUploadDemo {
+public class SerialUploadDemo {
 
     //     运行前先设置好以下三个参数
     private static final String BUCKET_NAME = "空间名称";
@@ -21,21 +19,25 @@ public class ParallelUploadDemo {
     //上传至空间路径
     private static final String UPLOAD_PATH = "/test.MOV";
 
-    public static void main(String[] args) throws InterruptedException, IOException, UpException {
+    public static void main(String[] args) throws IOException, UpException, InterruptedException {
 
-        final ParallelUploader parallelUploader = new ParallelUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+        final SerialUploader resume = new SerialUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
 
         //设置上传进度监听
-        parallelUploader.setOnProgressListener(new BaseUploader.OnProgressListener() {
+        resume.setOnProgressListener(new BaseUploader.OnProgressListener() {
             public void onProgress(int index, int total) {
                 System.out.println(index + "::" + total + "::" + index * 100 / total + "%");
             }
         });
 
+        //设置 MD5 校验
+        resume.setCheckMD5(true);
+
+
         new Thread() {
             public void run() {
                 try {
-                    parallelUploader.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null);
+                    System.out.println("first:" + resume.upload(SAMPLE_PIC_FILE, UPLOAD_PATH, null));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (UpException e) {
@@ -46,10 +48,10 @@ public class ParallelUploadDemo {
 
         Thread.sleep(2000);
 
-        parallelUploader.pause();
+        resume.pause();
 
         Thread.sleep(2000);
 
-        System.out.println(parallelUploader.resume());
+        System.out.println(resume.resume());
     }
 }

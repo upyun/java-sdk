@@ -416,6 +416,7 @@ public class UpYun {
 
         // 设置时间
         conn.setRequestProperty(DATE, date);
+        conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
 
         // 设置文件的 MD5 参数
         if (!isEmpty(this.contentMD5)) {

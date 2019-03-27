@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>4.0.4</version>
+  <version>4.1.0</version>
 </dependency>
 
 ```
@@ -357,13 +357,16 @@ public Map<String, String> getFileInfo(String filePath);
 
 <a name="串行式断点续传"></a>
 ### 串行式断点续传
-初始化 ResumeUploader
+初始化 SerialUploader
+
 ```java
-	ResumeUploader resume = new ResumeUploader("空间名称", "操作员名称", "操作员密码")
+	SerialUploader resume = new SerialUploader("空间名称", "操作员名称", "操作员密码")
 ```
+
 设置上传进度监听
+
 ```java
-	 resume.setOnProgressListener(new ResumeUploader.OnProgressListener()
+	 resume.setOnProgressListener(new BaseUploader.OnProgressListener()
 ```
 设置 MD5 校验
 
@@ -375,6 +378,18 @@ public Map<String, String> getFileInfo(String filePath);
 ```java
 	public boolean upload(String filePath, String uploadPath,Map<String, String> params)	
 ```
+
+暂停
+
+```java
+	public boolean pause()	
+```
+继续
+
+```java
+	public boolean resume()	
+```
+
 <a name="并行式断点续传"></a>
 ### 并行式断点续传
 初始化 ParallelUploader
@@ -403,6 +418,17 @@ public Map<String, String> getFileInfo(String filePath);
 
 ```java
 	public boolean upload(String filePath, String uploadPath,Map<String, String> params)	
+```
+
+暂停
+
+```java
+	public boolean pause()	
+```
+继续
+
+```java
+	public boolean resume()	
 ```
 
 **参数说明：**

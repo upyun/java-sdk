@@ -1,10 +1,10 @@
 package com.upyun;
 
-import org.json.JSONArray;
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
 
 
 public class MediaHandler extends AsyncProcessHandler {

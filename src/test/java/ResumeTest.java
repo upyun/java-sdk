@@ -1,4 +1,4 @@
-import com.upyun.ResumeUploader;
+import com.upyun.SerialUploader;
 import com.upyun.UpException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,11 +21,11 @@ public class ResumeTest {
     @Test
     public void testResumeUpload() throws InterruptedException, IOException, UpException {
 
-        final ResumeUploader resume = new ResumeUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
+        final SerialUploader resume = new SerialUploader(BUCKET_NAME, OPERATOR_NAME, OPERATOR_PWD);
         final CountDownLatch latch = new CountDownLatch(1);
 
         //设置上传进度监听
-        resume.setOnProgressListener(new ResumeUploader.OnProgressListener() {
+        resume.setOnProgressListener(new SerialUploader.OnProgressListener() {
             public void onProgress(int index, int total) {
                 Assert.assertTrue(index <= total);
                 System.out.println(index + "::" + total + "::" + index * 100 / total + "%");
@@ -53,7 +53,7 @@ public class ResumeTest {
 
 //        Thread.sleep(2000);
 //
-//        resume.interrupt(new ResumeUploader.OnInterruptListener() {
+//        resume.interrupt(new SerialUploader.OnInterruptListener() {
 //            public void OnInterrupt(boolean interrupted) {
 //
 //                System.out.println("interrupted:" + interrupted);
