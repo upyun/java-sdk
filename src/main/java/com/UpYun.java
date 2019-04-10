@@ -532,11 +532,12 @@ public class UpYun {
      * 删除文件
      *
      * @param filePath 文件路径（包含文件名）
+     * @param params   额外参数
      * @return true or false
      */
-    public boolean deleteFile(String filePath) throws IOException, UpException {
+    public boolean deleteFile(String filePath, Map<String, String> params) throws IOException, UpException {
 
-        return HttpAction(METHOD_DELETE, formatPath(filePath)) != null;
+        return HttpAction(METHOD_DELETE, formatPath(filePath), params) != null;
     }
 
     /**
@@ -570,12 +571,13 @@ public class UpYun {
     /**
      * 读取目录列表
      *
-     * @param path 目录路径
+     * @param path   目录路径
+     * @param params 分页参数
      * @return List<FolderItem> 或 null
      */
-    public List<FolderItem> readDir(String path) throws IOException, UpException {
+    public List<FolderItem> readDir(String path, Map<String, String> params) throws IOException, UpException {
 
-        String result = HttpAction(METHOD_GET, formatPath(path) + SEPARATOR);
+        String result = HttpAction(METHOD_GET, formatPath(path) + SEPARATOR, params);
 
         if (isEmpty(result))
             return null;
@@ -780,6 +782,18 @@ public class UpYun {
      */
     private String HttpAction(String method, String uri) throws IOException, UpException {
         return HttpAction(method, uri, null, null, false);
+    }
+
+    /**
+     * 连接处理逻辑
+     *
+     * @param method 请求方式 {GET, POST, PUT, DELETE}
+     * @param uri    请求地址
+     * @param param  请求参数
+     * @return 请求结果（字符串）或 null
+     */
+    private String HttpAction(String method, String uri, Map<String, String> param) throws IOException, UpException {
+        return HttpAction(method, uri, null, null, false, param);
     }
 
     /**
@@ -1199,6 +1213,36 @@ public class UpYun {
          * 说明：SDK内部使用
          */
         KEY_X_UPYUN_MOVE_SOURCE("X-Upyun-Move-Source"),
+
+        /**
+         * 分页参数
+         * 分页开始位置，通过x-upyun-list-iter 响应头返回，所以第一次请求不需要填写
+         */
+        KEY_X_LIST_ITER("x-list-iter"),
+
+        /**
+         * 分页参数
+         * 获取的文件数量，默认 100，最大 10000
+         */
+        KEY_X_LIST_LIMIT("x-list-limit"),
+
+        /**
+         * 分页参数
+         * asc 或 desc，按文件名升序或降序排列。默认 asc
+         */
+        KEY_X_LIST_ORDER("x-list-order"),
+
+        /**
+         * 分页参数
+         * application/json,返回json格式
+         */
+        KEY_ACCEPT("Accept"),
+
+        /**
+         * 删除参数
+         * true 表示进行异步删除，不设置表示同步删除（默认）
+         */
+        KEY_X_UPYUN_ASYNC("x-upyun-async"),
 
         /**
          * 缩略图类型之 "限定最长边，短边自适应"，参数为像素值，如: 150

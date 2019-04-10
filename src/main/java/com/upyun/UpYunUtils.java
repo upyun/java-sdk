@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class UpYunUtils {
 
-    public static final String VERSION = "upyun-java-sdk/4.1.0";
+    public static final String VERSION = "upyun-java-sdk/4.1.1";
 
     /**
      * 计算policy
@@ -100,36 +100,6 @@ public class UpYunUtils {
     }
 
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-
-    public static String sign(String method, String date, String uri, String bucket, String userName, String password, String md5) throws UpException {
-
-        StringBuilder sb = new StringBuilder();
-        String sp = "&";
-        sb.append(method);
-        sb.append(sp);
-        sb.append(uri);
-
-        sb.append(sp);
-        sb.append(date);
-
-        if (md5 != null && md5.length() > 0) {
-            sb.append(sp);
-            sb.append(md5);
-        }
-        String raw = sb.toString().trim();
-        byte[] hmac = null;
-        try {
-            hmac = calculateRFC2104HMACRaw(password, raw);
-        } catch (Exception e) {
-            throw new UpException("calculate SHA1 wrong.");
-        }
-
-        if (hmac != null) {
-            return "UPYUN " + userName + ":" + Base64Coder.encodeLines(hmac).trim();
-        }
-
-        return null;
-    }
 
     public static String sign(String method, String date, String path, String userName, String password, String md5) throws UpException {
 

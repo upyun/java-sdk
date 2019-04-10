@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>4.1.0</version>
+  <version>4.1.1</version>
 </dependency>
 
 ```
@@ -21,7 +21,7 @@
 
 ## 目录
 * [云存储基础接口](#云存储基础接口)
-  * [初始化 UpYun](#初始化 UpYun)
+  * [初始化 UpYun](#初始化UpYun)
   * [创建目录](#创建目录)
   * [删除目录](#删除目录)
   * [获取目录文件列表](#获取目录文件列表)
@@ -37,7 +37,7 @@
   * [图片裁剪](#图片裁剪)
   * [图片旋转](#图片旋转)
 * [表单上传接口](#表单上传接口)
-  * [初始化 FormUploader](#初始化 FormUploader)
+  * [初始化 FormUploader](#初始化FormUploader)
   * [表单上传文件](#表单上传文件)
   * [表单上传作图](#表单上传作图)
   * [错误说明](#错误说明)
@@ -54,7 +54,7 @@
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
 
-<a name="初始化 UpYun"></a>
+<a name="初始化UpYun"></a>
 ### 初始化 UpYun
 
 ```Java
@@ -157,7 +157,7 @@ public boolean rmDir(String path);
 **方法原型：**
 
 ```Java
-public List<FolderItem> readDir(String path);
+public List<FolderItem> readDir(String path,Map<String, String> params);
 ```
 >`UpYun.FolderItem` 包含属性:
 >
@@ -171,6 +171,7 @@ public List<FolderItem> readDir(String path);
 **参数说明：**
 
 * `path`  目录路径
+* `params` 可选参数
 
 **返回值说明：**
 
@@ -182,7 +183,7 @@ public List<FolderItem> readDir(String path);
 ```Java   
 	String path = "/dir1/";
     // 获取目录中文件列表
-    List<UpYun.FolderItem> items = upyun.readDir(path);
+    List<UpYun.FolderItem> items = upyun.readDir(path,null);
     for (int i = 0; i < items.size(); i++) {
 		System.out.println(items.get(i));
 	}
@@ -335,12 +336,13 @@ public Map<String, String> getFileInfo(String filePath);
 **方法原型：**
 
 ```Java
-	public boolean deleteFile(String filePath);
+	public boolean deleteFile(String filePath,Map<String, String> params);
 ```
 
 **参数说明：**
 
 * `filePath`  文件在又拍云的路径
+* `params ` 可选参数 可为 null
 
 **返回值说明：**
 
@@ -352,7 +354,7 @@ public Map<String, String> getFileInfo(String filePath);
 ```Java
 	String filePath = "/path/to/file";
     // 删除文件
-    boolean result = upyun.deleteFile(filePath);
+    boolean result = upyun.deleteFile(filePath, null);
 ```
 
 <a name="串行式断点续传"></a>
@@ -539,7 +541,7 @@ public Map<String, String> getFileInfo(String filePath);
 <a name="表单上传接口"></a>
 ## 表单上传接口
 
-<a name="初始化 FormUploader"></a>
+<a name="初始化FormUploader"></a>
 ### 初始化 FormUploader
 
 ```java

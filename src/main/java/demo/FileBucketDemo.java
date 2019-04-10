@@ -5,7 +5,9 @@ import com.upyun.UpException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -143,28 +145,28 @@ public class FileBucketDemo {
         // 要传到upyun后的文件路径：多级目录
         String filePath2 = DIR_MORE + FILE_NAME;
 
-		/*
+        /*
          * 上传方法1：文本内容直接上传
-		 */
+         */
         boolean result1 = upyun.writeFile(filePath, content);
         System.out.println("1.上传 " + filePath + isSuccess(result1));
 
-		/*
+        /*
          * 上传方法2：文本内容直接上传，可自动创建父级目录（最多10级）
-		 */
+         */
         boolean result2 = upyun.writeFile(filePath2, content, true);
         System.out.println("2.上传 " + filePath2 + isSuccess(result2));
 
-		/*
+        /*
          * 上传方法3：采用数据流模式上传文件（节省内存），可自动创建父级目录（最多10级）
-		 */
+         */
         File file = new File(SAMPLE_TXT_FILE);
         boolean result3 = upyun.writeFile(filePath, file, true);
         System.out.println("3.上传 " + filePath + isSuccess(result3));
 
-		/*
-		 * 上传方法4：对待上传的文件设置 MD5 值，确保上传到 Upyun 的文件的完整性和正确性
-		 */
+        /*
+         * 上传方法4：对待上传的文件设置 MD5 值，确保上传到 Upyun 的文件的完整性和正确性
+         */
         File file4 = new File(SAMPLE_TXT_FILE);
         // 设置待上传文件的 Content-MD5 值
         // 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
@@ -198,15 +200,15 @@ public class FileBucketDemo {
         // upyun空间下存在的文件的路径
         String filePath = DIR_ROOT + FILE_NAME;
 
-		/*
-		 * 方法1：直接读取文本内容
-		 */
+        /*
+         * 方法1：直接读取文本内容
+         */
         String datas = upyun.readFile(filePath);
         System.out.println(filePath + " 的文件内容:" + datas);
 
-		/*
-		 * 方法2：下载文件，采用数据流模式下载文件（节省内存）
-		 */
+        /*
+         * 方法2：下载文件，采用数据流模式下载文件（节省内存）
+         */
         // 要写入的本地临时文件
         File file = File.createTempFile("upyunTempFile_", "");
 
@@ -226,7 +228,7 @@ public class FileBucketDemo {
         String filePath = DIR_ROOT + FILE_NAME;
 
         // 删除文件
-        boolean result = upyun.deleteFile(filePath);
+        boolean result = upyun.deleteFile(filePath, null);
 
         System.out.println(filePath + " 删除" + isSuccess(result));
         System.out.println();
@@ -259,8 +261,12 @@ public class FileBucketDemo {
         // 参数可以换成其他目录路径
         String dirPath = DIR_ROOT;
 
+        Map<String, String> params = new HashMap<String, String>();
+
+        params.put(UpYun.PARAMS.KEY_X_LIST_LIMIT.getValue(), "10");
+
         // 读取目录列表，将返回 List 或 NULL
-        List<UpYun.FolderItem> items = upyun.readDir(dirPath);
+        List<UpYun.FolderItem> items = upyun.readDir(dirPath, params);
 
         if (null == items) {
             System.out.println("'" + dirPath + "'目录下没有文件。");

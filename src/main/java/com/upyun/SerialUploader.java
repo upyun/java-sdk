@@ -79,15 +79,6 @@ public class SerialUploader extends BaseUploader {
         return nextPartIndex;
     }
 
-    /**
-     * 设置上传进度监听
-     *
-     * @param onProgressListener 上传进度 listener
-     */
-    public void setOnProgressListener(OnProgressListener onProgressListener) {
-        this.onProgressListener = onProgressListener;
-    }
-
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -117,7 +108,7 @@ public class SerialUploader extends BaseUploader {
                 md5 = UpYunUtils.md5(data);
             }
 
-            String sign = UpYunUtils.sign("PUT", date, uri, bucketName, userName, password, md5);
+            String sign = UpYunUtils.sign("PUT", date, uri, userName, password, md5);
 
             Request.Builder builder = new Request.Builder()
                     .url(url)

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +118,11 @@ public class TestFileBucket {
 //        String dirPath = DIR_ROOT;
 //
 //        // 读取目录列表，将返回 List 或 NULL
-//        List<UpYun.FolderItem> items = upyun.readDir(dirPath);
+//        Map<String, String> params = new HashMap<String, String>();
+//
+//        params.put(UpYun.PARAMS.KEY_X_LIST_LIMIT.getValue(), "10");
+//
+//        List<UpYun.FolderItem> items = upyun.readDir(dirPath, params);
 //
 //        assertTrue(items.size() > 0);
 //    }
@@ -171,7 +176,7 @@ public class TestFileBucket {
 //        String filePath = DIR_ROOT + FILE_NAME;
 //
 //        // 删除文件
-//        boolean result = upyun.deleteFile(filePath);
+//        boolean result = upyun.deleteFile(filePath, null);
 //
 //        assertTrue(result);
 //    }
