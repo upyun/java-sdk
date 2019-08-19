@@ -3,6 +3,8 @@ package com;
 import com.upyun.UpAPIException;
 import com.upyun.UpException;
 import com.upyun.UpYunUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -19,10 +21,6 @@ public class UpYun {
      */
     private static final String UTF8 = "UTF-8";
 
-    /**
-     * SKD版本号
-     */
-    private final String VERSION = "2.0";
 
     /**
      * 路径的分割符
@@ -216,7 +214,7 @@ public class UpYun {
      * @return SDK版本号
      */
     public String version() {
-        return VERSION;
+        return UpYunUtils.VERSION;
     }
 
     /**
@@ -575,6 +573,7 @@ public class UpYun {
      * @param params 分页参数
      * @return List<FolderItem> 或 null
      */
+    @Deprecated
     public List<FolderItem> readDir(String path, Map<String, String> params) throws IOException, UpException {
 
         String result = HttpAction(METHOD_GET, formatPath(path) + SEPARATOR, params);
@@ -592,6 +591,56 @@ public class UpYun {
             }
         }
         return list;
+    }
+
+    /**
+     * 读取目录列表
+     *
+     * @param path   目录路径
+     * @param params 分页参数
+     * @return StringJson 或 null
+     */
+    public String readDirJson(String path, Map<String, String> params) throws IOException, UpException {
+
+        if (params == null) {
+            params = new HashMap<String, String>();
+        }
+
+        params.put("Accept", "application/json");
+
+        return HttpAction(METHOD_GET, formatPath(path) + SEPARATOR, params);
+
+    }
+
+    /**
+     * 读取目录列表
+     *
+     * @param path   目录路径
+     * @param params 分页参数
+     * @return FolderItemIter 或 null
+     */
+    public FolderItemIter readDirIter(String path, Map<String, String> params) throws IOException, UpException {
+
+        if (params == null) {
+            params = new HashMap<String, String>();
+        }
+
+        params.put("Accept", "application/json");
+
+        String result = HttpAction(METHOD_GET, formatPath(path) + SEPARATOR, params);
+
+        JSONObject jObject1 = new JSONObject(result);
+        FolderItemIter folderItemIter = new FolderItemIter();
+        folderItemIter.iter = jObject1.getString("iter");
+        folderItemIter.files = new ArrayList<FolderItem>();
+        JSONArray jsonArray2 = jObject1.getJSONArray("files");
+        for (int i = 0; i < jsonArray2.length(); i++) {
+            JSONObject jObject3 = jsonArray2.getJSONObject(i);
+            FolderItem folderItem = new FolderItem(jObject3.getString("type"), jObject3.getString("name"), jObject3.getLong("length"), jObject3.getLong("last_modified"));
+            folderItemIter.files.add(folderItem);
+        }
+
+        return folderItemIter;
     }
 
     /**
@@ -1071,6 +1120,7 @@ public class UpYun {
         // 文件日期
         public Date date;
 
+
         public FolderItem(String data) {
             String[] a = data.split("\t");
             if (a.length == 4) {
@@ -1090,12 +1140,40 @@ public class UpYun {
             }
         }
 
+        public FolderItem(String type, String name, long length, long last_modified) {
+            this.type = type;
+            this.name = name;
+            this.size = length;
+            this.date = new Date(last_modified * 1000);
+        }
+
         @Override
         public String toString() {
-            return "time = " + date + "  size = " + size + "  type = " + type
-                    + "  name = " + name;
+            return "FolderItem{" +
+                    "name='" + name + '\'' +
+                    ", type='" + type + '\'' +
+                    ", size=" + size +
+                    ", date=" + date +
+                    '}';
+        }
+
+    }
+
+    public class FolderItemIter {
+
+        public String iter;
+
+        public ArrayList<FolderItem> files;
+
+        @Override
+        public String toString() {
+            return "FolderItemIter{" +
+                    "iter='" + iter + '\'' +
+                    ", files=" + files +
+                    '}';
         }
     }
+
 
     /**
      * 其他额外参数的键值和参数值

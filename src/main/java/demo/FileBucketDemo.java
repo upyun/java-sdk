@@ -266,21 +266,27 @@ public class FileBucketDemo {
         params.put(UpYun.PARAMS.KEY_X_LIST_LIMIT.getValue(), "10");
 
         // 读取目录列表，将返回 List 或 NULL
-        List<UpYun.FolderItem> items = upyun.readDir(dirPath, params);
+//        List<UpYun.FolderItem> items = upyun.readDir(dirPath, params);
+//
+//        if (null == items) {
+//            System.out.println("'" + dirPath + "'目录下没有文件。");
+//
+//        } else {
+//
+//
+//            for (int i = 0; i < items.size(); i++) {
+//                System.out.println(items.get(i));
+//            }
+//
+//            System.out.println("'" + dirPath + "'目录总共有 " + items.size()
+//                    + " 个文件。");
+//        }
 
-        if (null == items) {
-            System.out.println("'" + dirPath + "'目录下没有文件。");
+        UpYun.FolderItemIter folderItemIter = upyun.readDirIter(dirPath, params);
+        System.out.println(folderItemIter);
 
-        } else {
-
-
-            for (int i = 0; i < items.size(); i++) {
-                System.out.println(items.get(i));
-            }
-
-            System.out.println("'" + dirPath + "'目录总共有 " + items.size()
-                    + " 个文件。");
-        }
+        String json = upyun.readDirJson(dirPath, params);
+        System.out.println(json);
 
         System.out.println();
     }

@@ -1,19 +1,19 @@
-import com.UpYun;
-import com.upyun.UpException;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
-
-
-//请求太频繁容易失败 影响 maven 上传 注释之
-public class TestFileBucket {
-
+//import com.UpYun;
+//import com.upyun.UpException;
+//import org.junit.Test;
+//
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//import static org.junit.Assert.assertTrue;
+//
+//
+////请求太频繁容易失败 影响 maven 上传 注释之
+//public class TestFileBucket {
+//
 //    private static final String BUCKET_NAME = "sdkimg";
 //    private static final String OPERATOR_NAME = "tester";
 //    private static final String OPERATOR_PWD = "grjxv2mxELR3";
@@ -121,9 +121,9 @@ public class TestFileBucket {
 //        Map<String, String> params = new HashMap<String, String>();
 //
 //        params.put(UpYun.PARAMS.KEY_X_LIST_LIMIT.getValue(), "10");
-//
 //        List<UpYun.FolderItem> items = upyun.readDir(dirPath, params);
-//
+//        UpYun.FolderItemIter folderItemIter = upyun.readDirIter(dirPath, params);
+//        String json = upyun.readDirJson(dirPath, params);
 //        assertTrue(items.size() > 0);
 //    }
 //
@@ -211,4 +211,4 @@ public class TestFileBucket {
 //
 //        assertTrue(result);
 //    }
-}
+//}

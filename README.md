@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>4.1.2</version>
+  <version>4.1.3</version>
 </dependency>
 
 ```
@@ -157,9 +157,15 @@ public boolean rmDir(String path);
 **方法原型：**
 
 ```Java
-public List<FolderItem> readDir(String path,Map<String, String> params);
+public FolderItemIter readDirIter(String path,Map<String, String> params);
 ```
->`UpYun.FolderItem` 包含属性:
+
+>`FolderItemIter` 包含属性:
+>
+>* `Sting iter`  下一次分页开始位置
+>* `List<FolderItem> files`  文件列表
+
+>`FolderItem` 包含属性:
 >
 >* `name`  文件名
 >* `type`  文件类型
@@ -183,11 +189,40 @@ public List<FolderItem> readDir(String path,Map<String, String> params);
 ```Java   
 	String path = "/dir1/";
     // 获取目录中文件列表
-    List<UpYun.FolderItem> items = upyun.readDir(path,null);
-    for (int i = 0; i < items.size(); i++) {
-		System.out.println(items.get(i));
+    FolderItemIter folderItemIter = upyun.readDirIter(path,null);
+    for (int i = 0; i < folderItemIter.files.size(); i++) {
+		System.out.println(folderItemIter.files.get(i));
 	}
 ```
+
+**方法原型2：**
+
+```Java
+public String readDirJson(String path, Map<String, String> params);
+```
+
+直接返回 JSON 字符串
+
+JSON 字符串结构：
+
+```json
+{
+    "files": [{
+        "type": "image/jpeg",
+        "length": 4237,
+        "name": "foo.jpg",
+        "last_modified": 1415096225
+    }, {
+        "type": "folder",
+        "length": 423404,
+        "name": "bar",
+        "last_modified": 1415096260
+    }],
+    "iter": "c2Rmc2Rsamdvc2pnb3dlam9pd2Vmd2Z3Zg=="
+}
+
+```
+
 
 ---
 
