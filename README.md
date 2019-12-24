@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>4.1.3</version>
+  <version>4.1.4</version>
 </dependency>
 
 ```
@@ -289,11 +289,12 @@ public Map<String, String> getFileInfo(String filePath);
 **返回值说明：**
 
 * 若 `filePath` 所指定文件不存在，则直接返回 `null`
-* `Map` 包含3个Key：
+* `Map` 接口返回 header 信息：
 
-> * `type`  文件类型
-> * `size`  文件大小
-> * `date`  创建日期
+> * `x-upyun-file-type`  文件类型
+> * `x-upyun-file-size`  文件大小
+> * `x-upyun-file-date`  创建日期
+> * `Content-Md5	`  文件的 MD5 值
 
 **举例说明：**
 
@@ -301,9 +302,9 @@ public Map<String, String> getFileInfo(String filePath);
 	String filePath = "/path/to/file";
     // 获取文件信息
     Map<String, String> info = upyun.getFileInfo(filePath);
-    String type = info.get("type"); 
-    String size = info.get("size"); 
-    String date = info.get("date");
+    String type = info.get("x-upyun-file-type"); 
+    String size = info.get("x-upyun-file-size"); 
+    String date = info.get("x-upyun-file-date");
 ```
 
 ---
