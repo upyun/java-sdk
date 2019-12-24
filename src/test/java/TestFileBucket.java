@@ -1,5 +1,6 @@
 //import com.UpYun;
 //import com.upyun.UpException;
+//import org.junit.Assert;
 //import org.junit.Test;
 //
 //import java.io.File;
@@ -107,7 +108,7 @@
 //        String filePath = DIR_ROOT + FILE_NAME;
 //
 //        Map<String, String> result = upyun.getFileInfo(filePath);
-//        assertTrue(result.size() == 3);
+//        Assert.assertNotNull(result);
 //    }
 //
 //    //读取目录文件列表测试

@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class UpYunUtils {
 
-    public static final String VERSION = "upyun-java-sdk/4.1.3";
+    public static final String VERSION = "upyun-java-sdk/4.1.4";
 
     /**
      * 计算policy

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.UpYun;
 import com.UpYun.PARAMS;
 import com.upyun.UpException;
+import sun.jvm.hotspot.memory.HeapBlock;
 
 /**
  * 图片类空间的demo，一般性操作参考文件空间的demo（FileBucketDemo.java）
@@ -115,14 +116,17 @@ public class PicBucketDemo {
 
 		// 获取上传文件后的信息（仅图片空间有返回数据）
 		System.out.println("\r\n****** " + file.getName() + " 的图片信息 *******");
+
+		Map header=upyun.getHeaders();
+
 		// 图片宽度
-		System.out.println("图片宽度:" + upyun.getPicWidth());
+		System.out.println("图片宽度:" + header.get("x-upyun-width"));
 		// 图片高度
-		System.out.println("图片高度:" + upyun.getPicHeight());
+		System.out.println("图片高度:" + header.get("x-upyun-height"));
 		// 图片帧数
-		System.out.println("图片帧数:" + upyun.getPicFrames());
+		System.out.println("图片帧数:" + header.get("x-upyun-frames"));
 		// 图片类型
-		System.out.println("图片类型:" + upyun.getPicType());
+		System.out.println("图片类型:" + header.get("x-upyun-file-type"));
 
 		System.out.println("****************************************\r\n");
 

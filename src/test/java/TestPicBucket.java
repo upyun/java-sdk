@@ -59,14 +59,17 @@ public class TestPicBucket {
         boolean result = upyun.writeFile(filePath, file, true);
         assertTrue(result);
 
+
+        Map<String, String> headers = upyun.getHeaders();
+
         // 图片宽度
-        String width = upyun.getPicWidth();
+        String width = headers.get("x-upyun-width");
         // 图片高度
-        String height = upyun.getPicHeight();
+        String height = headers.get("x-upyun-height");
         // 图片帧数
-        String frames = upyun.getPicFrames();
+        String frames = headers.get("x-upyun-frames");
         // 图片类型
-        String type = upyun.getPicType();
+        String type = headers.get("x-upyun-file-type");
 
         assertTrue(width != null && !"".equals(width));
         assertTrue(height != null && !"".equals(height));

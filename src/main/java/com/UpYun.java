@@ -34,12 +34,6 @@ public class UpYun {
     private final String CONTENT_SECRET = "Content-Secret";
     private final String MKDIR = "mkdir";
 
-    private final String X_UPYUN_WIDTH = "x-upyun-width";
-    private final String X_UPYUN_HEIGHT = "x-upyun-height";
-    private final String X_UPYUN_FRAMES = "x-upyun-frames";
-    private final String X_UPYUN_FILE_TYPE = "x-upyun-file-type";
-    private final String X_UPYUN_FILE_SIZE = "x-upyun-file-size";
-    private final String X_UPYUN_FILE_DATE = "x-upyun-file-date";
 
     private final String METHOD_HEAD = "HEAD";
     private final String METHOD_GET = "GET";
@@ -80,16 +74,8 @@ public class UpYun {
     // 操作员密码
     protected String password = null;
 
-    // 图片信息的参数
-    protected String picWidth = null;
-    protected String picHeight = null;
-    protected String picFrames = null;
-    protected String picType = null;
-
-    // 文件信息的参数
-    protected String fileType = null;
-    protected String fileSize = null;
-    protected String fileDate = null;
+    //接口返回 header
+    private Map<String, String> headers;
 
     /**
      * 初始化 UpYun 存储接口
@@ -192,21 +178,21 @@ public class UpYun {
         this.fileSecret = secret;
     }
 
-    public String getPicWidth() {
-        return picWidth;
-    }
-
-    public String getPicHeight() {
-        return picHeight;
-    }
-
-    public String getPicFrames() {
-        return picFrames;
-    }
-
-    public String getPicType() {
-        return picType;
-    }
+//    public String getPicWidth() {
+//        return picWidth;
+//    }
+//
+//    public String getPicHeight() {
+//        return picHeight;
+//    }
+//
+//    public String getPicFrames() {
+//        return picFrames;
+//    }
+//
+//    public String getPicType() {
+//        return picType;
+//    }
 
     /**
      * 获取当前SDK的版本号
@@ -513,17 +499,7 @@ public class UpYun {
 
         HttpAction(METHOD_HEAD, formatPath(filePath));
 
-        // 判断是否存在文件信息
-        if (isEmpty(fileType) && isEmpty(fileSize) && isEmpty(fileDate)) {
-            return null;
-        }
-
-        Map<String, String> mp = new HashMap<String, String>();
-        mp.put("type", fileType);
-        mp.put("size", fileSize);
-        mp.put("date", fileDate);
-
-        return mp;
+        return headers;
     }
 
     /**
@@ -694,29 +670,14 @@ public class UpYun {
         return result != null;
     }
 
+
     /**
-     * 获取上传文件后的信息（仅图片空间有返回数据）
+     * 获取接口返回 header 信息
      *
-     * @param key 信息字段名（x-upyun-width、x-upyun-height、x-upyun-frames、x-upyun-file
-     *            -type）
-     * @return value or NULL
-     * @deprecated
+     * @return
      */
-    public String getWritedFileInfo(String key) {
-
-        if (isEmpty(picWidth))
-            return null;
-
-        if (X_UPYUN_WIDTH.equals(key))
-            return picWidth;
-        if (X_UPYUN_HEIGHT.equals(key))
-            return picHeight;
-        if (X_UPYUN_FRAMES.equals(key))
-            return picFrames;
-        if (X_UPYUN_FILE_TYPE.equals(key))
-            return picType;
-
-        return null;
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
     /**
@@ -1006,14 +967,13 @@ public class UpYun {
             throws IOException, UpAPIException {
 
         StringBuilder text = new StringBuilder();
-        fileType = null;
 
         InputStream is = null;
         InputStreamReader sr = null;
         BufferedReader br = null;
+        headers = null;
 
         int code = conn.getResponseCode();
-
         try {
 //            is = conn.getInputStream();
             is = code >= 400 ? conn.getErrorStream() : conn.getInputStream();
@@ -1029,21 +989,16 @@ public class UpYun {
                     text.append(chars, 0, length);
                 }
             }
-            if (200 == code && conn.getHeaderField(X_UPYUN_WIDTH) != null) {
-                picWidth = conn.getHeaderField(X_UPYUN_WIDTH);
-                picHeight = conn.getHeaderField(X_UPYUN_HEIGHT);
-                picFrames = conn.getHeaderField(X_UPYUN_FRAMES);
-                picType = conn.getHeaderField(X_UPYUN_FILE_TYPE);
-            } else {
-                picWidth = picHeight = picFrames = picType = null;
-            }
-
-            if (200 == code && conn.getHeaderField(X_UPYUN_FILE_TYPE) != null) {
-                fileType = conn.getHeaderField(X_UPYUN_FILE_TYPE);
-                fileSize = conn.getHeaderField(X_UPYUN_FILE_SIZE);
-                fileDate = conn.getHeaderField(X_UPYUN_FILE_DATE);
-            } else {
-                fileType = fileSize = fileDate = null;
+            if (code >= 200 && code < 300) {
+                headers = new HashMap<String, String>();
+                Map h = conn.getHeaderFields();
+                Set<String> keys = h.keySet();
+                for (String key : keys) {
+                    String val = conn.getHeaderField(key);
+                    if (key != null && val != null) {
+                        headers.put(key, val);
+                    }
+                }
             }
         } finally {
             if (br != null) {
