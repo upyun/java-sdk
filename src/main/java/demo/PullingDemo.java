@@ -38,7 +38,7 @@ public class PullingDemo {
         //选择任务
         paramsMap.put(PullingHandler.Params.APP_NAME, "spiderman");
 
-        //已json格式生成任务信息
+        //以json格式生成任务信息
         JSONArray array = new JSONArray();
         JSONObject json = new JSONObject();
 
