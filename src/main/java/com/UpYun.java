@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Deprecated
 public class UpYun {
 
     /**

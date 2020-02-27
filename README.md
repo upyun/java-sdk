@@ -10,18 +10,14 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>4.1.4</version>
+  <version>4.2.0</version>
 </dependency>
 
 ```
 
-**更新说明**
-
-使用1.0.x系列版本 SDK 的用户，注意原有部分方法已经不再推荐使用，但是出于兼容考虑目前任然保留，建议更新升级程序使用新版 SDK 提供的方法。
-
 ## 目录
 * [云存储基础接口](#云存储基础接口)
-  * [初始化 UpYun](#初始化UpYun)
+  * [初始化 RestManager](#初始化RestManager)
   * [创建目录](#创建目录)
   * [删除目录](#删除目录)
   * [获取目录文件列表](#获取目录文件列表)
@@ -32,10 +28,6 @@
   * [删除文件](#删除文件)
   * [串行式断点续传](#串行式断点续传)
   * [并行式断点续传](#并行式断点续传)
-* [图片处理接口](#图片处理接口)
-  * [制作图片缩略图](#制作图片缩略图)
-  * [图片裁剪](#图片裁剪)
-  * [图片旋转](#图片旋转)
 * [表单上传接口](#表单上传接口)
   * [初始化 FormUploader](#初始化FormUploader)
   * [表单上传文件](#表单上传文件)
@@ -54,41 +46,41 @@
 <a name="云存储基础接口"></a>
 ## 云存储基础接口
 
-<a name="初始化UpYun"></a>
-### 初始化 UpYun
+<a name="初始化RestManager"></a>
+### 初始化 RestManager
 
 ```Java
-    UpYun upyun = new UpYun("空间名称", "操作员名称", "操作员密码");
+	RestManager manager = new RestManager("空间名称", "操作员名称", "操作员密码");
 ```
 
 **可选属性：**
 
-- 是否开启 debug 模式：默认不开启
+- 设置代理
 
 ```Java
-    upyun.setDebug(true);
+    manager.setProxy(proxy);
 ```
 
 - 手动设置超时时间：默认为30秒
 
 ```Java
-    upyun.setTimeout(60);
+    manager.setTimeout(60);
 ```
 
 - 选择最优的接入点
 
 ```Java
-    upyun.setApiDomain(UpYun.ED_AUTO);
+    manager.setApiDomain(RestManager.ED_AUTO);
 ```
 >根据国内的网络情况，又拍云存储 API 目前提供了电信、联通网通、移动铁通三个接入点。可以通过`setApiDomain()`方法进行设置，默认将根据网络条件自动选择接入点。
 
 > 接入点有四个值可选：
 
 ```Java
-	UpYun.ED_AUTO    //根据网络条件自动选择接入点
-	UpYun.ED_TELECOM //电信接入点
-	UpYun.ED_CNC     //联通网通接入点
-	UpYun.ED_CTT     //移动铁通接入点
+	RestManager.ED_AUTO    //根据网络条件自动选择接入点
+	RestManager.ED_TELECOM //电信接入点
+	RestManager.ED_CNC     //联通网通接入点
+	RestManager.ED_CTT     //移动铁通接入点
 ```
 
 _**注：**建议大家根据服务器网络状况，手动设置合理的接入点已获取最佳的访问速度_
@@ -101,25 +93,22 @@ _**注：**建议大家根据服务器网络状况，手动设置合理的接入
 **方法原型：**
 
 ```Java
-	public boolean mkDir(String path, boolean auto);
+	public Response mkDir(String path);
 ```
 **参数说明：**
 
 * `path`	目录路径，以`/`结尾
-* `auto`	（可选）：若为 `true` 则自动创建父级目录（只支持自动创建10级以内的父级目录）
 
 **返回值说明：**
 
-* 结果为 `true` 创建目录成功
-* 若空间相同目录下已经存在同名的文件，则将返回『不允许创建目录』的错误
-
+* 返回 Response 
 
 **举例说明：**
 
 ```Java
 	String path = "/dir1/dir2/";
     // 创建目录，自动创建父级目录
-    boolean result = upyun.mkDir(path, true);
+    Response result = manager.mkDir(path);
 ```
 
 ---
@@ -130,7 +119,7 @@ _**注：**建议大家根据服务器网络状况，手动设置合理的接入
 **方法原型：**
 
 ```Java
-public boolean rmDir(String path);
+	public Response rmDir(String path);
 ```
 **参数说明：**
 
@@ -146,7 +135,7 @@ public boolean rmDir(String path);
 ```Java
 	String path = "/dir1/dir2/";
     // 删除目录
-    boolean result = upyun.rmDir(path); 
+    Response result = manager.rmDir(path); 
 ```
 
 ---
@@ -157,72 +146,22 @@ public boolean rmDir(String path);
 **方法原型：**
 
 ```Java
-public FolderItemIter readDirIter(String path,Map<String, String> params);
+	public Response readDirIter(String path,Map<String, String> params);
 ```
-
->`FolderItemIter` 包含属性:
->
->* `Sting iter`  下一次分页开始位置
->* `List<FolderItem> files`  文件列表
-
->`FolderItem` 包含属性:
->
->* `name`  文件名
->* `type`  文件类型
->* `size`  文件大小
->* `date`  文件创建日期
->
->以上属性作用域皆为 `public`，可直接调用
 
 **参数说明：**
 
 * `path`  目录路径
 * `params` 可选参数
 
-**返回值说明：**
-
-* 若 `path` 目录没有内容时，返回`null`
-* 若 `path` 目录不存在时，则将返『不存在目录』的错误
-
 **举例说明：**
 
 ```Java   
 	String path = "/dir1/";
     // 获取目录中文件列表
-    FolderItemIter folderItemIter = upyun.readDirIter(path,null);
-    for (int i = 0; i < folderItemIter.files.size(); i++) {
-		System.out.println(folderItemIter.files.get(i));
-	}
+    Response response = manager.readDirIter(path,null);
+    System.out.println(response.body().string());
 ```
-
-**方法原型2：**
-
-```Java
-public String readDirJson(String path, Map<String, String> params);
-```
-
-直接返回 JSON 字符串
-
-JSON 字符串结构：
-
-```json
-{
-    "files": [{
-        "type": "image/jpeg",
-        "length": 4237,
-        "name": "foo.jpg",
-        "last_modified": 1415096225
-    }, {
-        "type": "folder",
-        "length": 423404,
-        "name": "bar",
-        "last_modified": 1415096260
-    }],
-    "iter": "c2Rmc2Rsamdvc2pnb3dlam9pd2Vmd2Z3Zg=="
-}
-
-```
-
 
 ---
 
@@ -232,41 +171,42 @@ JSON 字符串结构：
 **方法原型：**
 
 ```Java
-public boolean writeFile(String filePath, String datas, boolean auto);
-public boolean writeFile(String filePath, File file, boolean auto);
-public boolean writeFile(String filePath, byte[] datas, boolean auto);
+public Response writeFile(String filePath, byte[] data, Map<String, String> params)
+public Response writeFile(String filePath, File file, Map<String, String> params)
+public Response writeFile(String filePath, InputStream inputStream, Map<String, String> params)
+
 ```
 **参数说明：**
 
 * `filePath`  保存到又拍云存储的文件路径，以`/`开始
-* 第二个参数  接受 `String` 、 `File` 和 `byte[]` 三种类型的数据
-* `auto`  （可选）：若为 `true` 则自动创建父级目录（只支持自动创建10级以内的父级目录）
+* 第二个参数  接受 `InputStream ` 、 `File` 和 `byte[]` 三种类型的数据
+* params 上传额外可选参数，[详见 api 文档](https://help.upyun.com/knowledge-base/rest_api/#e4b88ae4bca0e69687e4bbb6)。
 
 **返回值说明：**
 
-* 结果为 `true` 上传文件成功
-
-**可选属性：**
-
-* 上传文件时可进行文件的 `MD5` 校验，若又拍云服务端收到的文件MD5值与用户设置的不一致，将返回 `406 Not Acceptable` 错误。对于需要确保上传文件的完整性要求的业务，可以设置该参数：
-
-```Java
-    upyun.setContentMD5(UpYun.md5(file));  
-```
+* response.isSuccessful() 结果为 `true` 上传文件成功
 
 **举例说明：**
 
 ```Java
     // 例1：上传纯文本内容，自动创建父级目录
-    String str = "Hello UpYun";
-    boolean result = upyun.writeFile("/path/to/file", str, true);
+    String str = "Hello RestManager";
+    Map<String, String> params = new HashMap<String, String>();
+        // 设置待上传文件的 Content-MD5 值
+        // 如果又拍云服务端收到的文件MD5值与用户设置的不一致，将回报 406 NotAcceptable 错误
+    params.put(PARAMS.CONTENT_MD5.getValue(), UpYunUtils.md5(file, 1024));
 
-    // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
-	File file = new File(localFilePath);
-	upyun.setContentMD5(UpYun.md5(file));
-	boolean result = upyun.writeFile(filePath, file, true);
+        // 设置待上传文件的"访问密钥"
+        // 注意：
+        // 仅支持图片空！，设置密钥后，无法根据原文件URL直接访问，需带URL后面加上（缩略图间隔标志符+密钥）进行访问
+        // 举例：
+        // 如果缩略图间隔标志符为"!"，密钥为"bac"，上传文件路径为"/folder/test.jpg"，
+        // 那么该图片的对外访问地址为：http://空间域名 /folder/test.jpg!bac
+    params.put(PARAMS.CONTENT_SECRET.getValue(), "bac");
+    Response result = manager.writeFile("/path/to/file", str, params);
+    
 ```
-
+   
 _**注：**
 若空间内指定目录已存在相同文件，则会被覆盖，且**不可逆**。若要避免此情况，可以先通过[获取文件信息](#获取文件信息)来判断是否已经存在相同文件_
 
@@ -279,7 +219,8 @@ _**注：**
 **方法原型：**
 
 ```Java
-public Map<String, String> getFileInfo(String filePath);
+public Response getFileInfo(String filePath)
+
 ```
 
 **参数说明：**
@@ -288,8 +229,7 @@ public Map<String, String> getFileInfo(String filePath);
 
 **返回值说明：**
 
-* 若 `filePath` 所指定文件不存在，则直接返回 `null`
-* `Map` 接口返回 header 信息：
+* response.headers 信息：
 
 > * `x-upyun-file-type`  文件类型
 > * `x-upyun-file-size`  文件大小
@@ -300,11 +240,8 @@ public Map<String, String> getFileInfo(String filePath);
 
 ```Java
 	String filePath = "/path/to/file";
-    // 获取文件信息
-    Map<String, String> info = upyun.getFileInfo(filePath);
-    String type = info.get("x-upyun-file-type"); 
-    String size = info.get("x-upyun-file-size"); 
-    String date = info.get("x-upyun-file-date");
+	System.out.println(filePath + " 的文件信息：" + restManager.getFileInfo(filePath).headers());
+
 ```
 
 ---
@@ -315,14 +252,14 @@ public Map<String, String> getFileInfo(String filePath);
 **方法原型：**
 
 ```Java
-	public long getBucketUsage();
+	public Resoponse getBucketUsage();
 ```
 
 **举例说明：**
 
 ```Java
-    // 例1：获取整个空间的使用量情况
-    long usage = upyun.getBucketUsage();
+	Response response = restManager.getBucketUsage();
+	System.out.println("空间总使用量：" + response.body().string() + "B");    	
 ```
 
 **返回值说明：**
@@ -337,31 +274,24 @@ public Map<String, String> getFileInfo(String filePath);
 **方法原型：**
 
 ```Java
-	public String readFile(String filePath)；
-	public boolean readFile(String filePath, File file)；
+	public Response readFile(String filePath)；
 ```
 
 **参数说明：**
 
 * `filePath`  文件在又拍云存储中的路径
-* `file`  本地临时文件（用来保存下载下来的数据）
-
+* 
 **返回值说明：**
 
-* 方法一：文本内容
-* 方法二：结果为 `true` 下载成功
+* response.body() 包含文件流信息
 
 **举例说明：**
 
 ```Java
-    // 例1：直接读取文本内容
+    // 直接打印文本内容
     String remoteFilePath = "/path/to/file";
-    String datas = upyun.readFile(remoteFilePath);
+    System.out.println(filePath + " 的文件内容:" + response.body().string());
 
-    // 例2：下载文件，采用数据流模式下载文件（节省内存）
-    String remoteFilePath = "/path/to/file";
-    File file = new File(localFilePath); // 创建一个本地临时文件
-    boolean result = upyun.readFile(remoteFilePath, file);
 ```
 
 ---
@@ -372,7 +302,7 @@ public Map<String, String> getFileInfo(String filePath);
 **方法原型：**
 
 ```Java
-	public boolean deleteFile(String filePath,Map<String, String> params);
+	public Response deleteFile(String filePath,Map<String, String> params);
 ```
 
 **参数说明：**
@@ -382,16 +312,15 @@ public Map<String, String> getFileInfo(String filePath);
 
 **返回值说明：**
 
-* 若 `filePath` 指定的文件不存在，则返回『文件不存在』的错误
-* 结果为 `true` 删除文件成功
+* response.isSuccessful() 结果为 `true` 删除文件成功
 
 **举例说明：**
 
 ```Java
-	String filePath = "/path/to/file";
-    // 删除文件
-    boolean result = upyun.deleteFile(filePath, null);
+	Response response = restManager.deleteFile(filePath, null);
+	System.out.println(filePath + " 删除" + isSuccess(response));
 ```
+---
 
 <a name="串行式断点续传"></a>
 ### 串行式断点续传
@@ -427,6 +356,7 @@ public Map<String, String> getFileInfo(String filePath);
 ```java
 	public boolean resume()	
 ```
+---
 
 <a name="并行式断点续传"></a>
 ### 并行式断点续传
@@ -478,101 +408,7 @@ public Map<String, String> getFileInfo(String filePath);
 **详细示例：** 
 见 [ResumeUploadDemo](https://github.com/upyun/java-sdk/blob/master/src/main/java/demo/ResumeUploadDemo.java)
 
-<a name="图片处理接口"></a>
-## 图片处理接口
-
-
-**方法原型：**
-
-```Java
-	public boolean writeFile(String filePath, File file, boolean 	auto, Map<String, String> params);
-	public boolean writeFile(String filePath, byte[] datas, boolean 	auto, Map<String, String> params);
-	public boolean writeFile(String filePath, String datas, boolean 	auto, Map<String, String> params);
-```
-
-**参数说明：**
-
-* `filePath`  保存到又拍云存储的路径
-* 第二个参数  接受 `String` 、`File` 和 `byte[]` 三种类型的**图片数据内容**
-* `auto`  （可选）：自动创建父级目录（只支持自动创建10级以内的父级目录）
-* `params`  自定义图片处理参数的组合，详情请看[params参数说明](http://docs.upyun.com/api/rest_api/#_4)
-
-**返回值说明：**
-
-* 结果为 `true` 图片上传并处理成功
-
-
-图片处理包括『制作图片缩略图』，『图片裁剪』，『图片旋转』。只需要选则不同的 PARAMS 参数就可以分别完成这些操作，下面分别举例说明。
-
 ---
-
-<a name="制作图片缩略图"></a>
-### 制作图片缩略图
-
-**举例说明：**
-
-```Java
-    Map<String, String> params = new HashMap<String, String>();
-    
-    // 设置缩略图类型
-    params.put(PARAMS.KEY_X_GMKERL_TYPE.getValue(), PARAMS.VALUE_FIX_BOTH.getValue());
-    
-    // 设置缩略图参数值
-    params.put(PARAMS.KEY_X_GMKERL_VALUE.getValue(), "150x150");
-    
-    // 设置缩略图的质量，默认 95
-    params.put(PARAMS.KEY_X_GMKERL_QUALITY.getValue(), "95");
-    
-    // 待上传的图片文件
-    File file = new File(localFilePath);
-    
-    String filePath = "/path/to/file";
-    
-    // 上传图片，并同时进行图片处理
-    boolean result = upyun.writeFile(filePath, file, true, params);
-```
-
----
-
-<a name="图片裁剪"></a>
-### 图片裁剪
-
-**举例说明：**
-
-```Java 
-    // 设置缩略图的参数
-    Map<String, String> params = new HashMap<String, String>();
-    
-    // 设置图片裁剪，参数格式：x,y,width,height
-    params.put(PARAMS.KEY_X_GMKERL_CROP.getValue(), "0,0,100,100");
-    
-    // 待上传的图片文件
-    File file = new File(localFilePath);
-    
-    // 上传图片，并同时进行图片处理
-    boolean result = upyun.writeFile(savePath, file, autoMkDir, params);
-```
-
----
-
-<a name="图片旋转"></a>
-### 图片旋转
-
-**举例说明：**
-
-```Java
-   // 设置缩略图的参数
-    Map<String, String> params = new HashMap<String, String>();
-    
-    // 设置图片旋转
-    params.put(PARAMS.KEY_X_GMKERL_ROTATE.getValue(), PARAMS.VALUE_ROTATE_90.getValue());
-    
-    // 待上传的图片文件
-    File file = new File(localFilePath);
-    
-    // 上传图片，并同时进行图片处理
-    boolean result = upyun.writeFile(savePath, file, autoMkDir, params);
-```
 
 <a name="表单上传接口"></a>
 ## 表单上传接口
