@@ -10,7 +10,7 @@
 <dependency>
   <groupId>com.upyun</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>4.2.0</version>
+  <version>4.2.1</version>
 </dependency>
 
 ```
@@ -379,7 +379,7 @@ public Response getFileInfo(String filePath)
 设置 并行数 校验
 
 ```java
-	paralleUploader.setParalle(4);
+	paralleUploader.setParallel(4);
 ```
 
 开始上传
