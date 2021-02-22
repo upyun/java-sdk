@@ -26,6 +26,8 @@
   * [获取使用量信息](#获取使用量信息)
   * [下载文件](#下载文件)
   * [删除文件](#删除文件)
+  * [移动文件](#移动文件)
+  * [复制文件](#复制文件)
   * [串行式断点续传](#串行式断点续传)
   * [并行式断点续传](#并行式断点续传)
 * [表单上传接口](#表单上传接口)
@@ -320,6 +322,39 @@ public Response getFileInfo(String filePath)
 	Response response = restManager.deleteFile(filePath, null);
 	System.out.println(filePath + " 删除" + isSuccess(response));
 ```
+<a name="移动文件"></a>
+### 移动文件
+
+**方法原型：**
+
+```Java
+	public Response moveFile(String path, String sourcePath, Map<String, String> params);
+```
+**参数说明：**
+
+* `path`	目标路径
+*  `sourcePath `	源文件路径
+
+**返回值说明：**
+
+* 返回 Response 
+
+<a name="复制文件"></a>
+### 复制文件
+
+**方法原型：**
+
+```Java
+	public Response copyFile(String path, String sourcePath, Map<String, String> params);
+```
+**参数说明：**
+
+* `path`	目标路径
+*  `sourcePath `	源文件路径
+
+**返回值说明：**
+
+* 返回 Response 
 ---
 
 <a name="串行式断点续传"></a>

@@ -207,7 +207,7 @@ public class RestManager {
     }
 
     /**
-     * 复制文件
+     * 移动文件
      *
      * @param path       目标路径
      * @param sourcePath 原路径
