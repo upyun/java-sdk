@@ -95,20 +95,20 @@ public class CompressDemo {
         JSONObject json = new JSONObject();
 
         JSONArray array2 = new JSONArray();
-        array2.put("/sample.jpeg");
-        array2.put("/rotate.jpg");
+        array2.put("/a/b/c/sample.jpeg");
+        array2.put("/a/b/c/rotate.jpg");
 
         //添加处理参数
         json.put(CompressHandler.Params.SOURCES, array2);
         json.put(CompressHandler.Params.SAVE_AS, "/result/compress/a.zip");
-        json.put(CompressHandler.Params.HOME_DIR, "/result/compress");
+        json.put(CompressHandler.Params.HOME_DIR, "a/b/c");
 
         JSONObject json2 = new JSONObject();
 
         //添加处理参数
         json2.put(CompressHandler.Params.SOURCES, array2);
         json2.put(CompressHandler.Params.SAVE_AS, "/result/compress/b.zip");
-        json2.put(CompressHandler.Params.HOME_DIR, "/result/compress");
+        json2.put(CompressHandler.Params.HOME_DIR, "a/b/c");
 
         array.put(json2);
         array.put(json);
