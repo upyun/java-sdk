@@ -6,11 +6,16 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class UpYunUtils {
 
-    public static final String VERSION = "upyun-java-sdk/4.2.0";
+    public static final String VERSION = "upyun-java-sdk/4.2.2";
+    private static final String SEPARATOR = "/";
 
     /**
      * 计算policy
@@ -141,5 +146,37 @@ public class UpYunUtils {
         mac.init(signingKey);
         // Compute the hmac on input data bytes
         return mac.doFinal(data.getBytes());
+    }
+
+    private static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
+
+    public static String formatPath(String bucketName, String path) {
+
+        if (!isEmpty(path)) {
+
+            // 去除前后的空格
+            path = path.trim();
+
+            // 确保路径以"/"开头
+            if (!path.startsWith(SEPARATOR)) {
+                return SEPARATOR + bucketName + SEPARATOR + path;
+            }
+        }
+
+        return SEPARATOR + bucketName + path;
+    }
+
+    /**
+     * 获取 GMT 格式时间戳
+     *
+     * @return GMT 格式时间戳
+     */
+    public static String getGMTDate() {
+        SimpleDateFormat formater = new SimpleDateFormat(
+                "EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        formater.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return formater.format(new Date());
     }
 }

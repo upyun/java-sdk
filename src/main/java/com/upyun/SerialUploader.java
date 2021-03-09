@@ -5,7 +5,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Map;
 
 public class SerialUploader extends BaseUploader {
@@ -100,7 +99,7 @@ public class SerialUploader extends BaseUploader {
 
             RequestBody requestBody = RequestBody.create(null, data);
 
-            String date = getGMTDate();
+            String date = UpYunUtils.getGMTDate();
 
             String md5 = null;
 

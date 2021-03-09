@@ -172,7 +172,7 @@ public class ParallelUploader extends BaseUploader {
 
                     RequestBody requestBody = RequestBody.create(null, data);
 
-                    String date = getGMTDate();
+                    String date = UpYunUtils.getGMTDate();
 
                     String md5 = null;
 

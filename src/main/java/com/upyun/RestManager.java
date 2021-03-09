@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RestManager {
@@ -299,20 +299,6 @@ public class RestManager {
         return request(METHOD_GET, "/?usage", null, null);
     }
 
-
-    /**
-     * 获取 GMT 格式时间戳
-     *
-     * @return GMT 格式时间戳
-     */
-    private String getGMTDate() {
-        SimpleDateFormat formater = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        formater.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return formater.format(new Date());
-
-    }
-
     private RequestBody create(final MediaType mediaType, final InputStream inputStream) {
         return new RequestBody() {
             @Override
@@ -341,18 +327,50 @@ public class RestManager {
         };
     }
 
+    /**
+     * 判断字符串是否为空
+     * getTextgetText
+     *
+     * @param str
+     * @return 是否为空
+     */
+    private boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
+
+    /**
+     * 格式化路径参数，去除前后的空格并确保以"/"开头，最后添加"/空间名"
+     * <p>
+     * 最终构成的格式："/空间名/文件路径"
+     *
+     * @param path 目录路径或文件路径
+     * @return 格式化后的路径
+     */
+    private String formatPath(String path) {
+
+        if (!isEmpty(path)) {
+
+            // 去除前后的空格
+            path = path.trim();
+
+            // 确保路径以"/"开头
+            if (!path.startsWith(SEPARATOR)) {
+                return SEPARATOR + bucketName + SEPARATOR + path;
+            }
+        }
+
+        return SEPARATOR + bucketName + path;
+    }
+
 
     private Response request(String method, String filePath, RequestBody body, Map<String, String> params) throws UpException, IOException {
 
-        String date = getGMTDate();
-
-        String uriPath = SEPARATOR + bucketName + filePath;
-
-
-        String sign = UpYunUtils.sign(method, date, uriPath, userName, password, params == null ? null : params.get(PARAMS.CONTENT_MD5.getValue()));
+        String date = UpYunUtils.getGMTDate();
 
         // 获取链接
-        String url = apiDomain + uriPath;
+        String url = apiDomain + UpYunUtils.formatPath(bucketName, filePath);
+
+        String sign = UpYunUtils.sign(method, date, HttpUrl.get(url).encodedPath(), userName, password, params == null ? null : params.get(PARAMS.CONTENT_MD5.getValue()));
 
         Request.Builder builder = new Request.Builder()
                 .url(url)

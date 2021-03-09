@@ -1,22 +1,16 @@
 package com.upyun;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public abstract class BaseUploader {
     static final String AUTHORIZATION = "Authorization";
-    final static String BACKSLASH = "/";
     static final int BLOCK_SIZE = 1024 * 1024;
 
     final String DATE = "Date";
@@ -85,7 +79,7 @@ public abstract class BaseUploader {
         this.paused = true;
     }
 
-    void init(String filePath, String uploadPath, Map<String, String> params) throws FileNotFoundException {
+    void init(String filePath, String uploadPath, Map<String, String> params) throws IOException {
 
         this.paused = false;
 
@@ -99,13 +93,9 @@ public abstract class BaseUploader {
 
         this.totalBlock = (int) Math.ceil(mFile.length() / (double) BLOCK_SIZE + 2);
 
-        if (uploadPath.startsWith(BACKSLASH)) {
-            this.uri = BACKSLASH + bucketName + BACKSLASH + URLEncoder.encode(uploadPath.substring(1));
-        } else {
-            this.uri = BACKSLASH + bucketName + BACKSLASH + URLEncoder.encode(uploadPath);
-        }
+        this.url = HOST + UpYunUtils.formatPath(bucketName, uploadPath);
 
-        this.url = HOST + uri;
+        this.uri = HttpUrl.get(url).encodedPath();
 
         this.mClient = new OkHttpClient.Builder()
                 .connectTimeout(timeout, TimeUnit.SECONDS)
@@ -159,7 +149,7 @@ public abstract class BaseUploader {
         if (uuid == null) {
             RequestBody requestBody = RequestBody.create(null, "");
 
-            String date = getGMTDate();
+            String date = UpYunUtils.getGMTDate();
 
             String md5 = null;
 
@@ -211,7 +201,7 @@ public abstract class BaseUploader {
 
         RequestBody requestBody = RequestBody.create(null, "");
 
-        String date = getGMTDate();
+        String date = UpYunUtils.getGMTDate();
 
         String md5 = null;
 
@@ -251,18 +241,6 @@ public abstract class BaseUploader {
         uuid = response.header(X_UPYUN_MULTI_UUID, "");
 
         return response;
-    }
-
-    /**
-     * 获取 GMT 格式时间戳
-     *
-     * @return GMT 格式时间戳
-     */
-    String getGMTDate() {
-        SimpleDateFormat formater = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        formater.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return formater.format(new Date());
     }
 
     byte[] readBlockByIndex(long index) throws IOException {

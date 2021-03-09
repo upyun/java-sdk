@@ -50,7 +50,10 @@ public class MediaHandler extends AsyncProcessHandler {
         for (Map.Entry<String, Object> mapping : params.entrySet()) {
             sb.append(mapping.getKey() + "=" + mapping.getValue().toString() + "&");
         }
-        URL url = new URL(HOST + sb.toString().substring(0, sb.length() - 1));
+
+        String uriPath = sb.toString().substring(0, sb.length() - 1);
+
+        URL url = new URL(HOST + uriPath);
 
         conn = (HttpURLConnection) url.openConnection();
 
@@ -62,11 +65,13 @@ public class MediaHandler extends AsyncProcessHandler {
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
 
+        String date = UpYunUtils.getGMTDate();
+
         // 设置时间
-        conn.setRequestProperty(DATE, getGMTDate());
+        conn.setRequestProperty(DATE, date);
         // 设置签名
         conn.setRequestProperty(AUTHORIZATION,
-                sign("GET", sb.toString().substring(0, sb.length() - 1), getGMTDate(), null));
+                UpYunUtils.sign("GET", date, uriPath, userName, password, null));
 
         // 创建链接
         conn.connect();
@@ -99,7 +104,9 @@ public class MediaHandler extends AsyncProcessHandler {
         for (Map.Entry<String, Object> mapping : params.entrySet()) {
             sb.append(mapping.getKey() + "=" + mapping.getValue().toString() + "&");
         }
-        URL url = new URL(HOST + sb.toString().substring(0, sb.length() - 1));
+        String uriPath = sb.toString().substring(0, sb.length() - 1);
+
+        URL url = new URL(HOST + uriPath);
 
         conn = (HttpURLConnection) url.openConnection();
 
@@ -111,11 +118,13 @@ public class MediaHandler extends AsyncProcessHandler {
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("User-Agent", UpYunUtils.VERSION);
 
+        String date = UpYunUtils.getGMTDate();
+
         // 设置时间
-        conn.setRequestProperty(DATE, getGMTDate());
+        conn.setRequestProperty(DATE, date);
         // 设置签名
         conn.setRequestProperty(AUTHORIZATION,
-                sign("GET", sb.toString().substring(0, sb.length() - 1), getGMTDate(), null));
+                UpYunUtils.sign("GET", date, uriPath, userName, password, null));
 
         // 创建链接
         conn.connect();

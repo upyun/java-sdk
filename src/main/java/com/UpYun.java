@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Deprecated
@@ -387,7 +386,7 @@ public class UpYun {
         HttpURLConnection conn = null;
 
         // 获取链接
-        URL url = new URL("http://" + apiDomain + filePath);
+        URL url = new URL("https://" + apiDomain + filePath);
         conn = (HttpURLConnection) url.openConnection();
 
         // 设置必要参数
@@ -397,7 +396,7 @@ public class UpYun {
         conn.setDoOutput(true);
         conn.setChunkedStreamingMode(0);
 
-        String date = getGMTDate();
+        String date = UpYunUtils.getGMTDate();
 
         // 设置时间
         conn.setRequestProperty(DATE, date);
@@ -759,18 +758,6 @@ public class UpYun {
     }
 
     /**
-     * 获取 GMT 格式时间戳
-     *
-     * @return GMT 格式时间戳
-     */
-    private String getGMTDate() {
-        SimpleDateFormat formater = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        formater.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return formater.format(new Date());
-    }
-
-    /**
      * 计算签名
      *
      * @param conn   连接
@@ -844,7 +831,7 @@ public class UpYun {
         InputStream is = null;
 
         // 获取链接
-        URL url = new URL("http://" + apiDomain + uri);
+        URL url = new URL("https://" + apiDomain + uri);
         conn = (HttpURLConnection) url.openConnection();
 
         // 设置必要参数
@@ -856,7 +843,7 @@ public class UpYun {
             conn.setChunkedStreamingMode(0);
         }
 
-        String date = getGMTDate();
+        String date = UpYunUtils.getGMTDate();
 
         // 设置时间
         conn.setRequestProperty(DATE, date);
