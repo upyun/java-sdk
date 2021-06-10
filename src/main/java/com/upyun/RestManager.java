@@ -219,7 +219,7 @@ public class RestManager {
         if (params == null) {
             params = new HashMap<String, String>();
         }
-        params.put(PARAMS.X_UPYUN_COPY_SOURCE.getValue(), sourcePath);
+        params.put(PARAMS.X_UPYUN_MOVE_SOURCE.getValue(), sourcePath);
         return request(METHOD_PUT, path, RequestBody.create(null, ""), params);
     }
 
